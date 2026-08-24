@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fallout MTG Collection</title>
+</head>
+
+<body>
+
+    <h1>Fallout MTG Collection</h1>
+
+    <p id="status">Loading card database...</p>
+
+    <table border="1" cellpadding="8" id="cardTable">
+        <thead>
+            <tr>
+                <th>Set</th>
+                <th>Number</th>
+                <th>Variant</th>
+                <th>Name</th>
+                <th>Rarity</th>
+                <th>No Foil</th>
+                <th>Standard Foil</th>
+                <th>Surge Foil</th>
+                <th>Rainbow Foil</th>
+            </tr>
+        </thead>
+
+        <tbody id="cardTableBody"></tbody>
+    </table>
+
+    <script>
+
+        fetch("cards.json")
+            .then(response => {
+
+                if (!response.ok) {
+                    throw new Error(
+                        "Could not load cards.json. HTTP " +
+                        response.status
+                    );
+                }
+
+                return response.json();
+
+            })
+            .then(cards => {
+
+                document.getElementById("status").textContent =
+                    "Card database loaded successfully. " +
+                    cards.length +
+                    " cards found.";
+
+                const tableBody =
+                    document.getElementById("cardTableBody");
+
+                cards.slice(0, 20).forEach(card => {
+
+                    const row =
+                        document.createElement("tr");
+
+                    row.innerHTML = `
+                        <td>${card.set}</td>
+                        <td>${card.number}</td>
+                        <td>${card.variant}</td>
+                        <td>${card.name}</td>
+                        <td>${card.rarity}</td>
+                        <td>${card.noFoilValue}</td>
+                        <td>${card.standardFoilValue}</td>
+                        <td>${card.surgeFoilValue}</td>
+                        <td>${card.rainbowFoilValue}</td>
+                    `;
+
+                    tableBody.appendChild(row);
+
+                });
+
+            })
+            .catch(error => {
+
+                document.getElementById("status").textContent =
+                    "ERROR: " + error.message;
+
+                console.error(error);
+
+            });
+
+    </script>
+
+</body>
+</html>
