@@ -1,5 +1,6 @@
 import json
 import time
+import urllib.error
 import urllib.request
 
 CARDS_FILE = "cards.json"
@@ -23,7 +24,7 @@ def get_scryfall_batch(cards):
             card.get("set", "")
         ).strip()
 
-                collector_number = str(
+        collector_number = str(
             card.get("number", "")
         ).strip()
 
@@ -32,15 +33,18 @@ def get_scryfall_batch(cards):
 
         # SLD Rainbow Foil cards use a star in
         # Scryfall's collector number.
-        if set_code.upper() == "SLD" and collector_number in {
-            "790",
-            "795",
-            "796"
-        }:
+        if (
+            set_code.upper() == "SLD"
+            and collector_number in {
+                "790",
+                "795",
+                "796"
+            }
+        ):
             collector_number += "★"
 
-        # TPIP tokens use the separate TCGplayer
-        # pricing system from your original Apps Script.
+        # TPIP cards use the separate TCGplayer
+        # pricing system.
         if set_code.upper() == "TPIP":
             continue
 
@@ -49,18 +53,14 @@ def get_scryfall_batch(cards):
             "collector_number": collector_number
         })
 
-
     if not identifiers:
         return {}, []
 
-
     url = "https://api.scryfall.com/cards/collection"
-
 
     payload = json.dumps({
         "identifiers": identifiers
     }).encode("utf-8")
-
 
     request = urllib.request.Request(
         url,
@@ -69,7 +69,6 @@ def get_scryfall_batch(cards):
         method="POST"
     )
 
-
     for attempt in range(3):
 
         try:
@@ -77,7 +76,6 @@ def get_scryfall_batch(cards):
             with urllib.request.urlopen(request) as response:
 
                 if response.status != 200:
-
                     return {}, [
                         f"HTTP {response.status}"
                     ]
@@ -86,9 +84,7 @@ def get_scryfall_batch(cards):
                     response.read().decode("utf-8")
                 )
 
-
             results = {}
-
 
             for card in data.get("data", []):
 
@@ -100,24 +96,17 @@ def get_scryfall_batch(cards):
                     card.get("collector_number", "")
                 )
 
-
                 key = (
                     set_code,
                     collector_number
                 )
 
-
                 prices = card.get("prices", {})
 
-
                 results[key] = {
-                    "usd":
-                        prices.get("usd") or "",
-
-                    "usd_foil":
-                        prices.get("usd_foil") or ""
+                    "usd": prices.get("usd") or "",
+                    "usd_foil": prices.get("usd_foil") or ""
                 }
-
 
             not_found = []
 
@@ -127,9 +116,7 @@ def get_scryfall_batch(cards):
                     str(missing)
                 )
 
-
             return results, not_found
-
 
         except urllib.error.HTTPError as error:
 
@@ -139,25 +126,23 @@ def get_scryfall_batch(cards):
 
                 print(
                     f"HTTP 429. "
-                    f"Waiting {wait_time} seconds..."
+                    f"Waiting {wait_time} seconds...",
+                    flush=True
                 )
 
                 time.sleep(wait_time)
 
                 continue
 
-
             return {}, [
                 f"HTTP {error.code}"
             ]
-
 
         except Exception as error:
 
             return {}, [
                 str(error)
             ]
-
 
     return {}, [
         "HTTP 429 after 3 attempts"
@@ -166,8 +151,10 @@ def get_scryfall_batch(cards):
 
 def main():
 
-    print("Loading cards.json...", flush=True)
-
+    print(
+        "Loading cards.json...",
+        flush=True
+    )
 
     with open(
         CARDS_FILE,
@@ -177,17 +164,14 @@ def main():
 
         cards = json.load(file)
 
-
     print(
         f"Found {len(cards)} cards.",
         flush=True
     )
 
-
     total_updated = 0
     total_errors = 0
     total_skipped = 0
-
 
     batches = [
         cards[i:i + BATCH_SIZE]
@@ -198,12 +182,10 @@ def main():
         )
     ]
 
-
     print(
         f"Processing {len(batches)} batches...",
         flush=True
     )
-
 
     for batch_number, batch in enumerate(
         batches,
@@ -211,7 +193,7 @@ def main():
     ):
 
         print(
-            f"",
+            "",
             flush=True
         )
 
@@ -220,11 +202,9 @@ def main():
             flush=True
         )
 
-
         results, problems = get_scryfall_batch(
             batch
         )
-
 
         for card in batch:
 
@@ -236,22 +216,17 @@ def main():
                 card.get("number", "")
             ).strip()
 
-
             if not set_code or not collector_number:
 
                 total_errors += 1
 
                 continue
 
-
-            # TPIP is handled separately by the
-            # TCGplayer token updater.
             if set_code.upper() == "TPIP":
 
                 total_skipped += 1
 
                 continue
-
 
             lookup_collector_number = collector_number
 
@@ -270,24 +245,21 @@ def main():
                 lookup_collector_number
             )
 
-
             if key not in results:
 
                 print(
                     f"  Not found: "
-                    f"{set_code} {collector_number}",
+                    f"{set_code} "
+                    f"{collector_number}",
                     flush=True
                 )
 
                 total_errors += 1
 
-                # IMPORTANT:
-                # Do not erase the existing price.
+                # Do not erase an existing price.
                 continue
 
-
             price_data = results[key]
-
 
             card["noFoilValue"] = (
                 price_data["usd"]
@@ -305,9 +277,7 @@ def main():
                 price_data["usd_foil"]
             )
 
-
             total_updated += 1
-
 
         if problems:
 
@@ -316,20 +286,15 @@ def main():
                 flush=True
             )
 
-
         print(
             f"  Prices updated so far: "
             f"{total_updated}",
             flush=True
         )
 
-
-        # Give Scryfall a little breathing room
-        # between collection requests.
         if batch_number < len(batches):
 
             time.sleep(0.5)
-
 
     print(
         "",
@@ -340,7 +305,6 @@ def main():
         "Saving updated cards.json...",
         flush=True
     )
-
 
     with open(
         CARDS_FILE,
@@ -356,7 +320,6 @@ def main():
         )
 
         file.write("\n")
-
 
     print(
         "",
