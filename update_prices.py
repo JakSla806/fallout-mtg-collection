@@ -585,17 +585,7 @@ def main():
 
             time.sleep(0.5)
 
-    print(
-        "",
-        flush=True
-    )
-
-    print(
-        "Saving updated cards.json...",
-        flush=True
-    )
-
-        update_tpip_prices(cards)
+    update_tpip_prices(cards)
 
     print(
         "",
@@ -612,7 +602,6 @@ def main():
         "w",
         encoding="utf-8"
     ) as file:
-
         json.dump(
             cards,
             file,
