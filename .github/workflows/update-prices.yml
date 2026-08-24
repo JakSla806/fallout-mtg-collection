@@ -24,7 +24,7 @@ jobs:
           python-version: "3.x"
 
       - name: Update card prices
-        run: python update_prices.py
+        run: python clear_prices.py
 
       - name: Save updated prices
         run: |
