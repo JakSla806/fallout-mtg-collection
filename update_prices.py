@@ -4,11 +4,18 @@ import urllib.error
 import urllib.request
 
 CARDS_FILE = "cards.json"
+TPIP_LOOKUP_FILE = "tpip_lookup.json"
 
 BATCH_SIZE = 75
 
 HEADERS = {
     "User-Agent": "JakeFalloutTracker/1.0",
+    "Accept": "application/json",
+    "Content-Type": "application/json"
+}
+
+TCGPLAYER_HEADERS = {
+    "User-Agent": "Mozilla/5.0",
     "Accept": "application/json",
     "Content-Type": "application/json"
 }
@@ -148,6 +155,288 @@ def get_scryfall_batch(cards):
         "HTTP 429 after 3 attempts"
     ]
 
+def update_tpip_prices(cards):
+
+    print(
+        "",
+        flush=True
+    )
+
+    print(
+        "Loading TPIP lookup...",
+        flush=True
+    )
+
+    with open(
+        TPIP_LOOKUP_FILE,
+        "r",
+        encoding="utf-8"
+    ) as file:
+
+        tpip_lookup = json.load(file)
+
+    print(
+        f"Found {len(tpip_lookup)} TPIP cards.",
+        flush=True
+    )
+
+    total_updated = 0
+    total_no_product = 0
+    total_errors = 0
+
+    for index, card in enumerate(cards, start=1):
+
+        set_code = str(
+            card.get("set", "")
+        ).strip().upper()
+
+        if set_code != "TPIP":
+            continue
+
+        number = str(
+            card.get("number", "")
+        ).strip()
+
+        print(
+            f"[{index}] TPIP {number}",
+            flush=True
+        )
+
+        lookup = tpip_lookup.get(number)
+
+        if not lookup:
+
+            print(
+                "    No TPIP lookup entry.",
+                flush=True
+            )
+
+            total_errors += 1
+            continue
+
+        product_id = lookup.get("product_id")
+
+        if not product_id:
+
+            print(
+                "    No TCGplayer Product ID.",
+                flush=True
+            )
+
+            total_no_product += 1
+            continue
+
+        print(
+            f"    Product ID: {product_id}",
+            flush=True
+        )
+
+        try:
+
+            details_url = (
+                "https://mp-search-api.tcgplayer.com/"
+                f"v2/product/{product_id}/details"
+            )
+
+            details_request = urllib.request.Request(
+                details_url,
+                headers=TCGPLAYER_HEADERS
+            )
+
+            with urllib.request.urlopen(
+                details_request
+            ) as response:
+
+                if response.status != 200:
+
+                    print(
+                        f"    Details HTTP {response.status}",
+                        flush=True
+                    )
+
+                    total_errors += 1
+                    continue
+
+                details = json.loads(
+                    response.read().decode("utf-8")
+                )
+
+            normal_sku = None
+            foil_sku = None
+
+            for sku in details.get("skus", []):
+
+                if (
+                    sku.get("language") == "English"
+                    and sku.get("condition") == "Near Mint"
+                ):
+
+                    if sku.get("variant") == "Normal":
+                        normal_sku = sku.get("sku")
+
+                    elif sku.get("variant") == "Foil":
+                        foil_sku = sku.get("sku")
+
+            sku_ids = []
+
+            if normal_sku:
+                sku_ids.append(normal_sku)
+
+            if foil_sku:
+                sku_ids.append(foil_sku)
+
+            if not sku_ids:
+
+                print(
+                    "    No English Near Mint SKUs.",
+                    flush=True
+                )
+
+                total_errors += 1
+                continue
+
+            price_url = (
+                "https://mpgateway.tcgplayer.com/"
+                "v1/pricepoints/marketprice/skus/search"
+            )
+
+            payload = json.dumps({
+                "skuIds": sku_ids
+            }).encode("utf-8")
+
+            price_request = urllib.request.Request(
+                price_url,
+                data=payload,
+                headers=TCGPLAYER_HEADERS,
+                method="POST"
+            )
+
+            with urllib.request.urlopen(
+                price_request
+            ) as response:
+
+                if response.status != 200:
+
+                    print(
+                        f"    Price HTTP {response.status}",
+                        flush=True
+                    )
+
+                    total_errors += 1
+                    continue
+
+                prices = json.loads(
+                    response.read().decode("utf-8")
+                )
+
+            normal_price = ""
+            foil_price = ""
+
+            for price in prices:
+
+                if price.get("skuId") == normal_sku:
+
+                    market_price = price.get(
+                        "marketPrice"
+                    )
+
+                    if market_price is not None:
+                        normal_price = str(
+                            market_price
+                        )
+
+                if price.get("skuId") == foil_sku:
+
+                    market_price = price.get(
+                        "marketPrice"
+                    )
+
+                    if market_price is not None:
+                        foil_price = str(
+                            market_price
+                        )
+
+            if not normal_price and not foil_price:
+
+                print(
+                    "    No market prices returned.",
+                    flush=True
+                )
+
+                total_errors += 1
+                continue
+
+            print(
+                f"    Normal: "
+                f"{normal_price or 'None'}",
+                flush=True
+            )
+
+            print(
+                f"    Foil: "
+                f"{foil_price or 'None'}",
+                flush=True
+            )
+
+            if normal_price:
+
+                card["noFoilValue"] = normal_price
+
+            if foil_price:
+
+                card["standardFoilValue"] = foil_price
+
+                card["surgeFoilValue"] = foil_price
+
+                card["rainbowFoilValue"] = foil_price
+
+            total_updated += 1
+
+            time.sleep(0.1)
+
+        except urllib.error.HTTPError as error:
+
+            print(
+                f"    HTTP error: {error.code}",
+                flush=True
+            )
+
+            total_errors += 1
+
+        except Exception as error:
+
+            print(
+                f"    Error: {error}",
+                flush=True
+            )
+
+            total_errors += 1
+
+    print(
+        "",
+        flush=True
+    )
+
+    print(
+        "TPIP price update complete.",
+        flush=True
+    )
+
+    print(
+        f"TPIP cards updated: {total_updated}",
+        flush=True
+    )
+
+    print(
+        f"TPIP cards without Product ID: "
+        f"{total_no_product}",
+        flush=True
+    )
+
+    print(
+        f"TPIP errors: {total_errors}",
+        flush=True
+    )
 
 def main():
 
@@ -295,6 +584,18 @@ def main():
         if batch_number < len(batches):
 
             time.sleep(0.5)
+
+    print(
+        "",
+        flush=True
+    )
+
+    print(
+        "Saving updated cards.json...",
+        flush=True
+    )
+
+        update_tpip_prices(cards)
 
     print(
         "",
