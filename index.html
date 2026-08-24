@@ -1,92 +1,764 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>Fallout MTG Collection</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background: #f5f5f5;
+            color: #222;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        #status {
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .controls input,
+        .controls select {
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .controls input {
+            width: 220px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #e5e5e5;
+        }
+
+        tr:hover {
+            background: #f0f0f0;
+        }
+
+        .price {
+            text-align: right;
+        }
+
+        .owned {
+            font-weight: bold;
+        }
+
+        .not-possible {
+            color: #999;
+        }
+
+        .links a {
+            margin-right: 8px;
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
     <h1>Fallout MTG Collection</h1>
 
-    <p id="status">Loading card database...</p>
+    <p id="status">
+        Loading card database...
+    </p>
 
-    <table border="1" cellpadding="8" id="cardTable">
+
+    <div class="controls">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search card name..."
+        >
+
+        <select id="setFilter">
+
+            <option value="">
+                All Sets
+            </option>
+
+        </select>
+
+
+        <select id="variantFilter">
+
+            <option value="">
+                All Variants
+            </option>
+
+        </select>
+
+
+        <select id="rarityFilter">
+
+            <option value="">
+                All Rarities
+            </option>
+
+        </select>
+
+
+        <select id="finishFilter">
+
+            <option value="">
+                All Finishes
+            </option>
+
+            <option value="No Foil">
+                No Foil
+            </option>
+
+            <option value="Standard Foil">
+                Standard Foil
+            </option>
+
+            <option value="Surge Foil">
+                Surge Foil
+            </option>
+
+            <option value="Rainbow Foil">
+                Rainbow Foil
+            </option>
+
+        </select>
+
+
+        <select id="ownershipFilter">
+
+            <option value="">
+                All Ownership
+            </option>
+
+            <option value="Owned">
+                Owned
+            </option>
+
+            <option value="Unowned">
+                Unowned
+            </option>
+
+        </select>
+
+
+        <select id="sortFilter">
+
+            <option value="number">
+                Sort: Number
+            </option>
+
+            <option value="name">
+                Sort: Name
+            </option>
+
+            <option value="priceLow">
+                Sort: Price Low to High
+            </option>
+
+            <option value="priceHigh">
+                Sort: Price High to Low
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <table>
+
         <thead>
+
             <tr>
-                <th>Set</th>
-                <th>Number</th>
-                <th>Variant</th>
-                <th>Name</th>
-                <th>Rarity</th>
-                <th>No Foil</th>
-                <th>Standard Foil</th>
-                <th>Surge Foil</th>
-                <th>Rainbow Foil</th>
+
+                <th>
+                    Set
+                </th>
+
+                <th>
+                    Number
+                </th>
+
+                <th>
+                    Variant
+                </th>
+
+                <th>
+                    Name
+                </th>
+
+                <th>
+                    Rarity
+                </th>
+
+                <th>
+                    Finish
+                </th>
+
+                <th>
+                    Price
+                </th>
+
+                <th>
+                    Ownership
+                </th>
+
+                <th>
+                    Links
+                </th>
+
             </tr>
+
         </thead>
 
-        <tbody id="cardTableBody"></tbody>
+
+        <tbody id="cardTableBody">
+
+        </tbody>
+
     </table>
+
 
     <script>
 
+        let cards = [];
+
+
+        const searchInput =
+            document.getElementById("searchInput");
+
+        const setFilter =
+            document.getElementById("setFilter");
+
+        const variantFilter =
+            document.getElementById("variantFilter");
+
+        const rarityFilter =
+            document.getElementById("rarityFilter");
+
+        const finishFilter =
+            document.getElementById("finishFilter");
+
+        const ownershipFilter =
+            document.getElementById("ownershipFilter");
+
+        const sortFilter =
+            document.getElementById("sortFilter");
+
+        const tableBody =
+            document.getElementById("cardTableBody");
+
+        const status =
+            document.getElementById("status");
+
+
         fetch("cards.json")
+
             .then(response => {
 
                 if (!response.ok) {
+
                     throw new Error(
                         "Could not load cards.json. HTTP " +
                         response.status
                     );
+
                 }
 
                 return response.json();
 
             })
-            .then(cards => {
 
-                document.getElementById("status").textContent =
-                    "Card database loaded successfully. " +
-                    cards.length +
-                    " cards found.";
+            .then(data => {
 
-                const tableBody =
-                    document.getElementById("cardTableBody");
+                cards = data;
 
-                cards.slice(0, 20).forEach(card => {
+                populateFilters();
 
-                    const row =
-                        document.createElement("tr");
-
-                    row.innerHTML = `
-                        <td>${card.set}</td>
-                        <td>${card.number}</td>
-                        <td>${card.variant}</td>
-                        <td>${card.name}</td>
-                        <td>${card.rarity}</td>
-                        <td>${card.noFoilValue}</td>
-                        <td>${card.standardFoilValue}</td>
-                        <td>${card.surgeFoilValue}</td>
-                        <td>${card.rainbowFoilValue}</td>
-                    `;
-
-                    tableBody.appendChild(row);
-
-                });
+                renderCards();
 
             })
+
             .catch(error => {
 
-                document.getElementById("status").textContent =
+                status.textContent =
                     "ERROR: " + error.message;
 
                 console.error(error);
 
             });
 
+
+        function populateFilters() {
+
+            const sets =
+                [...new Set(
+                    cards
+                        .map(card => card.set)
+                        .filter(Boolean)
+                )]
+                .sort();
+
+
+            const variants =
+                [...new Set(
+                    cards
+                        .map(card => card.variant)
+                        .filter(Boolean)
+                )]
+                .sort();
+
+
+            const rarities =
+                [...new Set(
+                    cards
+                        .map(card => card.rarity)
+                        .filter(Boolean)
+                )]
+                .sort();
+
+
+            sets.forEach(value => {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = value;
+                option.textContent = value;
+
+                setFilter.appendChild(option);
+
+            });
+
+
+            variants.forEach(value => {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = value;
+                option.textContent = value;
+
+                variantFilter.appendChild(option);
+
+            });
+
+
+            rarities.forEach(value => {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = value;
+                option.textContent = value;
+
+                rarityFilter.appendChild(option);
+
+            });
+
+        }
+
+
+        function getFinishData(card) {
+
+            return [
+
+                {
+                    name: "No Foil",
+                    ownership: card.noFoil,
+                    price: card.noFoilValue
+                },
+
+                {
+                    name: "Standard Foil",
+                    ownership: card.standardFoil,
+                    price: card.standardFoilValue
+                },
+
+                {
+                    name: "Surge Foil",
+                    ownership: card.surgeFoil,
+                    price: card.surgeFoilValue
+                },
+
+                {
+                    name: "Rainbow Foil",
+                    ownership: card.rainbowFoil,
+                    price: card.rainbowFoilValue
+                }
+
+            ];
+
+        }
+
+
+        function renderCards() {
+
+            tableBody.innerHTML = "";
+
+
+            const search =
+                searchInput.value
+                    .trim()
+                    .toLowerCase();
+
+
+            const selectedSet =
+                setFilter.value;
+
+            const selectedVariant =
+                variantFilter.value;
+
+            const selectedRarity =
+                rarityFilter.value;
+
+            const selectedFinish =
+                finishFilter.value;
+
+            const selectedOwnership =
+                ownershipFilter.value;
+
+
+            const results = [];
+
+
+            cards.forEach(card => {
+
+                if (
+                    search &&
+                    !card.name
+                        .toLowerCase()
+                        .includes(search)
+                ) {
+                    return;
+                }
+
+
+                if (
+                    selectedSet &&
+                    card.set !== selectedSet
+                ) {
+                    return;
+                }
+
+
+                if (
+                    selectedVariant &&
+                    card.variant !== selectedVariant
+                ) {
+                    return;
+                }
+
+
+                if (
+                    selectedRarity &&
+                    card.rarity !== selectedRarity
+                ) {
+                    return;
+                }
+
+
+                getFinishData(card)
+                    .forEach(finish => {
+
+                        if (
+                            finish.ownership ===
+                            "Not Possible"
+                        ) {
+                            return;
+                        }
+
+
+                        if (
+                            selectedFinish &&
+                            finish.name !==
+                            selectedFinish
+                        ) {
+                            return;
+                        }
+
+
+                        if (
+                            selectedOwnership &&
+                            finish.ownership !==
+                            selectedOwnership
+                        ) {
+                            return;
+                        }
+
+
+                        results.push({
+
+                            card: card,
+
+                            finish: finish.name,
+
+                            ownership:
+                                finish.ownership,
+
+                            price:
+                                finish.price
+
+                        });
+
+                    });
+
+            });
+
+
+            sortResults(results);
+
+
+            results.forEach(result => {
+
+                const card =
+                    result.card;
+
+
+                const row =
+                    document.createElement("tr");
+
+
+                const price =
+                    result.price === "" ||
+                    result.price === null ||
+                    result.price === undefined
+                        ? ""
+                        : "$" +
+                          Number(result.price)
+                              .toFixed(2);
+
+
+                const ownershipClass =
+                    result.ownership === "Owned"
+                        ? "owned"
+                        : "";
+
+
+                row.innerHTML = `
+
+                    <td>
+                        ${escapeHtml(card.set)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(card.number)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(card.variant)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(card.name)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(card.rarity)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(result.finish)}
+                    </td>
+
+                    <td class="price">
+                        ${price}
+                    </td>
+
+                    <td class="${ownershipClass}">
+                        ${escapeHtml(result.ownership)}
+                    </td>
+
+                    <td class="links">
+
+                        ${
+                            card.numberLink
+                                ? `<a
+                                    href="${card.numberLink}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                   >
+                                    Scryfall
+                                   </a>`
+                                : ""
+                        }
+
+                        ${
+                            card.nameLink
+                                ? `<a
+                                    href="${card.nameLink}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                   >
+                                    TCGplayer
+                                   </a>`
+                                : ""
+                        }
+
+                    </td>
+
+                `;
+
+
+                tableBody.appendChild(row);
+
+            });
+
+
+            status.textContent =
+                "Showing " +
+                results.length +
+                " finishes from " +
+                cards.length +
+                " cards.";
+
+        }
+
+
+        function sortResults(results) {
+
+            const sort =
+                sortFilter.value;
+
+
+            if (sort === "name") {
+
+                results.sort((a, b) =>
+                    a.card.name.localeCompare(
+                        b.card.name
+                    )
+                );
+
+            }
+
+
+            else if (sort === "priceLow") {
+
+                results.sort((a, b) =>
+                    Number(a.price || 0) -
+                    Number(b.price || 0)
+                );
+
+            }
+
+
+            else if (sort === "priceHigh") {
+
+                results.sort((a, b) =>
+                    Number(b.price || 0) -
+                    Number(a.price || 0)
+                );
+
+            }
+
+
+            else {
+
+                results.sort((a, b) => {
+
+                    const setCompare =
+                        String(a.card.set)
+                            .localeCompare(
+                                String(b.card.set)
+                            );
+
+                    if (setCompare !== 0) {
+                        return setCompare;
+                    }
+
+
+                    return Number(a.card.number) -
+                           Number(b.card.number);
+
+                });
+
+            }
+
+        }
+
+
+        function escapeHtml(value) {
+
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+        searchInput.addEventListener(
+            "input",
+            renderCards
+        );
+
+        setFilter.addEventListener(
+            "change",
+            renderCards
+        );
+
+        variantFilter.addEventListener(
+            "change",
+            renderCards
+        );
+
+        rarityFilter.addEventListener(
+            "change",
+            renderCards
+        );
+
+        finishFilter.addEventListener(
+            "change",
+            renderCards
+        );
+
+        ownershipFilter.addEventListener(
+            "change",
+            renderCards
+        );
+
+        sortFilter.addEventListener(
+            "change",
+            renderCards
+        );
+
     </script>
 
 </body>
+
 </html>
