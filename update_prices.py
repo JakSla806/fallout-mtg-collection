@@ -1,96 +1,164 @@
 import json
 import time
-import urllib.parse
 import urllib.request
-from datetime import datetime, timezone
 
 CARDS_FILE = "cards.json"
 
+BATCH_SIZE = 75
+
 HEADERS = {
     "User-Agent": "JakeFalloutTracker/1.0",
-    "Accept": "application/json"
+    "Accept": "application/json",
+    "Content-Type": "application/json"
 }
 
 
-def get_scryfall_card(set_code, collector_number):
+def get_scryfall_batch(cards):
 
-    query = (
-        "https://api.scryfall.com/cards/search?q=set:"
-        + urllib.parse.quote(set_code.lower())
-        + "+cn:"
-        + urllib.parse.quote(collector_number)
-    )
+    identifiers = []
+
+    for card in cards:
+
+        set_code = str(
+            card.get("set", "")
+        ).strip()
+
+        collector_number = str(
+            card.get("number", "")
+        ).strip()
+
+        if not set_code or not collector_number:
+            continue
+
+        # TPIP tokens use the separate TCGplayer
+        # pricing system from your original Apps Script.
+        if set_code.upper() == "TPIP":
+            continue
+
+        identifiers.append({
+            "set": set_code.lower(),
+            "collector_number": collector_number
+        })
+
+
+    if not identifiers:
+        return {}, []
+
+
+    url = "https://api.scryfall.com/cards/collection"
+
+
+    payload = json.dumps({
+        "identifiers": identifiers
+    }).encode("utf-8")
+
 
     request = urllib.request.Request(
-        query,
-        headers=HEADERS
+        url,
+        data=payload,
+        headers=HEADERS,
+        method="POST"
     )
 
-    try:
 
-        with urllib.request.urlopen(request) as response:
+    for attempt in range(3):
 
-            if response.status != 200:
-                return None, f"HTTP {response.status}"
+        try:
 
-            data = json.loads(
-                response.read().decode("utf-8")
-            )
+            with urllib.request.urlopen(request) as response:
 
-    except urllib.error.HTTPError as error:
+                if response.status != 200:
 
-        if error.code == 429:
+                    return {}, [
+                        f"HTTP {response.status}"
+                    ]
 
-            print(
-                f"Rate limited for {set_code} {collector_number}. "
-                "Waiting 1.5 seconds..."
-            )
-
-            time.sleep(1.5)
-
-            try:
-
-                with urllib.request.urlopen(request) as response:
-
-                    if response.status != 200:
-                        return None, f"HTTP {response.status}"
-
-                    data = json.loads(
-                        response.read().decode("utf-8")
-                    )
-
-            except Exception as retry_error:
-
-                return None, str(retry_error)
-
-        else:
-
-            return None, f"HTTP {error.code}"
-
-    except Exception as error:
-
-        return None, str(error)
+                data = json.loads(
+                    response.read().decode("utf-8")
+                )
 
 
-    if not data.get("data"):
-
-        return None, "Card Not Found"
+            results = {}
 
 
-    card = data["data"][0]
+            for card in data.get("data", []):
 
-    prices = card.get("prices", {})
+                set_code = str(
+                    card.get("set", "")
+                ).lower()
 
-    return {
-        "name": card.get("name", ""),
-        "usd": prices.get("usd") or "",
-        "usd_foil": prices.get("usd_foil") or ""
-    }, None
+                collector_number = str(
+                    card.get("collector_number", "")
+                )
+
+
+                key = (
+                    set_code,
+                    collector_number
+                )
+
+
+                prices = card.get("prices", {})
+
+
+                results[key] = {
+                    "usd":
+                        prices.get("usd") or "",
+
+                    "usd_foil":
+                        prices.get("usd_foil") or ""
+                }
+
+
+            not_found = []
+
+            for missing in data.get("not_found", []):
+
+                not_found.append(
+                    str(missing)
+                )
+
+
+            return results, not_found
+
+
+        except urllib.error.HTTPError as error:
+
+            if error.code == 429:
+
+                wait_time = 2 ** attempt
+
+                print(
+                    f"HTTP 429. "
+                    f"Waiting {wait_time} seconds..."
+                )
+
+                time.sleep(wait_time)
+
+                continue
+
+
+            return {}, [
+                f"HTTP {error.code}"
+            ]
+
+
+        except Exception as error:
+
+            return {}, [
+                str(error)
+            ]
+
+
+    return {}, [
+        "HTTP 429 after 3 attempts"
+    ]
 
 
 def main():
 
-    print("Loading cards.json...")
+    print("Loading cards.json...", flush=True)
+
 
     with open(
         CARDS_FILE,
@@ -102,87 +170,155 @@ def main():
 
 
     print(
-        f"Found {len(cards)} cards."
+        f"Found {len(cards)} cards.",
+        flush=True
     )
 
 
-    updated = 0
-    errors = 0
+    total_updated = 0
+    total_errors = 0
+    total_skipped = 0
 
 
-    for index, card in enumerate(cards, start=1):
+    batches = [
+        cards[i:i + BATCH_SIZE]
+        for i in range(
+            0,
+            len(cards),
+            BATCH_SIZE
+        )
+    ]
 
-        set_code = str(
-            card.get("set", "")
-        ).strip()
 
-        collector_number = str(
-            card.get("number", "")
-        ).strip()
+    print(
+        f"Processing {len(batches)} batches...",
+        flush=True
+    )
 
 
-        if not set_code or not collector_number:
+    for batch_number, batch in enumerate(
+        batches,
+        start=1
+    ):
 
-            print(
-                f"[{index}/{len(cards)}] "
-                "Missing set or collector number. Skipping."
+        print(
+            f"",
+            flush=True
+        )
+
+        print(
+            f"Batch {batch_number}/{len(batches)}",
+            flush=True
+        )
+
+
+        results, problems = get_scryfall_batch(
+            batch
+        )
+
+
+        for card in batch:
+
+            set_code = str(
+                card.get("set", "")
+            ).strip()
+
+            collector_number = str(
+                card.get("number", "")
+            ).strip()
+
+
+            if not set_code or not collector_number:
+
+                total_errors += 1
+
+                continue
+
+
+            # TPIP is handled separately by the
+            # TCGplayer token updater.
+            if set_code.upper() == "TPIP":
+
+                total_skipped += 1
+
+                continue
+
+
+            key = (
+                set_code.lower(),
+                collector_number
             )
 
-            errors += 1
-            continue
+
+            if key not in results:
+
+                print(
+                    f"  Not found: "
+                    f"{set_code} {collector_number}",
+                    flush=True
+                )
+
+                total_errors += 1
+
+                # IMPORTANT:
+                # Do not erase the existing price.
+                continue
 
 
-        print(
-            f"[{index}/{len(cards)}] "
-            f"Updating {set_code} {collector_number}..."
-        )
+            price_data = results[key]
 
 
-        result, error = get_scryfall_card(
-            set_code,
-            collector_number
-        )
-
-
-        if error:
-
-            print(
-                f"    ERROR: {error}"
+            card["noFoilValue"] = (
+                price_data["usd"]
             )
 
-            errors += 1
+            card["standardFoilValue"] = (
+                price_data["usd_foil"]
+            )
 
-            time.sleep(0.1)
+            card["surgeFoilValue"] = (
+                price_data["usd_foil"]
+            )
 
-            continue
-
-
-        card["noFoilValue"] = result["usd"]
-
-        card["standardFoilValue"] = result["usd_foil"]
-
-        card["surgeFoilValue"] = result["usd_foil"]
-
-        card["rainbowFoilValue"] = result["usd_foil"]
+            card["rainbowFoilValue"] = (
+                price_data["usd_foil"]
+            )
 
 
-        updated += 1
+            total_updated += 1
+
+
+        if problems:
+
+            print(
+                f"  Batch issues: {len(problems)}",
+                flush=True
+            )
 
 
         print(
-            f"    Normal: {result['usd']}"
+            f"  Prices updated so far: "
+            f"{total_updated}",
+            flush=True
         )
 
-        print(
-            f"    Foil:   {result['usd_foil']}"
-        )
+
+        # Give Scryfall a little breathing room
+        # between collection requests.
+        if batch_number < len(batches):
+
+            time.sleep(0.5)
 
 
-        time.sleep(0.1)
+    print(
+        "",
+        flush=True
+    )
 
-
-    print()
-    print("Saving updated cards.json...")
+    print(
+        "Saving updated cards.json...",
+        flush=True
+    )
 
 
     with open(
@@ -201,11 +337,32 @@ def main():
         file.write("\n")
 
 
-    print()
-    print("Price update complete.")
-    print(f"Cards updated: {updated}")
-    print(f"Errors: {errors}")
+    print(
+        "",
+        flush=True
+    )
+
+    print(
+        "Price update complete.",
+        flush=True
+    )
+
+    print(
+        f"Prices updated: {total_updated}",
+        flush=True
+    )
+
+    print(
+        f"Errors / not found: {total_errors}",
+        flush=True
+    )
+
+    print(
+        f"TPIP cards skipped: {total_skipped}",
+        flush=True
+    )
 
 
 if __name__ == "__main__":
+
     main()
