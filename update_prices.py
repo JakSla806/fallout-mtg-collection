@@ -23,12 +23,21 @@ def get_scryfall_batch(cards):
             card.get("set", "")
         ).strip()
 
-        collector_number = str(
+                collector_number = str(
             card.get("number", "")
         ).strip()
 
         if not set_code or not collector_number:
             continue
+
+        # SLD Rainbow Foil cards use a star in
+        # Scryfall's collector number.
+        if set_code.upper() == "SLD" and collector_number in {
+            "790",
+            "795",
+            "796"
+        }:
+            collector_number += "★"
 
         # TPIP tokens use the separate TCGplayer
         # pricing system from your original Apps Script.
@@ -244,9 +253,21 @@ def main():
                 continue
 
 
+            lookup_collector_number = collector_number
+
+            if (
+                set_code.upper() == "SLD"
+                and collector_number in {
+                    "790",
+                    "795",
+                    "796"
+                }
+            ):
+                lookup_collector_number += "★"
+
             key = (
                 set_code.lower(),
-                collector_number
+                lookup_collector_number
             )
 
 
