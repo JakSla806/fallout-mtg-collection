@@ -1,0 +1,31 @@
+name: Test TPIP Prices
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-tpip:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Update TPIP prices
+        run: python update_tpip_prices.py
+
+      - name: Commit updated prices
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add cards.json
+          git diff --cached --quiet || git commit -m "Update TPIP prices"
+          git push
