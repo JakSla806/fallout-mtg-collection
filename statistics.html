@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Fallout MTG Collection - Statistics</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #000;
+            color: #33ff33;
+            font-family: "Courier New", monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .terminal {
+            width: min(1000px, 92vw);
+            min-height: 650px;
+            border: 2px solid #33ff33;
+            padding: 30px;
+            box-shadow:
+                0 0 10px #33ff33,
+                inset 0 0 20px rgba(51, 255, 51, 0.15);
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+        .system-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .page-title {
+            margin-top: 8px;
+            font-size: 20px;
+        }
+
+        .divider {
+            border-top: 1px solid #33ff33;
+            margin: 20px 0;
+        }
+
+        .statistics {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px 30px;
+        }
+
+        .stat {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            padding: 10px 12px;
+            border: 1px solid transparent;
+        }
+
+        .stat:hover {
+            background: #33ff33;
+            color: #000;
+        }
+
+        .stat-label {
+            font-weight: bold;
+        }
+
+        .stat-value {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .section-title {
+            grid-column: 1 / -1;
+            margin-top: 10px;
+            margin-bottom: 2px;
+            font-weight: bold;
+        }
+
+        .loading {
+            margin-top: 30px;
+        }
+
+        .error {
+            color: #ff3333;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 14px;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            background: #33ff33;
+            vertical-align: middle;
+            animation: blink 1s steps(1) infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            51%,
+            100% {
+                opacity: 0;
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .terminal {
+                width: 95vw;
+                padding: 20px;
+            }
+
+            .statistics {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                grid-column: 1;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="terminal">
+
+    <div class="header">
+
+        <div class="system-title">
+            ROBCO INDUSTRIES UNIFIED OPERATING SYSTEM
+        </div>
+
+        <div class="page-title">
+            FALLOUT MTG COLLECTION DATABASE // STATISTICS
+        </div>
+
+    </div>
+
+
+    <div class="divider"></div>
+
+
+    <div id="loading" class="loading">
+        Loading collection statistics...
+    </div>
+
+
+    <div
+        id="statistics"
+        class="statistics"
+        style="display: none;"
+    >
+
+        <div class="section-title">
+            COLLECTION TOTALS
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                TOTAL CARDS
+            </div>
+
+            <div
+                class="stat-value"
+                id="totalCards"
+            ></div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                PERCENT OWNED
+            </div>
+
+            <div
+                class="stat-value"
+                id="percentOwned"
+            ></div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                CARDS OWNED
+            </div>
+
+            <div
+                class="stat-value"
+                id="cardsOwned"
+            ></div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                PERCENT UNOWNED
+            </div>
+
+            <div
+                class="stat-value"
+                id="percentUnowned"
+            ></div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                CARDS UNOWNED
+            </div>
+
+            <div
+                class="stat-value"
+                id="cardsUnowned"
+            ></div>
+
+        </div>
+
+
+        <div class="section-title">
+            COLLECTION VALUE
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                VALUE OWNED
+            </div>
+
+            <div
+                class="stat-value"
+                id="valueOwned"
+            ></div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                VALUE UNOWNED
+            </div>
+
+            <div
+                class="stat-value"
+                id="valueUnowned"
+            ></div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                TOTAL VALUE
+            </div>
+
+            <div
+                class="stat-value"
+                id="totalValue"
+            ></div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                AVG. VALUE PER OWNED CARD
+            </div>
+
+            <div
+                class="stat-value"
+                id="averageOwnedValue"
+            ></div>
+
+        </div>
+
+
+        <div class="section-title">
+            COMPLETION
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                PIP COMPLETION %
+            </div>
+
+            <div
+                class="stat-value"
+                id="pipCompletion"
+            ></div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                SLD COMPLETION %
+            </div>
+
+            <div
+                class="stat-value"
+                id="sldCompletion"
+            ></div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                TPIP COMPLETION %
+            </div>
+
+            <div
+                class="stat-value"
+                id="tpipCompletion"
+            ></div>
+
+        </div>
+
+
+        <div class="section-title">
+            SET VALUES
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                PIP OWNED VALUE
+            </div>
+
+            <div
+                class="stat-value"
+                id="pipOwnedValue"
+            ></div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                SLD OWNED VALUE
+            </div>
+
+            <div
+                class="stat-value"
+                id="sldOwnedValue"
+            ></div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                TPIP OWNED VALUE
+            </div>
+
+            <div
+                class="stat-value"
+                id="tpipOwnedValue"
+            ></div>
+
+        </div>
+
+
+        <div class="section-title">
+            SET TOTALS
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                TOTAL PIP CARDS
+            </div>
+
+            <div
+                class="stat-value"
+                id="totalPipCards"
+            ></div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                TOTAL SLD CARDS
+            </div>
+
+            <div
+                class="stat-value"
+                id="totalSldCards"
+            ></div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                TOTAL TPIP CARDS
+            </div>
+
+            <div
+                class="stat-value"
+                id="totalTpipCards"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="error"
+        class="loading error"
+        style="display: none;"
+    ></div>
+
+
+    <div class="divider"></div>
+
+
+    <div class="footer">
+
+        [ESC] RETURN TO MAIN MENU
+
+        <div style="margin-top: 15px;">
+
+            ROBCO DATABASE STATUS:
+            ONLINE
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    fetch("cards.json")
+
+        .then(response => {
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Could not load cards.json. HTTP " +
+                    response.status
+                );
+
+            }
+
+            return response.json();
+
+        })
+
+        .then(cards => {
+
+            calculateStatistics(cards);
+
+            document.getElementById(
+                "loading"
+            ).style.display = "none";
+
+            document.getElementById(
+                "statistics"
+            ).style.display = "grid";
+
+        })
+
+        .catch(error => {
+
+            document.getElementById(
+                "loading"
+            ).style.display = "none";
+
+            const errorElement =
+                document.getElementById("error");
+
+            errorElement.style.display = "block";
+
+            errorElement.textContent =
+                "ERROR: " + error.message;
+
+            console.error(error);
+
+        });
+
+
+    function calculateStatistics(cards) {
+
+        let totalCards = 0;
+
+        let cardsOwned = 0;
+
+        let cardsUnowned = 0;
+
+        let valueOwned = 0;
+
+        let valueUnowned = 0;
+
+
+        let pipTotal = 0;
+
+        let pipOwned = 0;
+
+        let pipOwnedValue = 0;
+
+
+        let sldTotal = 0;
+
+        let sldOwned = 0;
+
+        let sldOwnedValue = 0;
+
+
+        let tpipTotal = 0;
+
+        let tpipOwned = 0;
+
+        let tpipOwnedValue = 0;
+
+
+        cards.forEach(card => {
+
+            const finishes = [
+
+                {
+                    name: "No Foil",
+                    ownership: card.noFoil,
+                    value: card.noFoilValue
+                },
+
+                {
+                    name: "Standard Foil",
+                    ownership: card.standardFoil,
+                    value: card.standardFoilValue
+                },
+
+                {
+                    name: "Surge Foil",
+                    ownership: card.surgeFoil,
+                    value: card.surgeFoilValue
+                },
+
+                {
+                    name: "Rainbow Foil",
+                    ownership: card.rainbowFoil,
+                    value: card.rainbowFoilValue
+                }
+
+            ];
+
+
+            finishes.forEach(finish => {
+
+                if (
+                    finish.ownership ===
+                    "Not Possible"
+                ) {
+                    return;
+                }
+
+
+                totalCards++;
+
+
+                const value =
+                    Number(finish.value) || 0;
+
+
+                if (
+                    finish.ownership ===
+                    "Owned"
+                ) {
+
+                    cardsOwned++;
+
+                    valueOwned += value;
+
+                }
+
+
+                else if (
+                    finish.ownership ===
+                    "Unowned"
+                ) {
+
+                    cardsUnowned++;
+
+                    valueUnowned += value;
+
+                }
+
+
+                const set =
+                    String(
+                        card.set || ""
+                    ).toUpperCase();
+
+
+                if (set === "PIP") {
+
+                    pipTotal++;
+
+                    if (
+                        finish.ownership ===
+                        "Owned"
+                    ) {
+
+                        pipOwned++;
+
+                        pipOwnedValue += value;
+
+                    }
+
+                }
+
+
+                else if (set === "SLD") {
+
+                    sldTotal++;
+
+                    if (
+                        finish.ownership ===
+                        "Owned"
+                    ) {
+
+                        sldOwned++;
+
+                        sldOwnedValue += value;
+
+                    }
+
+                }
+
+
+                else if (set === "TPIP") {
+
+                    tpipTotal++;
+
+                    if (
+                        finish.ownership ===
+                        "Owned"
+                    ) {
+
+                        tpipOwned++;
+
+                        tpipOwnedValue += value;
+
+                    }
+
+                }
+
+            });
+
+        });
+
+
+        const percentOwned =
+            totalCards > 0
+                ? (
+                    cardsOwned /
+                    totalCards *
+                    100
+                )
+                : 0;
+
+
+        const percentUnowned =
+            totalCards > 0
+                ? (
+                    cardsUnowned /
+                    totalCards *
+                    100
+                )
+                : 0;
+
+
+        const pipCompletion =
+            pipTotal > 0
+                ? (
+                    pipOwned /
+                    pipTotal *
+                    100
+                )
+                : 0;
+
+
+        const sldCompletion =
+            sldTotal > 0
+                ? (
+                    sldOwned /
+                    sldTotal *
+                    100
+                )
+                : 0;
+
+
+        const tpipCompletion =
+            tpipTotal > 0
+                ? (
+                    tpipOwned /
+                    tpipTotal *
+                    100
+                )
+                : 0;
+
+
+        const totalValue =
+            valueOwned +
+            valueUnowned;
+
+
+        const averageOwnedValue =
+            cardsOwned > 0
+                ? valueOwned / cardsOwned
+                : 0;
+
+
+        document.getElementById(
+            "totalCards"
+        ).textContent =
+            formatNumber(totalCards);
+
+
+        document.getElementById(
+            "percentOwned"
+        ).textContent =
+            formatPercent(percentOwned);
+
+
+        document.getElementById(
+            "cardsOwned"
+        ).textContent =
+            formatNumber(cardsOwned);
+
+
+        document.getElementById(
+            "percentUnowned"
+        ).textContent =
+            formatPercent(percentUnowned);
+
+
+        document.getElementById(
+            "cardsUnowned"
+        ).textContent =
+            formatNumber(cardsUnowned);
+
+
+        document.getElementById(
+            "valueOwned"
+        ).textContent =
+            formatCurrency(valueOwned);
+
+
+        document.getElementById(
+            "valueUnowned"
+        ).textContent =
+            formatCurrency(valueUnowned);
+
+
+        document.getElementById(
+            "totalValue"
+        ).textContent =
+            formatCurrency(totalValue);
+
+
+        document.getElementById(
+            "averageOwnedValue"
+        ).textContent =
+            formatCurrency(averageOwnedValue);
+
+
+        document.getElementById(
+            "pipCompletion"
+        ).textContent =
+            formatPercent(pipCompletion);
+
+
+        document.getElementById(
+            "sldCompletion"
+        ).textContent =
+            formatPercent(sldCompletion);
+
+
+        document.getElementById(
+            "tpipCompletion"
+        ).textContent =
+            formatPercent(tpipCompletion);
+
+
+        document.getElementById(
+            "pipOwnedValue"
+        ).textContent =
+            formatCurrency(pipOwnedValue);
+
+
+        document.getElementById(
+            "sldOwnedValue"
+        ).textContent =
+            formatCurrency(sldOwnedValue);
+
+
+        document.getElementById(
+            "tpipOwnedValue"
+        ).textContent =
+            formatCurrency(tpipOwnedValue);
+
+
+        document.getElementById(
+            "totalPipCards"
+        ).textContent =
+            formatNumber(pipTotal);
+
+
+        document.getElementById(
+            "totalSldCards"
+        ).textContent =
+            formatNumber(sldTotal);
+
+
+        document.getElementById(
+            "totalTpipCards"
+        ).textContent =
+            formatNumber(tpipTotal);
+
+    }
+
+
+    function formatNumber(value) {
+
+        return Number(value).toLocaleString(
+            "en-US"
+        );
+
+    }
+
+
+    function formatPercent(value) {
+
+        return Number(value).toFixed(2) + "%";
+
+    }
+
+
+    function formatCurrency(value) {
+
+        return "$" +
+            Number(value).toLocaleString(
+                "en-US",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            );
+
+    }
+
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (event.key === "Escape") {
+
+                event.preventDefault();
+
+                window.location.href =
+                    "index.html";
+
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+
+</html>
