@@ -1,6 +1,6 @@
 import json
 
-CARDS_FILE = "cards.json"
+CARDS_FILE = "../data/cards.json"
 
 PRICE_FIELDS = [
     "noFoilValue",
