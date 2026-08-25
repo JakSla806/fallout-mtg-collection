@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Fallout MTG Collection - Packs</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 30px;
+    background: #050805;
+    color: #35ff35;
+    font-family: "Courier New", monospace;
+}
+
+.terminal {
+    width: 100%;
+    min-height: calc(100vh - 60px);
+    border: 2px solid #35ff35;
+    padding: 25px;
+    box-shadow:
+        0 0 10px rgba(53, 255, 53, 0.35),
+        inset 0 0 20px rgba(53, 255, 53, 0.05);
+}
+
+.path {
+    color: #7cff7c;
+    margin-bottom: 25px;
+}
+
+.title {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    margin-bottom: 25px;
+}
+
+.section-title {
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.product-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.product {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #35ff35;
+    font-family: "Courier New", monospace;
+    font-size: 15px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.product:hover,
+.product.selected {
+    border-color: #35ff35;
+    background: rgba(53, 255, 53, 0.12);
+}
+
+.product:focus {
+    outline: 1px solid #35ff35;
+    outline-offset: 1px;
+}
+
+.product-number {
+    display: inline-block;
+    width: 45px;
+}
+
+.product-type {
+    display: inline-block;
+    width: 190px;
+}
+
+.product-name {
+    font-weight: bold;
+}
+
+.product-status {
+    margin-left: 15px;
+    color: #7cff7c;
+}
+
+.detail-panel {
+    display: none;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #35ff35;
+}
+
+.detail-panel.visible {
+    display: block;
+}
+
+.detail-title {
+    font-size: 21px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.detail-row {
+    margin: 6px 0;
+}
+
+.detail-label {
+    display: inline-block;
+    width: 150px;
+    color: #7cff7c;
+}
+
+.terminal-footer {
+    margin-top: 35px;
+    padding-top: 20px;
+    border-top: 1px solid #35ff35;
+}
+
+.exit-button {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 9px 12px;
+    color: #35ff35;
+    text-decoration: none;
+    border: 1px solid transparent;
+}
+
+.exit-button:hover,
+.exit-button:focus {
+    border-color: #35ff35;
+    background: rgba(53, 255, 53, 0.12);
+    outline: none;
+}
+
+.cursor {
+    display: inline-block;
+    width: 9px;
+    height: 17px;
+    margin-left: 5px;
+    vertical-align: middle;
+    background: #35ff35;
+    animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+
+    50% {
+        opacity: 0;
+    }
+
+}
+
+@media (max-width: 800px) {
+
+    body {
+        padding: 15px;
+    }
+
+    .terminal {
+        min-height: calc(100vh - 30px);
+        padding: 18px;
+    }
+
+    .product-type {
+        display: block;
+        width: auto;
+        margin-left: 45px;
+        margin-bottom: 3px;
+    }
+
+    .product-status {
+        display: block;
+        margin-left: 45px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="terminal">
+
+    <div class="path">
+        C:/FALLOUT/MTG_COLLECTION/PACKS
+    </div>
+
+
+    <div class="title">
+        &gt; PACK DATABASE
+    </div>
+
+
+    <div class="subtitle">
+        &gt; PRODUCTS FOUND: 16
+    </div>
+
+
+    <div class="section-title">
+        &gt; PIP / 2024
+    </div>
+
+
+    <div
+        class="product-list"
+        id="pipProducts"
+    ></div>
+
+
+    <div class="section-title">
+        &gt; SLD / 2024
+    </div>
+
+
+    <div
+        class="product-list"
+        id="sld2024Products"
+    ></div>
+
+
+    <div class="section-title">
+        &gt; SLD / 2026
+    </div>
+
+
+    <div
+        class="product-list"
+        id="sld2026Products"
+    ></div>
+
+
+    <div
+        class="detail-panel"
+        id="detailPanel"
+    >
+
+        <div
+            class="detail-title"
+            id="detailTitle"
+        ></div>
+
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                Set:
+            </span>
+
+            <span id="detailSet"></span>
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                Year:
+            </span>
+
+            <span id="detailYear"></span>
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                Product Type:
+            </span>
+
+            <span id="detailVariant"></span>
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                No Foil:
+            </span>
+
+            <span id="detailNoFoil"></span>
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                Standard Foil:
+            </span>
+
+            <span id="detailStandardFoil"></span>
+
+        </div>
+
+    </div>
+
+
+    <div class="terminal-footer">
+
+        &gt; SELECT PRODUCT TO VIEW DETAILS
+
+        <span class="cursor"></span>
+
+
+        <br>
+
+
+        <a
+            href="index.html"
+            class="exit-button"
+            id="exitButton"
+        >
+            &gt; EXIT TO MAIN MENU
+        </a>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const products = [
+
+    {
+        set: "PIP",
+        year: "2024",
+        variant: "Commander Deck",
+        name: "Science!",
+        noFoil: "Owned",
+        standardFoil: "Not Possible"
+    },
+
+    {
+        set: "PIP",
+        year: "2024",
+        variant: "Commander Deck",
+        name: "Scrappy Survivors",
+        noFoil: "Owned",
+        standardFoil: "Not Possible"
+    },
+
+    {
+        set: "PIP",
+        year: "2024",
+        variant: "Commander Deck",
+        name: "Hail, Caesar",
+        noFoil: "Owned",
+        standardFoil: "Not Possible"
+    },
+
+    {
+        set: "PIP",
+        year: "2024",
+        variant: "Commander Deck",
+        name: "Mutant Menace",
+        noFoil: "Owned",
+        standardFoil: "Not Possible"
+    },
+
+    {
+        set: "PIP",
+        year: "2024",
+        variant: "Collector Booster",
+        name: "Fallout Collector Booster",
+        noFoil: "Unowned",
+        standardFoil: "Not Possible"
+    },
+
+    {
+        set: "PIP",
+        year: "2024",
+        variant: "Collector Booster",
+        name: "Fallout Collector Booster Display",
+        noFoil: "Unowned",
+        standardFoil: "Not Possible"
+    },
+
+    {
+        set: "PIP",
+        year: "2024",
+        variant: "Collector Booster",
+        name: "Fallout Collector Booster Omega",
+        noFoil: "Unowned",
+        standardFoil: "Not Possible"
+    },
+
+    {
+        set: "SLD",
+        year: "2024",
+        variant: "SLD Box",
+        name: "Vault Boy",
+        noFoil: "Unowned",
+        standardFoil: "Unowned"
+    },
+
+    {
+        set: "SLD",
+        year: "2024",
+        variant: "SLD Box",
+        name: "Points of Interest",
+        noFoil: "Unowned",
+        standardFoil: "Unowned"
+    },
+
+    {
+        set: "SLD",
+        year: "2024",
+        variant: "SLD Box",
+        name: "S.P.E.C.I.A.L.",
+        noFoil: "Unowned",
+        standardFoil: "Unowned"
+    },
+
+    {
+        set: "SLD",
+        year: "2026",
+        variant: "SLD Envelope",
+        name: "Beyond Vault 33",
+        noFoil: "Owned",
+        standardFoil: "Unowned"
+    },
+
+    {
+        set: "SLD",
+        year: "2026",
+        variant: "SLD Envelope",
+        name: "Greet the Dog",
+        noFoil: "Unowned",
+        standardFoil: "Unowned"
+    },
+
+    {
+        set: "SLD",
+        year: "2026",
+        variant: "SLD Envelope",
+        name: "Rad",
+        noFoil: "Unowned",
+        standardFoil: "Unowned"
+    },
+
+    {
+        set: "SLD",
+        year: "2026",
+        variant: "SLD Envelope",
+        name: "Welcome to New Vegas",
+        noFoil: "Unowned",
+        standardFoil: "Unowned"
+    },
+
+    {
+        set: "SLD",
+        year: "2026",
+        variant: "SLD Bonus Envelope",
+        name: "Silver Shroud Foil",
+        noFoil: "Not Possible",
+        standardFoil: "Unowned"
+    },
+
+    {
+        set: "SLD",
+        year: "2026",
+        variant: "Bundle",
+        name: "Atomic-Grade Bundle",
+        noFoil: "Unowned",
+        standardFoil: "Unowned"
+    }
+
+];
+
+
+let selectedIndex = 0;
+
+
+const pipProducts =
+    document.getElementById("pipProducts");
+
+const sld2024Products =
+    document.getElementById("sld2024Products");
+
+const sld2026Products =
+    document.getElementById("sld2026Products");
+
+const detailPanel =
+    document.getElementById("detailPanel");
+
+const detailTitle =
+    document.getElementById("detailTitle");
+
+const detailSet =
+    document.getElementById("detailSet");
+
+const detailYear =
+    document.getElementById("detailYear");
+
+const detailVariant =
+    document.getElementById("detailVariant");
+
+const detailNoFoil =
+    document.getElementById("detailNoFoil");
+
+const detailStandardFoil =
+    document.getElementById("detailStandardFoil");
+
+
+function createProductButton(
+    product,
+    index
+) {
+
+    const button =
+        document.createElement("button");
+
+    button.className = "product";
+
+    button.type = "button";
+
+    button.dataset.index = index;
+
+
+    button.innerHTML = `
+
+        <span class="product-number">
+            [${String(index + 1).padStart(2, "0")}]
+        </span>
+
+        <span class="product-type">
+            ${escapeHtml(product.variant)}
+        </span>
+
+        <span class="product-name">
+            ${escapeHtml(product.name)}
+        </span>
+
+        <span class="product-status">
+            ${escapeHtml(
+                getOwnershipText(product)
+            )}
+        </span>
+
+    `;
+
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            selectedIndex = index;
+
+            selectProduct(index);
+
+        }
+    );
+
+
+    button.addEventListener(
+        "focus",
+        () => {
+
+            selectedIndex = index;
+
+        }
+    );
+
+
+    return button;
+
+}
+
+
+function getOwnershipText(product) {
+
+    const statuses = [];
+
+
+    if (product.noFoil !== "Not Possible") {
+
+        statuses.push(
+            "NO FOIL: " +
+            product.noFoil
+        );
+
+    }
+
+
+    if (
+        product.standardFoil !==
+        "Not Possible"
+    ) {
+
+        statuses.push(
+            "STANDARD FOIL: " +
+            product.standardFoil
+        );
+
+    }
+
+
+    return statuses.join(" | ");
+
+}
+
+
+function renderProducts() {
+
+    products.forEach(
+        (product, index) => {
+
+            const button =
+                createProductButton(
+                    product,
+                    index
+                );
+
+
+            if (product.set === "PIP") {
+
+                pipProducts.appendChild(
+                    button
+                );
+
+            }
+
+            else if (
+                product.set === "SLD" &&
+                product.year === "2024"
+            ) {
+
+                sld2024Products.appendChild(
+                    button
+                );
+
+            }
+
+            else {
+
+                sld2026Products.appendChild(
+                    button
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+function selectProduct(index) {
+
+    const product =
+        products[index];
+
+
+    if (!product) {
+        return;
+    }
+
+
+    document
+        .querySelectorAll(".product")
+        .forEach(button => {
+
+            button.classList.remove(
+                "selected"
+            );
+
+        });
+
+
+    const selectedButton =
+        document.querySelector(
+            `.product[data-index="${index}"]`
+        );
+
+
+    if (selectedButton) {
+
+        selectedButton.classList.add(
+            "selected"
+        );
+
+        selectedButton.focus();
+
+    }
+
+
+    detailTitle.textContent =
+        "> " + product.name;
+
+
+    detailSet.textContent =
+        product.set;
+
+
+    detailYear.textContent =
+        product.year;
+
+
+    detailVariant.textContent =
+        product.variant;
+
+
+    detailNoFoil.textContent =
+        product.noFoil;
+
+
+    detailStandardFoil.textContent =
+        product.standardFoil;
+
+
+    detailPanel.classList.add(
+        "visible"
+    );
+
+}
+
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        const activeElement =
+            document.activeElement;
+
+
+        if (
+            activeElement &&
+            (
+                activeElement.tagName ===
+                "INPUT" ||
+                activeElement.tagName ===
+                "SELECT"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            event.key ===
+            "ArrowDown"
+        ) {
+
+            event.preventDefault();
+
+            selectedIndex =
+                Math.min(
+                    selectedIndex + 1,
+                    products.length - 1
+                );
+
+            selectProduct(
+                selectedIndex
+            );
+
+        }
+
+
+        else if (
+            event.key ===
+            "ArrowUp"
+        ) {
+
+            event.preventDefault();
+
+            selectedIndex =
+                Math.max(
+                    selectedIndex - 1,
+                    0
+                );
+
+            selectProduct(
+                selectedIndex
+            );
+
+        }
+
+
+        else if (
+            event.key ===
+            "Enter"
+        ) {
+
+            event.preventDefault();
+
+            selectProduct(
+                selectedIndex
+            );
+
+        }
+
+
+        else if (
+            event.key ===
+            "Escape"
+        ) {
+
+            event.preventDefault();
+
+            window.location.href =
+                "index.html";
+
+        }
+
+    }
+);
+
+
+renderProducts();
+
+</script>
+
+</body>
+
+</html>
