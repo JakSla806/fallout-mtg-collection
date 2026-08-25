@@ -3,8 +3,8 @@ import time
 import urllib.error
 import urllib.request
 
-CARDS_FILE = "cards.json"
-LOOKUP_FILE = "tpip_lookup.json"
+CARDS_FILE = "../data/cards.json"
+LOOKUP_FILE = "../data/tpip_lookup.json"
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0",
