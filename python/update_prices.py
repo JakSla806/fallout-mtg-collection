@@ -3,8 +3,8 @@ import time
 import urllib.error
 import urllib.request
 
-CARDS_FILE = "cards.json"
-TPIP_LOOKUP_FILE = "tpip_lookup.json"
+CARDS_FILE = "../data/cards.json"
+TPIP_LOOKUP_FILE = "../data/tpip_lookup.json"
 
 BATCH_SIZE = 75
 
