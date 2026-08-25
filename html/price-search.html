@@ -986,19 +986,7 @@ function renderResults(results) {
                 </td>
 
                 <td>
-                    ${
-                        card.numberLink
-                            ? `
-                                <a
-                                    href="${escapeAttribute(card.numberLink)}"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    ${escapeHtml(card.number)}
-                                </a>
-                              `
-                            : escapeHtml(card.number)
-                    }
+                    ${escapeHtml(card.number)}
                 </td>
 
                 <td>
@@ -1006,21 +994,7 @@ function renderResults(results) {
                 </td>
 
                 <td>
-
-                    ${
-                        card.nameLink
-                            ? `
-                                <a
-                                    href="${escapeAttribute(card.nameLink)}"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    ${escapeHtml(card.name)}
-                                </a>
-                              `
-                            : escapeHtml(card.name)
-                    }
-
+                    ${escapeHtml(card.name)}
                 </td>
 
                 <td>
@@ -1086,7 +1060,6 @@ function renderResults(results) {
     resultsArea.innerHTML = html;
 
 }
-
 
 function renderChart(histogram, bucketSize) {
 
@@ -1209,14 +1182,22 @@ function renderChart(histogram, bucketSize) {
                     datasets: [
 
                         {
-
+                    
                             label:
                                 "Card Count",
-
-                            data: values
-
+                    
+                            data: values,
+                    
+                            backgroundColor:
+                                "#6cff6c",
+                    
+                            borderColor:
+                                "#6cff6c",
+                    
+                            borderWidth: 1
+                    
                         }
-
+                    
                     ]
 
                 },
