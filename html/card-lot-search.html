@@ -1,316 +1,954 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-  <title>Card Lot Search</title>
+<title>Card Lot Search</title>
+
+<style>
+
+body {
+    margin: 0;
+    padding: 20px;
+
+    background: #07140a;
+    color: #78ff6a;
+
+    font-family: "Courier New", monospace;
+
+    text-shadow:
+        0 0 2px rgba(124,255,114,0.55),
+        0 0 4px rgba(60,255,50,0.18);
+}
+
+.terminal {
+    max-width: 1200px;
+    margin: auto;
+}
+
+.header {
+    border: 2px solid #78ff6a;
+    padding: 15px;
+    margin-bottom: 20px;
+
+    box-shadow:
+        0 0 12px #3cff32;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.path {
+    margin-top: 8px;
+    font-size: 13px;
+}
+
+.section {
+    border: 1px solid #3d9f39;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.input-grid {
+    display: grid;
+    grid-template-columns:
+        1fr
+        1fr
+        1fr
+        auto;
+
+    gap: 12px;
+    align-items: end;
+}
+
+label {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+input,
+select {
+    width: 100%;
+    box-sizing: border-box;
+
+    background: #0b1d0e;
+    color: #78ff6a;
+
+    border: 1px solid #78ff6a;
+
+    padding: 9px;
+
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+}
+
+button {
+    background: #102b12;
+    color: #78ff6a;
+
+    border: 2px solid #78ff6a;
+
+    padding: 10px 18px;
+
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1d471f;
+
+    box-shadow:
+        0 0 12px #3cff32;
+}
+
+button:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.status {
+    min-height: 20px;
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    border-bottom: 1px solid #3d9f39;
+
+    padding: 9px;
+
+    text-align: left;
+
+    font-size: 12px;
+}
+
+th {
+    color: #a5ff9d;
+    border-bottom: 2px solid #78ff6a;
+}
+
+.remove-button {
+    background: transparent;
+
+    border: 1px solid #78ff6a;
+
+    padding: 5px 9px;
+
+    margin: 0;
+
+    width: auto;
+}
+
+.total {
+    margin-top: 15px;
+
+    border-top: 1px solid #3d9f39;
+
+    padding-top: 12px;
+
+    font-weight: bold;
+}
+
+.exit-button {
+    display: inline-block;
+
+    margin-top: 15px;
+
+    padding: 10px 15px;
+
+    border: 2px solid #78ff6a;
+
+    color: #78ff6a;
+
+    text-decoration: none;
+
+    font-weight: bold;
+}
+
+.exit-button:hover {
+    background: #1d471f;
+
+    box-shadow:
+        0 0 12px #3cff32;
+}
+
+@media (max-width: 800px) {
+
+    .input-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
 
 </head>
 
 <body>
 
-  <h1>Card Lot Search</h1>
+<div class="terminal">
 
-  <div>
+    <div class="header">
 
-    <label for="set">
-      Set:
-    </label>
+        <div class="title">
+            VAULT-TEC CARD LOT SEARCH
+        </div>
 
-    <select id="set">
+        <div class="path">
+            C:/VAULT-TEC/MTG_COLLECTION/CARD_LOT_SEARCH
+        </div>
 
-      <option value="PIP">PIP</option>
-      <option value="SLD">SLD</option>
-      <option value="TPIP">TPIP</option>
+    </div>
 
-    </select>
 
-  </div>
+    <div class="section">
 
-  <br>
+        <div class="section-title">
+            &gt; ADD CARD TO LOT
+        </div>
 
-  <div>
 
-    <label for="number">
-      Card Number:
-    </label>
+        <div class="input-grid">
 
-    <input
-      type="text"
-      id="number"
-      placeholder="Enter card number"
+            <div>
+
+                <label for="setInput">
+                    SET
+                </label>
+
+                <select id="setInput">
+
+                    <option value="">
+                        SELECT SET
+                    </option>
+
+                    <option value="PIP">
+                        PIP
+                    </option>
+
+                    <option value="SLD">
+                        SLD
+                    </option>
+
+                    <option value="TPIP">
+                        TPIP
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label for="numberInput">
+                    CARD NUMBER
+                </label>
+
+                <input
+                    id="numberInput"
+                    type="text"
+                    placeholder="ENTER NUMBER"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label for="foilInput">
+                    FOIL TYPE
+                </label>
+
+                <select id="foilInput">
+
+                    <option value="">
+                        SELECT FINISH
+                    </option>
+
+                    <option value="No Foil">
+                        NO FOIL
+                    </option>
+
+                    <option value="Standard Foil">
+                        STANDARD FOIL
+                    </option>
+
+                    <option value="Surge Foil">
+                        SURGE FOIL
+                    </option>
+
+                    <option value="Rainbow Foil">
+                        RAINBOW FOIL
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <button
+                    id="addButton"
+                    type="button"
+                >
+                    ADD TO LOT
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="status"
+            class="status"
+        >
+            &gt; READY
+        </div>
+
+    </div>
+
+
+    <div class="section">
+
+        <div class="section-title">
+            &gt; CURRENT CARD LOT
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>SET</th>
+                    <th>NUMBER</th>
+                    <th>VARIANT</th>
+                    <th>NAME</th>
+                    <th>COST</th>
+                    <th>TYPE</th>
+                    <th>RARITY</th>
+                    <th>FINISH</th>
+                    <th>VALUE</th>
+                    <th>OWNERSHIP</th>
+                    <th></th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="lotTableBody">
+
+            </tbody>
+
+        </table>
+
+
+        <div
+            id="emptyMessage"
+            class="status"
+        >
+            &gt; NO CARDS CURRENTLY ADDED
+        </div>
+
+
+        <div
+            id="lotTotal"
+            class="total"
+            style="display:none;"
+        >
+        </div>
+
+    </div>
+
+
+    <a
+        href="index.html"
+        class="exit-button"
     >
+        &gt; EXIT TO MAIN MENU
+    </a>
 
-  </div>
-
-  <br>
-
-  <div>
-
-    <label for="foil">
-      Foil Type:
-    </label>
-
-    <select id="foil">
-
-      <option value="No Foil">
-        No Foil
-      </option>
-
-      <option value="Standard Foil">
-        Standard Foil
-      </option>
-
-      <option value="Surge Foil">
-        Surge Foil
-      </option>
-
-      <option value="Rainbow Foil">
-        Rainbow Foil
-      </option>
-
-    </select>
-
-  </div>
-
-  <br>
-
-  <button id="addButton">
-    Add Card To Lot
-  </button>
-
-  <p id="message"></p>
-
-  <hr>
-
-  <h2>Current Lot</h2>
-
-  <table border="1">
-
-    <thead>
-
-      <tr>
-        <th>Set</th>
-        <th>Number</th>
-        <th>Variant</th>
-        <th>Name</th>
-        <th>Cost</th>
-        <th>Type</th>
-        <th>Rarity</th>
-        <th>Foil</th>
-        <th>Value</th>
-        <th>Ownership</th>
-      </tr>
-
-    </thead>
-
-    <tbody id="lotResults">
-    </tbody>
-
-  </table>
+</div>
 
 
 <script>
+
+let cards = [];
 
 let lot = [];
 
 
 /*
- * Add card button
+ * --------------------------------------------------------
+ * LOAD CARDS.JSON
+ * --------------------------------------------------------
  */
 
-document
-  .getElementById("addButton")
-  .addEventListener("click", addCard);
+async function loadCards() {
+
+    const status =
+        document.getElementById("status");
+
+    status.textContent =
+        "> ACCESSING CARD DATABASE...";
+
+
+    try {
+
+        const response =
+            await fetch("../data/cards.json");
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "HTTP " + response.status
+            );
+
+        }
+
+
+        cards =
+            await response.json();
+
+
+        status.textContent =
+            "> DATABASE LOADED: " +
+            cards.length +
+            " CARD RECORDS";
+
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        status.textContent =
+            "> ERROR: COULD NOT LOAD CARDS.JSON";
+
+    }
+
+}
 
 
 /*
- * Add card to lot
+ * --------------------------------------------------------
+ * FIND CARD
+ * --------------------------------------------------------
  */
 
-function addCard() {
+function findCard(set, number) {
 
-  const set =
-    document.getElementById("set").value;
+    return cards.find(card => {
 
-  const number =
-    document.getElementById("number").value.trim();
+        return (
+            String(card.set).trim() ===
+            String(set).trim()
 
-  const foil =
-    document.getElementById("foil").value;
+            &&
 
-  const message =
-    document.getElementById("message");
+            String(card.number).trim() ===
+            String(number).trim()
+        );
 
+    });
 
-  if (!number) {
-
-    message.textContent =
-      "Please enter a card number.";
-
-    return;
-
-  }
+}
 
 
-  message.textContent =
-    "Searching for card...";
+/*
+ * --------------------------------------------------------
+ * GET FINISH INFORMATION
+ * --------------------------------------------------------
+ */
+
+function getFinishData(card, finish) {
+
+    let ownershipKey;
+    let valueKey;
 
 
-  google.script.run
+    if (finish === "No Foil") {
 
-    .withSuccessHandler(function(card) {
+        ownershipKey =
+            "noFoil";
 
-      if (!card) {
+        valueKey =
+            "noFoilValue";
 
-        message.textContent =
-          "Card not found.";
+    }
+
+    else if (finish === "Standard Foil") {
+
+        ownershipKey =
+            "standardFoil";
+
+        valueKey =
+            "standardFoilValue";
+
+    }
+
+    else if (finish === "Surge Foil") {
+
+        ownershipKey =
+            "surgeFoil";
+
+        valueKey =
+            "surgeFoilValue";
+
+    }
+
+    else if (finish === "Rainbow Foil") {
+
+        ownershipKey =
+            "rainbowFoil";
+
+        valueKey =
+            "rainbowFoilValue";
+
+    }
+
+    else {
+
+        return null;
+
+    }
+
+
+    return {
+
+        ownership:
+            card[ownershipKey],
+
+        value:
+            card[valueKey]
+
+    };
+
+}
+
+
+/*
+ * --------------------------------------------------------
+ * ADD CARD
+ * --------------------------------------------------------
+ */
+
+function addCardToLot() {
+
+    const set =
+        document.getElementById("setInput").value;
+
+    const number =
+        document.getElementById("numberInput").value.trim();
+
+    const finish =
+        document.getElementById("foilInput").value;
+
+
+    if (!set || !number || !finish) {
+
+        setStatus(
+            "> ERROR: SET, NUMBER, AND FINISH REQUIRED"
+        );
 
         return;
 
-      }
+    }
 
 
-      /*
-       * Add card to local lot
-       */
-
-      lot.push(card);
+    const card =
+        findCard(set, number);
 
 
-      /*
-       * Display updated lot
-       */
+    if (!card) {
 
-      displayLot();
+        setStatus(
+            "> ERROR: CARD NOT FOUND"
+        );
+
+        return;
+
+    }
 
 
-      /*
-       * Clear number field
-       */
+    const finishData =
+        getFinishData(card, finish);
 
-      document
-        .getElementById("number")
+
+    if (!finishData) {
+
+        setStatus(
+            "> ERROR: INVALID FINISH TYPE"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        finishData.ownership ===
+        "Not Possible"
+        ||
+
+        finishData.ownership ===
+        ""
+
+        ||
+
+        finishData.ownership ===
+        null
+
+    ) {
+
+        setStatus(
+            "> ERROR: THIS FINISH IS NOT POSSIBLE FOR THIS CARD"
+        );
+
+        return;
+
+    }
+
+
+    let value = "";
+
+
+    if (
+        finishData.value !== "" &&
+        finishData.value !== null &&
+        finishData.value !== undefined
+    ) {
+
+        const numericValue =
+            Number(finishData.value);
+
+
+        if (!isNaN(numericValue)) {
+
+            value =
+                numericValue;
+
+        }
+
+    }
+
+
+    const lotEntry = {
+
+        id:
+            Date.now() +
+            Math.random(),
+
+        set:
+            card.set,
+
+        number:
+            card.number,
+
+        variant:
+            card.variant,
+
+        name:
+            card.name,
+
+        cost:
+            card.cost,
+
+        type:
+            card.type,
+
+        rarity:
+            card.rarity,
+
+        finish:
+            finish,
+
+        value:
+            value,
+
+        ownership:
+            finishData.ownership
+
+    };
+
+
+    lot.push(lotEntry);
+
+
+    renderLot();
+
+
+    document
+        .getElementById("numberInput")
         .value = "";
 
 
-      message.textContent =
-        "Card added to lot.";
-
-    })
-
-    .withFailureHandler(function(error) {
-
-      console.error(error);
-
-      message.textContent =
-        "ERROR: " + error.message;
-
-    })
-
-    .getCardForLot(
-      set,
-      number,
-      foil
+    setStatus(
+        "> ADDED: " +
+        card.name +
+        " [" +
+        card.set +
+        " " +
+        card.number +
+        "]"
     );
 
 }
 
 
 /*
- * Display current lot
+ * --------------------------------------------------------
+ * REMOVE CARD
+ * --------------------------------------------------------
  */
 
-function displayLot() {
+function removeCard(id) {
 
-  const table =
-    document.getElementById("lotResults");
+    lot =
+        lot.filter(card => {
 
+            return card.id !== id;
 
-  table.innerHTML = "";
-
-
-  lot.forEach(function(card) {
-
-    const row =
-      document.createElement("tr");
+        });
 
 
-    row.innerHTML =
-
-      "<td>" +
-      escapeHtml(card.set) +
-      "</td>" +
-
-      "<td>" +
-      escapeHtml(card.number) +
-      "</td>" +
-
-      "<td>" +
-      escapeHtml(card.variant) +
-      "</td>" +
-
-      "<td>" +
-      escapeHtml(card.name) +
-      "</td>" +
-
-      "<td>" +
-      escapeHtml(card.cost) +
-      "</td>" +
-
-      "<td>" +
-      escapeHtml(card.type) +
-      "</td>" +
-
-      "<td>" +
-      escapeHtml(card.rarity) +
-      "</td>" +
-
-      "<td>" +
-      escapeHtml(card.finish) +
-      "</td>" +
-
-      "<td>" +
-      (
-        card.value !== null &&
-        card.value !== ""
-          ? "$" + Number(card.value).toFixed(2)
-          : "NO VALUE"
-      ) +
-      "</td>" +
-
-      "<td>" +
-      escapeHtml(card.ownership) +
-      "</td>";
-
-
-    table.appendChild(row);
-
-  });
+    renderLot();
 
 }
 
 
 /*
- * Prevent HTML injection
+ * --------------------------------------------------------
+ * RENDER LOT
+ * --------------------------------------------------------
+ */
+
+function renderLot() {
+
+    const tbody =
+        document.getElementById("lotTableBody");
+
+    const emptyMessage =
+        document.getElementById("emptyMessage");
+
+    const lotTotal =
+        document.getElementById("lotTotal");
+
+
+    tbody.innerHTML = "";
+
+
+    if (lot.length === 0) {
+
+        emptyMessage.style.display =
+            "block";
+
+        lotTotal.style.display =
+            "none";
+
+        return;
+
+    }
+
+
+    emptyMessage.style.display =
+        "none";
+
+
+    let totalValue = 0;
+
+
+    lot.forEach(card => {
+
+        const row =
+            document.createElement("tr");
+
+
+        const valueText =
+            card.value === ""
+                ? "NO VALUE"
+                : "$" +
+                  Number(card.value).toFixed(2);
+
+
+        if (card.value !== "") {
+
+            totalValue +=
+                Number(card.value);
+
+        }
+
+
+        row.innerHTML = `
+
+            <td>${escapeHtml(card.set)}</td>
+
+            <td>${escapeHtml(card.number)}</td>
+
+            <td>${escapeHtml(card.variant)}</td>
+
+            <td>${escapeHtml(card.name)}</td>
+
+            <td>${escapeHtml(card.cost || "")}</td>
+
+            <td>${escapeHtml(card.type || "")}</td>
+
+            <td>${escapeHtml(card.rarity || "")}</td>
+
+            <td>${escapeHtml(card.finish)}</td>
+
+            <td>${valueText}</td>
+
+            <td>${escapeHtml(card.ownership)}</td>
+
+            <td>
+                <button
+                    class="remove-button"
+                    onclick="removeCard(${card.id})"
+                >
+                    X
+                </button>
+            </td>
+
+        `;
+
+
+        tbody.appendChild(row);
+
+    });
+
+
+    lotTotal.style.display =
+        "block";
+
+
+    lotTotal.textContent =
+        "> TOTAL TRACKED VALUE: $" +
+        totalValue.toFixed(2);
+
+}
+
+
+/*
+ * --------------------------------------------------------
+ * STATUS
+ * --------------------------------------------------------
+ */
+
+function setStatus(message) {
+
+    document.getElementById(
+        "status"
+    ).textContent = message;
+
+}
+
+
+/*
+ * --------------------------------------------------------
+ * HTML ESCAPING
+ * --------------------------------------------------------
  */
 
 function escapeHtml(text) {
 
-  return String(text)
+    return String(text)
 
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
+
+
+/*
+ * --------------------------------------------------------
+ * ENTER KEY
+ * --------------------------------------------------------
+ */
+
+document
+    .getElementById("addButton")
+    .addEventListener(
+        "click",
+        addCardToLot
+    );
+
+
+document
+    .getElementById("numberInput")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key ===
+                "Enter"
+            ) {
+
+                addCardToLot();
+
+            }
+
+        }
+    );
+
+
+/*
+ * --------------------------------------------------------
+ * START
+ * --------------------------------------------------------
+ */
+
+loadCards();
 
 </script>
 
 </body>
-
 </html>
