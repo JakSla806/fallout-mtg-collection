@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Fallout MTG Collection | Price Search</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+    background: #050805;
+
+    color: #6cff6c;
+
+    font-family:
+        "Courier New",
+        Courier,
+        monospace;
+
+    min-height: 100vh;
+
+    padding: 30px;
+}
+
+.terminal {
+
+    width: 100%;
+
+    max-width: 1500px;
+
+    margin: 0 auto;
+
+    border: 2px solid #6cff6c;
+
+    padding: 25px;
+
+    box-shadow:
+        0 0 8px rgba(108, 255, 108, 0.5),
+        inset 0 0 20px rgba(108, 255, 108, 0.05);
+}
+
+.path {
+
+    color: #4dcc4d;
+
+    margin-bottom: 25px;
+
+    font-size: 14px;
+}
+
+h1 {
+
+    font-size: 28px;
+
+    margin: 0 0 5px 0;
+
+    font-weight: normal;
+}
+
+.subtitle {
+
+    margin: 0 0 25px 0;
+
+    color: #4dcc4d;
+}
+
+.controls {
+
+    border-top: 1px solid #347a34;
+
+    border-bottom: 1px solid #347a34;
+
+    padding: 20px 0;
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 15px 25px;
+
+    align-items: end;
+}
+
+.control {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+.control label {
+
+    font-size: 13px;
+
+    color: #4dcc4d;
+}
+
+.control input,
+.control select {
+
+    background: #020402;
+
+    color: #6cff6c;
+
+    border: 1px solid #6cff6c;
+
+    padding: 9px;
+
+    font-family:
+        "Courier New",
+        Courier,
+        monospace;
+
+    font-size: 14px;
+
+    outline: none;
+}
+
+.control input {
+
+    width: 150px;
+}
+
+.control select {
+
+    min-width: 150px;
+}
+
+.control input:focus,
+.control select:focus {
+
+    box-shadow:
+        0 0 8px rgba(108, 255, 108, 0.5);
+}
+
+.button-row {
+
+    display: flex;
+
+    gap: 10px;
+}
+
+button {
+
+    background: #071007;
+
+    color: #6cff6c;
+
+    border: 1px solid #6cff6c;
+
+    padding: 10px 18px;
+
+    font-family:
+        "Courier New",
+        Courier,
+        monospace;
+
+    font-size: 14px;
+
+    cursor: pointer;
+}
+
+button:hover,
+button:focus {
+
+    background: #123312;
+
+    outline: none;
+
+    box-shadow:
+        0 0 8px rgba(108, 255, 108, 0.5);
+}
+
+#searchStatus {
+
+    margin: 20px 0;
+
+    color: #6cff6c;
+
+    min-height: 20px;
+}
+
+.chart-container {
+
+    border: 1px solid #347a34;
+
+    padding: 20px;
+
+    margin-bottom: 25px;
+
+    display: none;
+}
+
+.chart-title {
+
+    margin-bottom: 15px;
+
+    color: #6cff6c;
+}
+
+.chart-wrapper {
+
+    width: 100%;
+
+    height: 400px;
+
+    position: relative;
+}
+
+#priceChart {
+
+    width: 100% !important;
+
+    height: 100% !important;
+}
+
+.results-container {
+
+    border-top: 1px solid #347a34;
+
+    padding-top: 20px;
+}
+
+.results-header {
+
+    margin-bottom: 15px;
+
+    color: #6cff6c;
+}
+
+.results-table-wrapper {
+
+    overflow-x: auto;
+}
+
+table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    background: #020402;
+}
+
+th,
+td {
+
+    border: 1px solid #347a34;
+
+    padding: 9px;
+
+    text-align: left;
+
+    white-space: nowrap;
+}
+
+th {
+
+    color: #6cff6c;
+
+    background: #071007;
+
+    font-weight: normal;
+}
+
+td {
+
+    color: #4dcc4d;
+}
+
+tr:hover td {
+
+    background: #0b180b;
+
+    color: #8aff8a;
+}
+
+.price {
+
+    text-align: right;
+}
+
+.owned {
+
+    font-weight: bold;
+
+    color: #8aff8a;
+}
+
+.unowned {
+
+    color: #4dcc4d;
+}
+
+.links a {
+
+    color: #6cff6c;
+
+    margin-right: 12px;
+}
+
+.links a:hover {
+
+    color: #b0ffb0;
+}
+
+.no-results {
+
+    padding: 25px;
+
+    border: 1px solid #347a34;
+
+    color: #4dcc4d;
+}
+
+.footer {
+
+    margin-top: 30px;
+
+    padding-top: 15px;
+
+    border-top: 1px solid #347a34;
+
+    color: #4dcc4d;
+}
+
+.exit-button {
+
+    display: inline-block;
+
+    margin-top: 12px;
+
+    color: #6cff6c;
+
+    text-decoration: none;
+
+    border: 1px solid #6cff6c;
+
+    padding: 9px 15px;
+}
+
+.exit-button:hover {
+
+    background: #123312;
+}
+
+.cursor {
+
+    display: inline-block;
+
+    width: 9px;
+
+    height: 16px;
+
+    background: #6cff6c;
+
+    margin-left: 5px;
+
+    vertical-align: middle;
+
+    animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+
+    50% {
+        opacity: 0;
+    }
+}
+
+@media (max-width: 800px) {
+
+    body {
+        padding: 15px;
+    }
+
+    .terminal {
+        padding: 15px;
+    }
+
+    .chart-wrapper {
+        height: 300px;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="terminal">
+
+    <div class="path">
+        C:\FALLOUT\MTG\DATABASE\SEARCH\PRICE_SEARCH.EXE
+    </div>
+
+
+    <h1>
+        &gt; PRICE SEARCH
+    </h1>
+
+    <p class="subtitle">
+        &gt; SEARCH CARD FINISHES BY MARKET VALUE
+    </p>
+
+
+    <div class="controls">
+
+        <div class="control">
+
+            <label for="minPrice">
+                &gt; MINIMUM PRICE
+            </label>
+
+            <input
+                type="number"
+                id="minPrice"
+                min="0"
+                step="0.01"
+                value="0"
+            >
+
+        </div>
+
+
+        <div class="control">
+
+            <label for="maxPrice">
+                &gt; MAXIMUM PRICE
+            </label>
+
+            <input
+                type="number"
+                id="maxPrice"
+                min="0"
+                step="0.01"
+                placeholder="NO LIMIT"
+            >
+
+        </div>
+
+
+        <div class="control">
+
+            <label for="ownershipFilter">
+                &gt; OWNERSHIP
+            </label>
+
+            <select id="ownershipFilter">
+
+                <option value="">
+                    ALL
+                </option>
+
+                <option value="Owned">
+                    OWNED
+                </option>
+
+                <option value="Unowned">
+                    UNOWNED
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="control">
+
+            <label for="bucketSize">
+                &gt; PRICE BUCKET
+            </label>
+
+            <input
+                type="number"
+                id="bucketSize"
+                min="0.01"
+                step="0.01"
+                value="0.10"
+            >
+
+        </div>
+
+
+        <div class="button-row">
+
+            <button
+                id="searchButton"
+                type="button"
+            >
+                &gt; SEARCH
+            </button>
+
+            <button
+                id="clearButton"
+                type="button"
+            >
+                &gt; CLEAR
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div id="searchStatus">
+        &gt; READY
+    </div>
+
+
+    <div
+        id="chartContainer"
+        class="chart-container"
+    >
+
+        <div class="chart-title">
+            &gt; PRICE DISTRIBUTION
+        </div>
+
+        <div class="chart-wrapper">
+
+            <canvas id="priceChart"></canvas>
+
+        </div>
+
+    </div>
+
+
+    <div class="results-container">
+
+        <div
+            id="resultsHeader"
+            class="results-header"
+        >
+            &gt; SEARCH RESULTS
+        </div>
+
+
+        <div
+            id="resultsArea"
+            class="results-table-wrapper"
+        >
+
+            <div class="no-results">
+                &gt; NO SEARCH PERFORMED
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+
+        &gt; PRICE SEARCH ANALYSIS COMPLETE
+
+        <span class="cursor"></span>
+
+        <br>
+
+        <a
+            href="index.html"
+            class="exit-button"
+            id="exitButton"
+        >
+            &gt; EXIT TO MAIN MENU
+        </a>
+
+    </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+let cards = [];
+
+let priceChart = null;
+
+
+const minPriceInput =
+    document.getElementById("minPrice");
+
+const maxPriceInput =
+    document.getElementById("maxPrice");
+
+const ownershipFilter =
+    document.getElementById("ownershipFilter");
+
+const bucketSizeInput =
+    document.getElementById("bucketSize");
+
+const searchButton =
+    document.getElementById("searchButton");
+
+const clearButton =
+    document.getElementById("clearButton");
+
+const searchStatus =
+    document.getElementById("searchStatus");
+
+const resultsHeader =
+    document.getElementById("resultsHeader");
+
+const resultsArea =
+    document.getElementById("resultsArea");
+
+const chartContainer =
+    document.getElementById("chartContainer");
+
+const priceChartCanvas =
+    document.getElementById("priceChart");
+
+
+fetch("../data/cards.json")
+
+    .then(response => {
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Could not load cards.json. HTTP " +
+                response.status
+            );
+
+        }
+
+        return response.json();
+
+    })
+
+    .then(data => {
+
+        cards = data;
+
+        searchStatus.textContent =
+            "&gt; DATABASE LOADED: " +
+            cards.length +
+            " CARDS";
+
+    })
+
+    .catch(error => {
+
+        searchStatus.textContent =
+            "&gt; ERROR: " +
+            error.message;
+
+        console.error(error);
+
+    });
+
+
+function getFinishData(card) {
+
+    return [
+
+        {
+            name: "No Foil",
+
+            ownership: card.noFoil,
+
+            price: card.noFoilValue
+        },
+
+        {
+            name: "Standard Foil",
+
+            ownership: card.standardFoil,
+
+            price: card.standardFoilValue
+        },
+
+        {
+            name: "Surge Foil",
+
+            ownership: card.surgeFoil,
+
+            price: card.surgeFoilValue
+        },
+
+        {
+            name: "Rainbow Foil",
+
+            ownership: card.rainbowFoil,
+
+            price: card.rainbowFoilValue
+        }
+
+    ];
+
+}
+
+
+function performSearch() {
+
+    const minPrice =
+        parseFloat(
+            minPriceInput.value
+        ) || 0;
+
+
+    let maxPrice;
+
+    if (
+        maxPriceInput.value === "" ||
+        maxPriceInput.value === null
+    ) {
+
+        maxPrice = Number.MAX_SAFE_INTEGER;
+
+    } else {
+
+        maxPrice =
+            parseFloat(
+                maxPriceInput.value
+            );
+
+    }
+
+
+    const ownership =
+        ownershipFilter.value;
+
+
+    const bucketSize =
+        parseFloat(
+            bucketSizeInput.value
+        ) || 0.10;
+
+
+    if (maxPrice < minPrice) {
+
+        searchStatus.textContent =
+            "&gt; ERROR: MAXIMUM PRICE CANNOT BE LESS THAN MINIMUM PRICE";
+
+        return;
+
+    }
+
+
+    if (bucketSize <= 0) {
+
+        searchStatus.textContent =
+            "&gt; ERROR: PRICE BUCKET MUST BE GREATER THAN ZERO";
+
+        return;
+
+    }
+
+
+    const results = [];
+
+    const histogram = {};
+
+
+    cards.forEach(card => {
+
+        getFinishData(card).forEach(finish => {
+
+            if (
+                finish.ownership ===
+                "Not Possible"
+            ) {
+                return;
+            }
+
+
+            if (
+                finish.price === "" ||
+                finish.price === null ||
+                finish.price === undefined
+            ) {
+                return;
+            }
+
+
+            const price =
+                parseFloat(
+                    finish.price
+                );
+
+
+            if (Number.isNaN(price)) {
+                return;
+            }
+
+
+            if (
+                price < minPrice ||
+                price > maxPrice
+            ) {
+                return;
+            }
+
+
+            if (
+                ownership === "Owned" &&
+                finish.ownership !== "Owned"
+            ) {
+                return;
+            }
+
+
+            if (
+                ownership === "Unowned" &&
+                finish.ownership !== "Unowned"
+            ) {
+                return;
+            }
+
+
+            results.push({
+
+                card: card,
+
+                finish: finish.name,
+
+                price: price,
+
+                ownership:
+                    finish.ownership
+
+            });
+
+
+            const bucketStart =
+                Math.floor(
+                    price / bucketSize
+                ) * bucketSize;
+
+
+            const bucketEnd =
+                bucketStart + bucketSize;
+
+
+            const label =
+                "$" +
+                bucketStart.toFixed(2) +
+                " - $" +
+                bucketEnd.toFixed(2);
+
+
+            histogram[label] =
+                (
+                    histogram[label] || 0
+                ) + 1;
+
+        });
+
+    });
+
+
+    renderResults(results);
+
+    renderChart(
+        histogram,
+        bucketSize
+    );
+
+
+    searchStatus.textContent =
+        "&gt; SEARCH COMPLETE: " +
+        results.length +
+        " MATCHES";
+
+
+    resultsHeader.textContent =
+        "&gt; SEARCH RESULTS: " +
+        results.length;
+
+}
+
+
+function renderResults(results) {
+
+    if (results.length === 0) {
+
+        resultsArea.innerHTML = `
+
+            <div class="no-results">
+
+                &gt; NO CARDS MATCHED THE SPECIFIED PARAMETERS
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    results.sort((a, b) => {
+
+        if (a.price !== b.price) {
+
+            return a.price - b.price;
+
+        }
+
+
+        return String(
+            a.card.name || ""
+        ).localeCompare(
+            String(
+                b.card.name || ""
+            )
+        );
+
+    });
+
+
+    let html = `
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Set</th>
+
+                    <th>Number</th>
+
+                    <th>Variant</th>
+
+                    <th>Name</th>
+
+                    <th>Finish</th>
+
+                    <th>Price</th>
+
+                    <th>Ownership</th>
+
+                    <th>Links</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+    `;
+
+
+    results.forEach(result => {
+
+        const card =
+            result.card;
+
+
+        const ownershipClass =
+            result.ownership === "Owned"
+                ? "owned"
+                : "unowned";
+
+
+        html += `
+
+            <tr>
+
+                <td>
+                    ${escapeHtml(card.set)}
+                </td>
+
+                <td>
+                    ${
+                        card.numberLink
+                            ? `
+                                <a
+                                    href="${escapeAttribute(card.numberLink)}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    ${escapeHtml(card.number)}
+                                </a>
+                              `
+                            : escapeHtml(card.number)
+                    }
+                </td>
+
+                <td>
+                    ${escapeHtml(card.variant)}
+                </td>
+
+                <td>
+
+                    ${
+                        card.nameLink
+                            ? `
+                                <a
+                                    href="${escapeAttribute(card.nameLink)}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    ${escapeHtml(card.name)}
+                                </a>
+                              `
+                            : escapeHtml(card.name)
+                    }
+
+                </td>
+
+                <td>
+                    ${escapeHtml(result.finish)}
+                </td>
+
+                <td class="price">
+                    $${result.price.toFixed(2)}
+                </td>
+
+                <td class="${ownershipClass}">
+                    ${escapeHtml(result.ownership)}
+                </td>
+
+                <td class="links">
+
+                    ${
+                        card.numberLink
+                            ? `
+                                <a
+                                    href="${escapeAttribute(card.numberLink)}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    Scryfall
+                                </a>
+                              `
+                            : ""
+                    }
+
+                    ${
+                        card.nameLink
+                            ? `
+                                <a
+                                    href="${escapeAttribute(card.nameLink)}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    TCGplayer
+                                </a>
+                              `
+                            : ""
+                    }
+
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+
+    html += `
+
+            </tbody>
+
+        </table>
+
+    `;
+
+
+    resultsArea.innerHTML = html;
+
+}
+
+
+function renderChart(histogram, bucketSize) {
+
+    const entries =
+        Object.entries(histogram)
+            .sort((a, b) => {
+
+                const numA =
+                    parseFloat(
+                        a[0].replace("$", "")
+                    );
+
+                const numB =
+                    parseFloat(
+                        b[0].replace("$", "")
+                    );
+
+                return numA - numB;
+
+            });
+
+
+    if (entries.length === 0) {
+
+        chartContainer.style.display =
+            "none";
+
+        if (priceChart) {
+
+            priceChart.destroy();
+
+            priceChart = null;
+
+        }
+
+        return;
+
+    }
+
+
+    chartContainer.style.display =
+        "block";
+
+
+    const labels =
+        entries.map(
+            entry => entry[0]
+        );
+
+
+    const values =
+        entries.map(
+            entry => entry[1]
+        );
+
+
+    const highestCount =
+        Math.max(...values);
+
+
+    /*
+     * Automatically select a sensible
+     * maximum for the Y axis.
+     */
+
+    let suggestedMax;
+
+
+    if (highestCount <= 5) {
+
+        suggestedMax = 5;
+
+    } else if (highestCount <= 10) {
+
+        suggestedMax = 10;
+
+    } else if (highestCount <= 20) {
+
+        suggestedMax = 20;
+
+    } else if (highestCount <= 50) {
+
+        suggestedMax = Math.ceil(
+            highestCount / 5
+        ) * 5;
+
+    } else if (highestCount <= 100) {
+
+        suggestedMax = Math.ceil(
+            highestCount / 10
+        ) * 10;
+
+    } else {
+
+        suggestedMax = Math.ceil(
+            highestCount / 25
+        ) * 25;
+
+    }
+
+
+    if (priceChart) {
+
+        priceChart.destroy();
+
+    }
+
+
+    priceChart =
+        new Chart(
+            priceChartCanvas,
+            {
+
+                type: "bar",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [
+
+                        {
+
+                            label:
+                                "Card Count",
+
+                            data: values
+
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    animation: false,
+
+                    scales: {
+
+                        x: {
+
+                            title: {
+
+                                display: true,
+
+                                text:
+                                    "Price Range"
+
+                            },
+
+                            ticks: {
+
+                                color:
+                                    "#4dcc4d"
+
+                            },
+
+                            grid: {
+
+                                color:
+                                    "rgba(76, 204, 76, 0.15)"
+
+                            }
+
+                        },
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            suggestedMax:
+                                suggestedMax,
+
+                            ticks: {
+
+                                precision: 0,
+
+                                color:
+                                    "#4dcc4d"
+
+                            },
+
+                            grid: {
+
+                                color:
+                                    "rgba(76, 204, 76, 0.15)"
+
+                            },
+
+                            title: {
+
+                                display: true,
+
+                                text:
+                                    "Card Count"
+
+                            }
+
+                        }
+
+                    },
+
+                    plugins: {
+
+                        legend: {
+
+                            labels: {
+
+                                color:
+                                    "#6cff6c"
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+}
+
+
+function clearSearch() {
+
+    minPriceInput.value =
+        "0";
+
+    maxPriceInput.value =
+        "";
+
+    ownershipFilter.value =
+        "";
+
+    bucketSizeInput.value =
+        "0.10";
+
+
+    resultsArea.innerHTML = `
+
+        <div class="no-results">
+
+            &gt; NO SEARCH PERFORMED
+
+        </div>
+
+    `;
+
+
+    resultsHeader.textContent =
+        "&gt; SEARCH RESULTS";
+
+
+    searchStatus.textContent =
+        "&gt; READY";
+
+
+    chartContainer.style.display =
+        "none";
+
+
+    if (priceChart) {
+
+        priceChart.destroy();
+
+        priceChart = null;
+
+    }
+
+}
+
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+function escapeAttribute(value) {
+
+    return String(value ?? "")
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        );
+
+}
+
+
+searchButton.addEventListener(
+    "click",
+    performSearch
+);
+
+
+clearButton.addEventListener(
+    "click",
+    clearSearch
+);
+
+
+/*
+ * Allow Enter to run the search
+ * without requiring the mouse.
+ */
+
+[
+    minPriceInput,
+    maxPriceInput,
+    bucketSizeInput
+].forEach(input => {
+
+    input.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                performSearch();
+
+            }
+
+        }
+    );
+
+});
+
+
+ownershipFilter.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Enter"
+        ) {
+
+            performSearch();
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>
