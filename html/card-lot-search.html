@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <title>Card Lot Search</title>
+
+</head>
+
+<body>
+
+  <h1>Card Lot Search</h1>
+
+  <div>
+
+    <label for="set">
+      Set:
+    </label>
+
+    <select id="set">
+
+      <option value="PIP">PIP</option>
+      <option value="SLD">SLD</option>
+      <option value="TPIP">TPIP</option>
+
+    </select>
+
+  </div>
+
+  <br>
+
+  <div>
+
+    <label for="number">
+      Card Number:
+    </label>
+
+    <input
+      type="text"
+      id="number"
+      placeholder="Enter card number"
+    >
+
+  </div>
+
+  <br>
+
+  <div>
+
+    <label for="foil">
+      Foil Type:
+    </label>
+
+    <select id="foil">
+
+      <option value="No Foil">
+        No Foil
+      </option>
+
+      <option value="Standard Foil">
+        Standard Foil
+      </option>
+
+      <option value="Surge Foil">
+        Surge Foil
+      </option>
+
+      <option value="Rainbow Foil">
+        Rainbow Foil
+      </option>
+
+    </select>
+
+  </div>
+
+  <br>
+
+  <button id="addButton">
+    Add Card To Lot
+  </button>
+
+  <p id="message"></p>
+
+  <hr>
+
+  <h2>Current Lot</h2>
+
+  <table border="1">
+
+    <thead>
+
+      <tr>
+        <th>Set</th>
+        <th>Number</th>
+        <th>Variant</th>
+        <th>Name</th>
+        <th>Cost</th>
+        <th>Type</th>
+        <th>Rarity</th>
+        <th>Foil</th>
+        <th>Value</th>
+        <th>Ownership</th>
+      </tr>
+
+    </thead>
+
+    <tbody id="lotResults">
+    </tbody>
+
+  </table>
+
+
+<script>
+
+let lot = [];
+
+
+/*
+ * Add card button
+ */
+
+document
+  .getElementById("addButton")
+  .addEventListener("click", addCard);
+
+
+/*
+ * Add card to lot
+ */
+
+function addCard() {
+
+  const set =
+    document.getElementById("set").value;
+
+  const number =
+    document.getElementById("number").value.trim();
+
+  const foil =
+    document.getElementById("foil").value;
+
+  const message =
+    document.getElementById("message");
+
+
+  if (!number) {
+
+    message.textContent =
+      "Please enter a card number.";
+
+    return;
+
+  }
+
+
+  message.textContent =
+    "Searching for card...";
+
+
+  google.script.run
+
+    .withSuccessHandler(function(card) {
+
+      if (!card) {
+
+        message.textContent =
+          "Card not found.";
+
+        return;
+
+      }
+
+
+      /*
+       * Add card to local lot
+       */
+
+      lot.push(card);
+
+
+      /*
+       * Display updated lot
+       */
+
+      displayLot();
+
+
+      /*
+       * Clear number field
+       */
+
+      document
+        .getElementById("number")
+        .value = "";
+
+
+      message.textContent =
+        "Card added to lot.";
+
+    })
+
+    .withFailureHandler(function(error) {
+
+      console.error(error);
+
+      message.textContent =
+        "ERROR: " + error.message;
+
+    })
+
+    .getCardForLot(
+      set,
+      number,
+      foil
+    );
+
+}
+
+
+/*
+ * Display current lot
+ */
+
+function displayLot() {
+
+  const table =
+    document.getElementById("lotResults");
+
+
+  table.innerHTML = "";
+
+
+  lot.forEach(function(card) {
+
+    const row =
+      document.createElement("tr");
+
+
+    row.innerHTML =
+
+      "<td>" +
+      escapeHtml(card.set) +
+      "</td>" +
+
+      "<td>" +
+      escapeHtml(card.number) +
+      "</td>" +
+
+      "<td>" +
+      escapeHtml(card.variant) +
+      "</td>" +
+
+      "<td>" +
+      escapeHtml(card.name) +
+      "</td>" +
+
+      "<td>" +
+      escapeHtml(card.cost) +
+      "</td>" +
+
+      "<td>" +
+      escapeHtml(card.type) +
+      "</td>" +
+
+      "<td>" +
+      escapeHtml(card.rarity) +
+      "</td>" +
+
+      "<td>" +
+      escapeHtml(card.finish) +
+      "</td>" +
+
+      "<td>" +
+      (
+        card.value !== null &&
+        card.value !== ""
+          ? "$" + Number(card.value).toFixed(2)
+          : "NO VALUE"
+      ) +
+      "</td>" +
+
+      "<td>" +
+      escapeHtml(card.ownership) +
+      "</td>";
+
+
+    table.appendChild(row);
+
+  });
+
+}
+
+
+/*
+ * Prevent HTML injection
+ */
+
+function escapeHtml(text) {
+
+  return String(text)
+
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+</script>
+
+</body>
+
+</html>
