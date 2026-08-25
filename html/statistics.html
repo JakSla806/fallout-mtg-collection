@@ -3,903 +3,1118 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <title>Fallout MTG Collection - Statistics</title>
+<title>Statistics | Fallout MTG Collection</title>
 
-    <style>
+<style>
 
-        * {
-            box-sizing: border-box;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        body {
-            margin: 0;
-            min-height: 100vh;
-            background: #000;
-            color: #33ff33;
-            font-family: "Courier New", monospace;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+body {
 
-        .terminal {
-            width: min(1000px, 92vw);
-            min-height: 650px;
-            border: 2px solid #33ff33;
-            padding: 30px;
-            box-shadow:
-                0 0 10px #33ff33,
-                inset 0 0 20px rgba(51, 255, 51, 0.15);
-        }
+    margin: 0;
 
-        .header {
-            margin-bottom: 20px;
-        }
+    background:
+        radial-gradient(
+            circle at center,
+            #071207 0%,
+            #020602 70%,
+            #000000 100%
+        );
 
-        .system-title {
-            font-size: 24px;
-            font-weight: bold;
-        }
+    color: #39ff14;
 
-        .page-title {
-            margin-top: 8px;
-            font-size: 20px;
-        }
+    font-family:
+        "Courier New",
+        Courier,
+        monospace;
 
-        .divider {
-            border-top: 1px solid #33ff33;
-            margin: 20px 0;
-        }
+    min-height: 100vh;
 
-        .statistics {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px 30px;
-        }
+    padding: 30px;
 
-        .stat {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 20px;
-            padding: 10px 12px;
-            border: 1px solid transparent;
-        }
+    text-shadow:
+        0 0 4px #39ff14,
+        0 0 10px rgba(57, 255, 20, 0.35);
+}
 
-        .stat:hover {
-            background: #33ff33;
-            color: #000;
-        }
 
-        .stat-label {
-            font-weight: bold;
-        }
+/* TERMINAL */
 
-        .stat-value {
-            text-align: right;
-            white-space: nowrap;
-        }
+.terminal {
 
-        .section-title {
-            grid-column: 1 / -1;
-            margin-top: 10px;
-            margin-bottom: 2px;
-            font-weight: bold;
-        }
+    width: 100%;
 
-        .loading {
-            margin-top: 30px;
-        }
+    max-width: 1100px;
 
-        .error {
-            color: #ff3333;
-        }
+    margin: 0 auto;
 
-        .footer {
-            margin-top: 30px;
-            font-size: 14px;
-        }
+    border: 2px solid #39ff14;
 
-        .cursor {
-            display: inline-block;
-            width: 10px;
-            height: 18px;
-            background: #33ff33;
-            vertical-align: middle;
-            animation: blink 1s steps(1) infinite;
-        }
+    box-shadow:
+        0 0 10px rgba(57, 255, 20, 0.5),
+        inset 0 0 25px rgba(57, 255, 20, 0.05);
 
-        @keyframes blink {
+    background:
+        rgba(0, 10, 0, 0.94);
 
-            0%,
-            50% {
-                opacity: 1;
-            }
+    min-height: calc(100vh - 60px);
 
-            51%,
-            100% {
-                opacity: 0;
-            }
+    padding: 25px;
+}
 
-        }
 
-        @media (max-width: 700px) {
+/* TOP BAR */
 
-            .terminal {
-                width: 95vw;
-                padding: 20px;
-            }
+.terminal-path {
 
-            .statistics {
-                grid-template-columns: 1fr;
-            }
+    border-bottom: 1px solid #39ff14;
 
-            .section-title {
-                grid-column: 1;
-            }
+    padding-bottom: 12px;
 
-        }
+    margin-bottom: 20px;
 
-    </style>
+    font-size: 16px;
+
+    overflow-wrap: anywhere;
+}
+
+
+.terminal-title {
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    margin-bottom: 5px;
+}
+
+
+.terminal-subtitle {
+
+    color: #2dcc10;
+
+    font-size: 14px;
+
+    margin-bottom: 25px;
+}
+
+
+/* STATISTICS */
+
+.statistics {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    font-size: 17px;
+
+    line-height: 1.5;
+}
+
+
+.stat-line {
+
+    display: grid;
+
+    grid-template-columns: 340px 1fr;
+
+    column-gap: 15px;
+
+    padding: 3px 0;
+
+    white-space: normal;
+}
+
+
+.stat-label {
+
+    font-weight: bold;
+}
+
+
+.stat-label::before {
+
+    content: "> ";
+
+}
+
+
+.stat-value {
+
+    text-align: left;
+}
+
+
+/* SECTION BREAK */
+
+.separator {
+
+    margin: 18px 0;
+
+    color: #2dcc10;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+}
+
+
+/* FOOTER */
+
+.terminal-footer {
+
+    margin-top: 30px;
+
+    padding-top: 15px;
+
+    border-top: 1px solid #39ff14;
+
+    font-size: 14px;
+
+    color: #2dcc10;
+}
+
+
+.cursor {
+
+    display: inline-block;
+
+    width: 10px;
+
+    height: 18px;
+
+    background: #39ff14;
+
+    margin-left: 5px;
+
+    vertical-align: middle;
+
+    box-shadow:
+        0 0 6px #39ff14;
+
+    animation: blink 1s steps(1) infinite;
+}
+
+
+@keyframes blink {
+
+    0%,
+    49% {
+        opacity: 1;
+    }
+
+    50%,
+    100% {
+        opacity: 0;
+    }
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+    body {
+
+        padding: 10px;
+
+    }
+
+
+    .terminal {
+
+        min-height: calc(100vh - 20px);
+
+        padding: 15px;
+
+    }
+
+
+    .stat-line {
+
+        grid-template-columns: 1fr;
+
+        gap: 0;
+
+    }
+
+
+    .stat-value {
+
+        padding-left: 20px;
+
+    }
+
+
+    .terminal-title {
+
+        font-size: 18px;
+
+    }
+
+
+    .statistics {
+
+        font-size: 15px;
+
+    }
+
+}
+
+</style>
 
 </head>
 
 
 <body>
 
+
 <div class="terminal">
 
-    <div class="header">
 
-        <div class="system-title">
-            ROBCO INDUSTRIES UNIFIED OPERATING SYSTEM
-        </div>
+    <div class="terminal-path">
 
-        <div class="page-title">
-            FALLOUT MTG COLLECTION DATABASE // STATISTICS
-        </div>
+        C:\FALLOUT\MTG\COLLECTION\STATISTICS.EXE
 
     </div>
 
 
-    <div class="divider"></div>
+    <div class="terminal-title">
 
+        FALLOUT MTG COLLECTION DATABASE
 
-    <div id="loading" class="loading">
-        Loading collection statistics...
     </div>
 
 
-    <div
-        id="statistics"
-        class="statistics"
-        style="display: none;"
-    >
+    <div class="terminal-subtitle">
 
-        <div class="section-title">
-            COLLECTION TOTALS
-        </div>
+        STATISTICAL ANALYSIS TERMINAL
+
+    </div>
 
 
-        <div class="stat">
+    <div class="statistics">
+
+
+        <div class="stat-line">
 
             <div class="stat-label">
-                TOTAL CARDS
+                Total cards
             </div>
 
             <div
                 class="stat-value"
                 id="totalCards"
-            ></div>
+            >
+                CALCULATING...
+            </div>
 
         </div>
 
 
-        <div class="stat">
+        <div class="stat-line">
 
             <div class="stat-label">
-                PERCENT OWNED
+                Percent owned
             </div>
 
             <div
                 class="stat-value"
                 id="percentOwned"
-            ></div>
+            >
+                CALCULATING...
+            </div>
 
         </div>
 
 
-        <div class="stat">
+        <div class="stat-line">
 
             <div class="stat-label">
-                CARDS OWNED
+                Cards owned
             </div>
 
             <div
                 class="stat-value"
                 id="cardsOwned"
-            ></div>
+            >
+                CALCULATING...
+            </div>
 
         </div>
 
 
-        <div class="stat">
+        <div class="stat-line">
 
             <div class="stat-label">
-                PERCENT UNOWNED
+                Percent unowned
             </div>
 
             <div
                 class="stat-value"
                 id="percentUnowned"
-            ></div>
+            >
+                CALCULATING...
+            </div>
 
         </div>
 
 
-        <div class="stat">
+        <div class="stat-line">
 
             <div class="stat-label">
-                CARDS UNOWNED
+                Cards unowned
             </div>
 
             <div
                 class="stat-value"
                 id="cardsUnowned"
-            ></div>
+            >
+                CALCULATING...
+            </div>
 
         </div>
 
 
-        <div class="section-title">
-            COLLECTION VALUE
+        <div class="separator">
+
+            ----------------------------------------
+
         </div>
 
 
-        <div class="stat">
+        <div class="stat-line">
 
             <div class="stat-label">
-                VALUE OWNED
+                Value owned
             </div>
 
             <div
                 class="stat-value"
                 id="valueOwned"
-            ></div>
+            >
+                CALCULATING...
+            </div>
 
         </div>
 
 
-        <div class="stat">
+        <div class="stat-line">
 
             <div class="stat-label">
-                VALUE UNOWNED
+                Value unowned
             </div>
 
             <div
                 class="stat-value"
                 id="valueUnowned"
-            ></div>
+            >
+                CALCULATING...
+            </div>
 
         </div>
 
 
-        <div class="stat">
+        <div class="stat-line">
 
             <div class="stat-label">
-                TOTAL VALUE
+                Total value
             </div>
 
             <div
                 class="stat-value"
                 id="totalValue"
-            ></div>
+            >
+                CALCULATING...
+            </div>
 
         </div>
 
 
-        <div class="stat">
+        <div class="stat-line">
 
             <div class="stat-label">
-                AVG. VALUE PER OWNED CARD
+                Avg. value per owned card
             </div>
 
             <div
                 class="stat-value"
                 id="averageOwnedValue"
-            ></div>
+            >
+                CALCULATING...
+            </div>
 
         </div>
 
 
-        <div class="section-title">
-            COMPLETION
+        <div class="separator">
+
+            ----------------------------------------
+
         </div>
 
 
-        <div class="stat">
+        <div class="stat-line">
 
             <div class="stat-label">
-                PIP COMPLETION %
+                PIP completion %
             </div>
 
             <div
                 class="stat-value"
                 id="pipCompletion"
-            ></div>
+            >
+                CALCULATING...
+            </div>
 
         </div>
 
 
-        <div class="stat">
+        <div class="stat-line">
 
             <div class="stat-label">
-                SLD COMPLETION %
+                SLD completion %
             </div>
 
             <div
                 class="stat-value"
                 id="sldCompletion"
-            ></div>
+            >
+                CALCULATING...
+            </div>
 
         </div>
 
 
-        <div class="stat">
+        <div class="stat-line">
 
             <div class="stat-label">
-                TPIP COMPLETION %
+                TPIP completion %
             </div>
 
             <div
                 class="stat-value"
                 id="tpipCompletion"
-            ></div>
+            >
+                CALCULATING...
+            </div>
 
         </div>
 
 
-        <div class="section-title">
-            SET VALUES
+        <div class="separator">
+
+            ----------------------------------------
+
         </div>
 
 
-        <div class="stat">
+        <div class="stat-line">
 
             <div class="stat-label">
-                PIP OWNED VALUE
+                PIP owned value
             </div>
 
             <div
                 class="stat-value"
                 id="pipOwnedValue"
-            ></div>
+            >
+                CALCULATING...
+            </div>
 
         </div>
 
 
-        <div class="stat">
+        <div class="stat-line">
 
             <div class="stat-label">
-                SLD OWNED VALUE
+                SLD owned value
             </div>
 
             <div
                 class="stat-value"
                 id="sldOwnedValue"
-            ></div>
+            >
+                CALCULATING...
+            </div>
 
         </div>
 
 
-        <div class="stat">
+        <div class="stat-line">
 
             <div class="stat-label">
-                TPIP OWNED VALUE
+                TPIP owned value
             </div>
 
             <div
                 class="stat-value"
                 id="tpipOwnedValue"
-            ></div>
+            >
+                CALCULATING...
+            </div>
 
         </div>
 
 
-        <div class="section-title">
-            SET TOTALS
+        <div class="separator">
+
+            ----------------------------------------
+
         </div>
 
 
-        <div class="stat">
+        <div class="stat-line">
 
             <div class="stat-label">
-                TOTAL PIP CARDS
+                Total PIP cards
             </div>
 
             <div
                 class="stat-value"
                 id="totalPipCards"
-            ></div>
+            >
+                CALCULATING...
+            </div>
 
         </div>
 
 
-        <div class="stat">
+        <div class="stat-line">
 
             <div class="stat-label">
-                TOTAL SLD CARDS
+                Total SLD cards
             </div>
 
             <div
                 class="stat-value"
                 id="totalSldCards"
-            ></div>
+            >
+                CALCULATING...
+            </div>
 
         </div>
 
 
-        <div class="stat">
+        <div class="stat-line">
 
             <div class="stat-label">
-                TOTAL TPIP CARDS
+                Total TPIP cards
             </div>
 
             <div
                 class="stat-value"
                 id="totalTpipCards"
-            ></div>
+            >
+                CALCULATING...
+            </div>
 
         </div>
+
 
     </div>
 
 
-    <div
-        id="error"
-        class="loading error"
-        style="display: none;"
-    ></div>
+    <div class="terminal-footer">
 
+        &gt; STATISTICS ANALYSIS COMPLETE
 
-    <div class="divider"></div>
-
-
-    <div class="footer">
-
-        [ESC] RETURN TO MAIN MENU
-
-        <div style="margin-top: 15px;">
-
-            ROBCO DATABASE STATUS:
-            ONLINE
-
-        </div>
+        <span class="cursor"></span>
 
     </div>
+
 
 </div>
 
 
 <script>
 
-    fetch("../data/cards.json")
 
-        .then(response => {
+let cards = [];
 
-            if (!response.ok) {
 
-                throw new Error(
-                    "Could not load cards.json. HTTP " +
-                    response.status
-                );
+fetch("../data/cards.json")
+
+    .then(response => {
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Could not load cards.json. HTTP " +
+                response.status
+            );
+
+        }
+
+        return response.json();
+
+    })
+
+    .then(data => {
+
+        cards = data;
+
+        calculateStatistics();
+
+    })
+
+    .catch(error => {
+
+        document.querySelector(
+            ".terminal-footer"
+        ).textContent =
+            "> ERROR: " + error.message;
+
+        console.error(error);
+
+    });
+
+
+function calculateStatistics() {
+
+
+    /*
+     * Every finish is treated as one collectible card.
+     *
+     * A card can have up to four possible finishes:
+     *
+     * No Foil
+     * Standard Foil
+     * Surge Foil
+     * Rainbow Foil
+     *
+     * "Not Possible" finishes are excluded.
+     */
+
+
+    const finishes = [];
+
+
+    cards.forEach(card => {
+
+
+        const cardFinishes = [
+
+            {
+                finish: "No Foil",
+                ownership: card.noFoil,
+                value: card.noFoilValue
+            },
+
+            {
+                finish: "Standard Foil",
+                ownership: card.standardFoil,
+                value: card.standardFoilValue
+            },
+
+            {
+                finish: "Surge Foil",
+                ownership: card.surgeFoil,
+                value: card.surgeFoilValue
+            },
+
+            {
+                finish: "Rainbow Foil",
+                ownership: card.rainbowFoil,
+                value: card.rainbowFoilValue
+            }
+
+        ];
+
+
+        cardFinishes.forEach(finish => {
+
+            if (
+                finish.ownership ===
+                "Not Possible"
+            ) {
+
+                return;
 
             }
 
-            return response.json();
 
-        })
+            finishes.push({
 
-        .then(cards => {
+                set: String(
+                    card.set || ""
+                ).toUpperCase(),
 
-            calculateStatistics(cards);
+                ownership:
+                    finish.ownership,
 
-            document.getElementById(
-                "loading"
-            ).style.display = "none";
-
-            document.getElementById(
-                "statistics"
-            ).style.display = "grid";
-
-        })
-
-        .catch(error => {
-
-            document.getElementById(
-                "loading"
-            ).style.display = "none";
-
-            const errorElement =
-                document.getElementById("error");
-
-            errorElement.style.display = "block";
-
-            errorElement.textContent =
-                "ERROR: " + error.message;
-
-            console.error(error);
-
-        });
-
-
-    function calculateStatistics(cards) {
-
-        let totalCards = 0;
-
-        let cardsOwned = 0;
-
-        let cardsUnowned = 0;
-
-        let valueOwned = 0;
-
-        let valueUnowned = 0;
-
-
-        let pipTotal = 0;
-
-        let pipOwned = 0;
-
-        let pipOwnedValue = 0;
-
-
-        let sldTotal = 0;
-
-        let sldOwned = 0;
-
-        let sldOwnedValue = 0;
-
-
-        let tpipTotal = 0;
-
-        let tpipOwned = 0;
-
-        let tpipOwnedValue = 0;
-
-
-        cards.forEach(card => {
-
-            const finishes = [
-
-                {
-                    name: "No Foil",
-                    ownership: card.noFoil,
-                    value: card.noFoilValue
-                },
-
-                {
-                    name: "Standard Foil",
-                    ownership: card.standardFoil,
-                    value: card.standardFoilValue
-                },
-
-                {
-                    name: "Surge Foil",
-                    ownership: card.surgeFoil,
-                    value: card.surgeFoilValue
-                },
-
-                {
-                    name: "Rainbow Foil",
-                    ownership: card.rainbowFoil,
-                    value: card.rainbowFoilValue
-                }
-
-            ];
-
-
-            finishes.forEach(finish => {
-
-                if (
-                    finish.ownership ===
-                    "Not Possible"
-                ) {
-                    return;
-                }
-
-
-                totalCards++;
-
-
-                const value =
-                    Number(finish.value) || 0;
-
-
-                if (
-                    finish.ownership ===
-                    "Owned"
-                ) {
-
-                    cardsOwned++;
-
-                    valueOwned += value;
-
-                }
-
-
-                else if (
-                    finish.ownership ===
-                    "Unowned"
-                ) {
-
-                    cardsUnowned++;
-
-                    valueUnowned += value;
-
-                }
-
-
-                const set =
-                    String(
-                        card.set || ""
-                    ).toUpperCase();
-
-
-                if (set === "PIP") {
-
-                    pipTotal++;
-
-                    if (
-                        finish.ownership ===
-                        "Owned"
-                    ) {
-
-                        pipOwned++;
-
-                        pipOwnedValue += value;
-
-                    }
-
-                }
-
-
-                else if (set === "SLD") {
-
-                    sldTotal++;
-
-                    if (
-                        finish.ownership ===
-                        "Owned"
-                    ) {
-
-                        sldOwned++;
-
-                        sldOwnedValue += value;
-
-                    }
-
-                }
-
-
-                else if (set === "TPIP") {
-
-                    tpipTotal++;
-
-                    if (
-                        finish.ownership ===
-                        "Owned"
-                    ) {
-
-                        tpipOwned++;
-
-                        tpipOwnedValue += value;
-
-                    }
-
-                }
+                value:
+                    Number(
+                        finish.value || 0
+                    )
 
             });
 
         });
 
-
-        const percentOwned =
-            totalCards > 0
-                ? (
-                    cardsOwned /
-                    totalCards *
-                    100
-                )
-                : 0;
+    });
 
 
-        const percentUnowned =
-            totalCards > 0
-                ? (
-                    cardsUnowned /
-                    totalCards *
-                    100
-                )
-                : 0;
+    const totalCards =
+        finishes.length;
 
 
-        const pipCompletion =
-            pipTotal > 0
-                ? (
-                    pipOwned /
-                    pipTotal *
-                    100
-                )
-                : 0;
+    const cardsOwned =
+        finishes.filter(
+            finish =>
+                finish.ownership === "Owned"
+        ).length;
 
 
-        const sldCompletion =
-            sldTotal > 0
-                ? (
-                    sldOwned /
-                    sldTotal *
-                    100
-                )
-                : 0;
+    const cardsUnowned =
+        finishes.filter(
+            finish =>
+                finish.ownership === "Unowned"
+        ).length;
 
 
-        const tpipCompletion =
-            tpipTotal > 0
-                ? (
-                    tpipOwned /
-                    tpipTotal *
-                    100
-                )
-                : 0;
+    const valueOwned =
+        finishes
+            .filter(
+                finish =>
+                    finish.ownership === "Owned"
+            )
+            .reduce(
+                (total, finish) =>
+                    total + finish.value,
+                0
+            );
 
 
-        const totalValue =
-            valueOwned +
-            valueUnowned;
+    const valueUnowned =
+        finishes
+            .filter(
+                finish =>
+                    finish.ownership === "Unowned"
+            )
+            .reduce(
+                (total, finish) =>
+                    total + finish.value,
+                0
+            );
 
 
-        const averageOwnedValue =
-            cardsOwned > 0
-                ? valueOwned / cardsOwned
-                : 0;
+    const totalValue =
+        valueOwned +
+        valueUnowned;
 
 
-        document.getElementById(
-            "totalCards"
-        ).textContent =
-            formatNumber(totalCards);
+    const percentOwned =
+        totalCards > 0
+            ? (
+                cardsOwned /
+                totalCards *
+                100
+            )
+            : 0;
 
 
-        document.getElementById(
-            "percentOwned"
-        ).textContent =
-            formatPercent(percentOwned);
+    const percentUnowned =
+        totalCards > 0
+            ? (
+                cardsUnowned /
+                totalCards *
+                100
+            )
+            : 0;
 
 
-        document.getElementById(
-            "cardsOwned"
-        ).textContent =
-            formatNumber(cardsOwned);
+    const averageOwnedValue =
+        cardsOwned > 0
+            ? valueOwned /
+              cardsOwned
+            : 0;
 
 
-        document.getElementById(
-            "percentUnowned"
-        ).textContent =
-            formatPercent(percentUnowned);
+    const pipFinishes =
+        finishes.filter(
+            finish =>
+                finish.set === "PIP"
+        );
 
 
-        document.getElementById(
-            "cardsUnowned"
-        ).textContent =
-            formatNumber(cardsUnowned);
+    const sldFinishes =
+        finishes.filter(
+            finish =>
+                finish.set === "SLD"
+        );
 
 
-        document.getElementById(
-            "valueOwned"
-        ).textContent =
-            formatCurrency(valueOwned);
+    const tpipFinishes =
+        finishes.filter(
+            finish =>
+                finish.set === "TPIP"
+        );
 
 
-        document.getElementById(
-            "valueUnowned"
-        ).textContent =
-            formatCurrency(valueUnowned);
+    const pipOwned =
+        pipFinishes.filter(
+            finish =>
+                finish.ownership === "Owned"
+        ).length;
 
 
-        document.getElementById(
-            "totalValue"
-        ).textContent =
-            formatCurrency(totalValue);
+    const sldOwned =
+        sldFinishes.filter(
+            finish =>
+                finish.ownership === "Owned"
+        ).length;
 
 
-        document.getElementById(
-            "averageOwnedValue"
-        ).textContent =
-            formatCurrency(averageOwnedValue);
+    const tpipOwned =
+        tpipFinishes.filter(
+            finish =>
+                finish.ownership === "Owned"
+        ).length;
 
 
-        document.getElementById(
-            "pipCompletion"
-        ).textContent =
-            formatPercent(pipCompletion);
+    const pipCompletion =
+        pipFinishes.length > 0
+            ? (
+                pipOwned /
+                pipFinishes.length *
+                100
+            )
+            : 0;
 
 
-        document.getElementById(
-            "sldCompletion"
-        ).textContent =
-            formatPercent(sldCompletion);
+    const sldCompletion =
+        sldFinishes.length > 0
+            ? (
+                sldOwned /
+                sldFinishes.length *
+                100
+            )
+            : 0;
 
 
-        document.getElementById(
-            "tpipCompletion"
-        ).textContent =
-            formatPercent(tpipCompletion);
+    const tpipCompletion =
+        tpipFinishes.length > 0
+            ? (
+                tpipOwned /
+                tpipFinishes.length *
+                100
+            )
+            : 0;
 
 
-        document.getElementById(
-            "pipOwnedValue"
-        ).textContent =
-            formatCurrency(pipOwnedValue);
+    const pipOwnedValue =
+        pipFinishes
+            .filter(
+                finish =>
+                    finish.ownership === "Owned"
+            )
+            .reduce(
+                (total, finish) =>
+                    total + finish.value,
+                0
+            );
 
 
-        document.getElementById(
-            "sldOwnedValue"
-        ).textContent =
-            formatCurrency(sldOwnedValue);
+    const sldOwnedValue =
+        sldFinishes
+            .filter(
+                finish =>
+                    finish.ownership === "Owned"
+            )
+            .reduce(
+                (total, finish) =>
+                    total + finish.value,
+                0
+            );
 
 
-        document.getElementById(
-            "tpipOwnedValue"
-        ).textContent =
-            formatCurrency(tpipOwnedValue);
+    const tpipOwnedValue =
+        tpipFinishes
+            .filter(
+                finish =>
+                    finish.ownership === "Owned"
+            )
+            .reduce(
+                (total, finish) =>
+                    total + finish.value,
+                0
+            );
 
 
-        document.getElementById(
-            "totalPipCards"
-        ).textContent =
-            formatNumber(pipTotal);
+    const totalPipCards =
+        pipFinishes.length;
 
 
-        document.getElementById(
-            "totalSldCards"
-        ).textContent =
-            formatNumber(sldTotal);
+    const totalSldCards =
+        sldFinishes.length;
 
 
-        document.getElementById(
-            "totalTpipCards"
-        ).textContent =
-            formatNumber(tpipTotal);
-
-    }
+    const totalTpipCards =
+        tpipFinishes.length;
 
 
-    function formatNumber(value) {
+    document.getElementById(
+        "totalCards"
+    ).textContent =
+        formatNumber(totalCards);
 
-        return Number(value).toLocaleString(
+
+    document.getElementById(
+        "percentOwned"
+    ).textContent =
+        formatPercent(percentOwned);
+
+
+    document.getElementById(
+        "cardsOwned"
+    ).textContent =
+        formatNumber(cardsOwned);
+
+
+    document.getElementById(
+        "percentUnowned"
+    ).textContent =
+        formatPercent(percentUnowned);
+
+
+    document.getElementById(
+        "cardsUnowned"
+    ).textContent =
+        formatNumber(cardsUnowned);
+
+
+    document.getElementById(
+        "valueOwned"
+    ).textContent =
+        formatCurrency(valueOwned);
+
+
+    document.getElementById(
+        "valueUnowned"
+    ).textContent =
+        formatCurrency(valueUnowned);
+
+
+    document.getElementById(
+        "totalValue"
+    ).textContent =
+        formatCurrency(totalValue);
+
+
+    document.getElementById(
+        "averageOwnedValue"
+    ).textContent =
+        formatCurrency(
+            averageOwnedValue
+        );
+
+
+    document.getElementById(
+        "pipCompletion"
+    ).textContent =
+        formatPercent(pipCompletion);
+
+
+    document.getElementById(
+        "sldCompletion"
+    ).textContent =
+        formatPercent(sldCompletion);
+
+
+    document.getElementById(
+        "tpipCompletion"
+    ).textContent =
+        formatPercent(tpipCompletion);
+
+
+    document.getElementById(
+        "pipOwnedValue"
+    ).textContent =
+        formatCurrency(
+            pipOwnedValue
+        );
+
+
+    document.getElementById(
+        "sldOwnedValue"
+    ).textContent =
+        formatCurrency(
+            sldOwnedValue
+        );
+
+
+    document.getElementById(
+        "tpipOwnedValue"
+    ).textContent =
+        formatCurrency(
+            tpipOwnedValue
+        );
+
+
+    document.getElementById(
+        "totalPipCards"
+    ).textContent =
+        formatNumber(
+            totalPipCards
+        );
+
+
+    document.getElementById(
+        "totalSldCards"
+    ).textContent =
+        formatNumber(
+            totalSldCards
+        );
+
+
+    document.getElementById(
+        "totalTpipCards"
+    ).textContent =
+        formatNumber(
+            totalTpipCards
+        );
+
+}
+
+
+function formatNumber(value) {
+
+    return Number(value)
+        .toLocaleString(
             "en-US"
         );
 
-    }
+}
 
 
-    function formatPercent(value) {
+function formatPercent(value) {
 
-        return Number(value).toFixed(2) + "%";
+    return Number(value)
+        .toFixed(2) +
+        "%";
 
-    }
+}
 
 
-    function formatCurrency(value) {
+function formatCurrency(value) {
 
-        return "$" +
-            Number(value).toLocaleString(
+    return "$" +
+        Number(value)
+            .toLocaleString(
                 "en-US",
                 {
                     minimumFractionDigits: 2,
@@ -907,26 +1122,11 @@
                 }
             );
 
-    }
+}
 
-
-    document.addEventListener(
-        "keydown",
-        event => {
-
-            if (event.key === "Escape") {
-
-                event.preventDefault();
-
-                window.location.href =
-                    "index.html";
-
-            }
-
-        }
-    );
 
 </script>
+
 
 </body>
 
