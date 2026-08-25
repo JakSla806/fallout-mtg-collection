@@ -1,10 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fallout MTG Collection</title>
+
 <style>
+
 * {
     box-sizing: border-box;
 }
@@ -132,12 +135,15 @@ h1 {
 }
 
 @media (max-width: 900px) {
+
     #cardGrid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
 }
 
 @media (max-width: 600px) {
+
     body {
         margin: 15px;
     }
@@ -145,18 +151,24 @@ h1 {
     #cardGrid {
         grid-template-columns: 1fr;
     }
+
 }
+
 </style>
+
 </head>
 
 <body>
 
 <h1>Fallout MTG Collection</h1>
 
-<p id="status">Loading card database...</p>
+<p id="status">
+    Loading card database...
+</p>
 
 <div class="controls">
 
+```
 <input
     type="text"
     id="searchInput"
@@ -176,147 +188,272 @@ h1 {
 </select>
 
 <select id="finishFilter">
-    <option value="">All Finishes</option>
-    <option value="No Foil">No Foil</option>
-    <option value="Standard Foil">Standard Foil</option>
-    <option value="Surge Foil">Surge Foil</option>
-    <option value="Rainbow Foil">Rainbow Foil</option>
+
+    <option value="">
+        All Finishes
+    </option>
+
+    <option value="No Foil">
+        No Foil
+    </option>
+
+    <option value="Standard Foil">
+        Standard Foil
+    </option>
+
+    <option value="Surge Foil">
+        Surge Foil
+    </option>
+
+    <option value="Rainbow Foil">
+        Rainbow Foil
+    </option>
+
 </select>
 
 <select id="ownershipFilter">
-    <option value="">All Ownership</option>
-    <option value="Owned">Owned</option>
-    <option value="Unowned">Unowned</option>
+
+    <option value="">
+        All Ownership
+    </option>
+
+    <option value="Owned">
+        Owned
+    </option>
+
+    <option value="Unowned">
+        Unowned
+    </option>
+
 </select>
 
 <select id="sortFilter">
-    <option value="number">Sort: Number</option>
-    <option value="name">Sort: Name</option>
-    <option value="priceLow">Sort: Price Low to High</option>
-    <option value="priceHigh">Sort: Price High to Low</option>
+
+    <option value="number">
+        Sort: Number
+    </option>
+
+    <option value="name">
+        Sort: Name
+    </option>
+
+    <option value="priceLow">
+        Sort: Price Low to High
+    </option>
+
+    <option value="priceHigh">
+        Sort: Price High to Low
+    </option>
+
 </select>
+```
 
 </div>
 
 <div id="cardGrid"></div>
 
 <script>
+
 let cards = [];
 
-const searchInput = document.getElementById("searchInput");
-const setFilter = document.getElementById("setFilter");
-const variantFilter = document.getElementById("variantFilter");
-const rarityFilter = document.getElementById("rarityFilter");
-const finishFilter = document.getElementById("finishFilter");
-const ownershipFilter = document.getElementById("ownershipFilter");
-const sortFilter = document.getElementById("sortFilter");
-const cardGrid = document.getElementById("cardGrid");
-const status = document.getElementById("status");
+
+const searchInput =
+    document.getElementById("searchInput");
+
+const setFilter =
+    document.getElementById("setFilter");
+
+const variantFilter =
+    document.getElementById("variantFilter");
+
+const rarityFilter =
+    document.getElementById("rarityFilter");
+
+const finishFilter =
+    document.getElementById("finishFilter");
+
+const ownershipFilter =
+    document.getElementById("ownershipFilter");
+
+const sortFilter =
+    document.getElementById("sortFilter");
+
+const cardGrid =
+    document.getElementById("cardGrid");
+
+const status =
+    document.getElementById("status");
+
 
 fetch("cards.json")
+
     .then(response => {
+
         if (!response.ok) {
+
             throw new Error(
                 "Could not load cards.json. HTTP " +
                 response.status
             );
+
         }
 
         return response.json();
+
     })
+
     .then(data => {
+
         cards = data;
+
         populateFilters();
+
         renderCards();
+
     })
+
     .catch(error => {
-        status.textContent = "ERROR: " + error.message;
+
+        status.textContent =
+            "ERROR: " + error.message;
+
         console.error(error);
+
     });
+
 
 function populateFilters() {
 
-    const sets = [...new Set(
-        cards
-            .map(card => card.set)
-            .filter(Boolean)
-    )].sort();
+    const sets =
+        [...new Set(
+            cards
+                .map(card => card.set)
+                .filter(Boolean)
+        )]
+        .sort();
 
-    const variants = [...new Set(
-        cards
-            .map(card => card.variant)
-            .filter(Boolean)
-    )].sort();
 
-    const rarities = [...new Set(
-        cards
-            .map(card => card.rarity)
-            .filter(Boolean)
-    )].sort();
+    const variants =
+        [...new Set(
+            cards
+                .map(card => card.variant)
+                .filter(Boolean)
+        )]
+        .sort();
+
+
+    const rarities =
+        [...new Set(
+            cards
+                .map(card => card.rarity)
+                .filter(Boolean)
+        )]
+        .sort();
+
 
     sets.forEach(value => {
-        const option = document.createElement("option");
+
+        const option =
+            document.createElement("option");
+
         option.value = value;
         option.textContent = value;
+
         setFilter.appendChild(option);
+
     });
+
 
     variants.forEach(value => {
-        const option = document.createElement("option");
+
+        const option =
+            document.createElement("option");
+
         option.value = value;
         option.textContent = value;
+
         variantFilter.appendChild(option);
+
     });
 
+
     rarities.forEach(value => {
-        const option = document.createElement("option");
+
+        const option =
+            document.createElement("option");
+
         option.value = value;
         option.textContent = value;
+
         rarityFilter.appendChild(option);
+
     });
+
 }
+
 
 function getFinishData(card) {
 
     return [
+
         {
             name: "No Foil",
             ownership: card.noFoil,
             price: card.noFoilValue
         },
+
         {
             name: "Standard Foil",
             ownership: card.standardFoil,
             price: card.standardFoilValue
         },
+
         {
             name: "Surge Foil",
             ownership: card.surgeFoil,
             price: card.surgeFoilValue
         },
+
         {
             name: "Rainbow Foil",
             ownership: card.rainbowFoil,
             price: card.rainbowFoilValue
         }
+
     ];
+
 }
+
 
 function renderCards() {
 
     cardGrid.innerHTML = "";
 
-    const search = searchInput.value
-        .trim()
-        .toLowerCase();
 
-    const selectedSet = setFilter.value;
-    const selectedVariant = variantFilter.value;
-    const selectedRarity = rarityFilter.value;
-    const selectedFinish = finishFilter.value;
-    const selectedOwnership = ownershipFilter.value;
+    const search =
+        searchInput.value
+            .trim()
+            .toLowerCase();
+
+
+    const selectedSet =
+        setFilter.value;
+
+    const selectedVariant =
+        variantFilter.value;
+
+    const selectedRarity =
+        rarityFilter.value;
+
+    const selectedFinish =
+        finishFilter.value;
+
+    const selectedOwnership =
+        ownershipFilter.value;
+
 
     const results = [];
+
 
     cards.forEach(card => {
 
@@ -329,9 +466,14 @@ function renderCards() {
             return;
         }
 
-        if (selectedSet && card.set !== selectedSet) {
+
+        if (
+            selectedSet &&
+            card.set !== selectedSet
+        ) {
             return;
         }
+
 
         if (
             selectedVariant &&
@@ -340,6 +482,7 @@ function renderCards() {
             return;
         }
 
+
         if (
             selectedRarity &&
             card.rarity !== selectedRarity
@@ -347,155 +490,258 @@ function renderCards() {
             return;
         }
 
-        getFinishData(card).forEach(finish => {
 
-            if (finish.ownership === "Not Possible") {
-                return;
-            }
+        getFinishData(card)
+            .forEach(finish => {
 
-            if (
-                selectedFinish &&
-                finish.name !== selectedFinish
-            ) {
-                return;
-            }
+                if (
+                    finish.ownership ===
+                    "Not Possible"
+                ) {
+                    return;
+                }
 
-            if (
-                selectedOwnership &&
-                finish.ownership !== selectedOwnership
-            ) {
-                return;
-            }
 
-            results.push({
-                card: card,
-                finish: finish.name,
-                ownership: finish.ownership,
-                price: finish.price
+                if (
+                    selectedFinish &&
+                    finish.name !==
+                    selectedFinish
+                ) {
+                    return;
+                }
+
+
+                if (
+                    selectedOwnership &&
+                    finish.ownership !==
+                    selectedOwnership
+                ) {
+                    return;
+                }
+
+
+                results.push({
+
+                    card: card,
+
+                    finish: finish.name,
+
+                    ownership:
+                        finish.ownership,
+
+                    price:
+                        finish.price
+
+                });
+
             });
-        });
+
     });
+
 
     sortResults(results);
 
-    const groupedCards = new Map();
+
+    const groupedCards =
+        new Map();
+
 
     results.forEach(result => {
 
-        if (!groupedCards.has(result.card)) {
-            groupedCards.set(result.card, []);
+        if (
+            !groupedCards.has(
+                result.card
+            )
+        ) {
+
+            groupedCards.set(
+                result.card,
+                []
+            );
+
         }
 
-        groupedCards.get(result.card).push(result);
+
+        groupedCards
+            .get(result.card)
+            .push(result);
+
     });
 
-    groupedCards.forEach((finishes, card) => {
 
-        const cardElement = document.createElement("div");
-        cardElement.className = "card";
+    groupedCards.forEach(
+        (finishes, card) => {
 
-        let finishHtml = "";
+            const cardElement =
+                document.createElement("div");
 
-        finishes.forEach(finish => {
+            cardElement.className =
+                "card";
 
-            const price =
-                finish.price === "" ||
-                finish.price === null ||
-                finish.price === undefined
-                    ? ""
-                    : "$" + Number(finish.price).toFixed(2);
 
-            const ownershipClass =
-                finish.ownership === "Owned"
-                    ? "owned"
-                    : "";
+            let finishHtml = "";
 
-            finishHtml += `
-                <div class="finish-row">
-                    <span class="finish-name">
-                        ${escapeHtml(finish.finish)}
-                    </span>
 
-                    <span class="finish-price">
-                        ${price}
-                    </span>
+            finishes.forEach(finish => {
 
-                    <span class="${ownershipClass}">
-                        ${escapeHtml(finish.ownership)}
-                    </span>
+                const price =
+                    finish.price === "" ||
+                    finish.price === null ||
+                    finish.price === undefined
+                        ? ""
+                        : "$" +
+                          Number(
+                              finish.price
+                          ).toFixed(2);
+
+
+                const ownershipClass =
+                    finish.ownership === "Owned"
+                        ? "owned"
+                        : "";
+
+
+                finishHtml += `
+
+                    <div class="finish-row">
+
+                        <span class="finish-name">
+                            ${escapeHtml(
+                                finish.finish
+                            )}
+                        </span>
+
+                        <span class="finish-price">
+                            ${price}
+                        </span>
+
+                        <span class="${ownershipClass}">
+                            ${escapeHtml(
+                                finish.ownership
+                            )}
+                        </span>
+
+                    </div>
+
+                `;
+
+            });
+
+
+            cardElement.innerHTML = `
+
+                <div class="card-header">
+
+                    <div class="card-name">
+                        ${escapeHtml(
+                            card.name
+                        )}
+                    </div>
+
+                    <div class="card-number">
+                        ${escapeHtml(
+                            card.set
+                        )}
+                        ${escapeHtml(
+                            card.number
+                        )}
+                    </div>
+
                 </div>
+
+
+                <div class="card-details">
+
+                    <div class="detail-label">
+                        Mana Cost
+                    </div>
+
+                    <div class="detail-value">
+                        ${escapeHtml(
+                            card.manaCost
+                        )}
+                    </div>
+
+
+                    <div class="detail-label">
+                        Type
+                    </div>
+
+                    <div class="detail-value">
+                        ${escapeHtml(
+                            card.type
+                        )}
+                    </div>
+
+
+                    <div class="detail-label">
+                        Variant
+                    </div>
+
+                    <div class="detail-value">
+                        ${escapeHtml(
+                            card.variant
+                        )}
+                    </div>
+
+
+                    <div class="detail-label">
+                        Rarity
+                    </div>
+
+                    <div class="detail-value">
+                        ${escapeHtml(
+                            card.rarity
+                        )}
+                    </div>
+
+                </div>
+
+
+                <div class="finishes">
+                    ${finishHtml}
+                </div>
+
+
+                <div class="links">
+
+                    ${
+                        card.numberLink
+                            ? `<a
+                                href="${card.numberLink}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                               >
+                                Scryfall
+                               </a>`
+                            : ""
+                    }
+
+
+                    ${
+                        card.nameLink
+                            ? `<a
+                                href="${card.nameLink}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                               >
+                                TCGplayer
+                               </a>`
+                            : ""
+                    }
+
+                </div>
+
             `;
-        });
 
-        cardElement.innerHTML = `
-            <div class="card-header">
 
-                <div class="card-name">
-                    ${escapeHtml(card.name)}
-                </div>
+            cardGrid.appendChild(
+                cardElement
+            );
 
-                <div class="card-number">
-                    ${escapeHtml(card.set)}
-                    ${escapeHtml(card.number)}
-                </div>
+        }
+    );
 
-            </div>
-
-            <div class="card-details">
-
-                <div class="detail-label">
-                    Variant
-                </div>
-
-                <div class="detail-value">
-                    ${escapeHtml(card.variant)}
-                </div>
-
-                <div class="detail-label">
-                    Rarity
-                </div>
-
-                <div class="detail-value">
-                    ${escapeHtml(card.rarity)}
-                </div>
-
-            </div>
-
-            <div class="finishes">
-                ${finishHtml}
-            </div>
-
-            <div class="links">
-
-                ${
-                    card.numberLink
-                        ? `<a
-                            href="${card.numberLink}"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                           >
-                            Scryfall
-                           </a>`
-                        : ""
-                }
-
-                ${
-                    card.nameLink
-                        ? `<a
-                            href="${card.nameLink}"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                           >
-                            TCGplayer
-                           </a>`
-                        : ""
-                }
-
-            </div>
-        `;
-
-        cardGrid.appendChild(cardElement);
-    });
 
     status.textContent =
         "Showing " +
@@ -503,11 +749,15 @@ function renderCards() {
         " finishes from " +
         cards.length +
         " cards.";
+
 }
+
 
 function sortResults(results) {
 
-    const sort = sortFilter.value;
+    const sort =
+        sortFilter.value;
+
 
     if (sort === "name") {
 
@@ -518,21 +768,30 @@ function sortResults(results) {
                 )
         );
 
-    } else if (sort === "priceLow") {
+    }
+
+
+    else if (sort === "priceLow") {
 
         results.sort((a, b) =>
             Number(a.price || 0) -
             Number(b.price || 0)
         );
 
-    } else if (sort === "priceHigh") {
+    }
+
+
+    else if (sort === "priceHigh") {
 
         results.sort((a, b) =>
             Number(b.price || 0) -
             Number(a.price || 0)
         );
 
-    } else {
+    }
+
+
+    else {
 
         results.sort((a, b) => {
 
@@ -542,52 +801,118 @@ function sortResults(results) {
                         String(b.card.set || "")
                     );
 
-            if (setCompare !== 0) {
+
+            if (
+                setCompare !== 0
+            ) {
                 return setCompare;
             }
 
+
             const numberA =
                 parseFloat(
-                    String(a.card.number || "")
+                    String(
+                        a.card.number || ""
+                    )
                 );
+
 
             const numberB =
                 parseFloat(
-                    String(b.card.number || "")
+                    String(
+                        b.card.number || ""
+                    )
                 );
+
 
             if (
                 !Number.isNaN(numberA) &&
                 !Number.isNaN(numberB)
             ) {
+
                 return numberA - numberB;
+
             }
 
-            return String(a.card.number || "")
-                .localeCompare(
-                    String(b.card.number || "")
-                );
+
+            return String(
+                a.card.number || ""
+            )
+            .localeCompare(
+                String(
+                    b.card.number || ""
+                )
+            );
+
         });
+
     }
+
 }
+
 
 function escapeHtml(value) {
 
     return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
 }
 
-searchInput.addEventListener("input", renderCards);
-setFilter.addEventListener("change", renderCards);
-variantFilter.addEventListener("change", renderCards);
-rarityFilter.addEventListener("change", renderCards);
-finishFilter.addEventListener("change", renderCards);
-ownershipFilter.addEventListener("change", renderCards);
-sortFilter.addEventListener("change", renderCards);
+
+searchInput.addEventListener(
+    "input",
+    renderCards
+);
+
+setFilter.addEventListener(
+    "change",
+    renderCards
+);
+
+variantFilter.addEventListener(
+    "change",
+    renderCards
+);
+
+rarityFilter.addEventListener(
+    "change",
+    renderCards
+);
+
+finishFilter.addEventListener(
+    "change",
+    renderCards
+);
+
+ownershipFilter.addEventListener(
+    "change",
+    renderCards
+);
+
+sortFilter.addEventListener(
+    "change",
+    renderCards
+);
+
 </script>
 
 </body>
