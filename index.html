@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Fallout MTG Collection</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #000;
+            color: #33ff33;
+            font-family: "Courier New", monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .terminal {
+            width: min(900px, 90vw);
+            min-height: 600px;
+            border: 2px solid #33ff33;
+            padding: 30px;
+            box-shadow:
+                0 0 10px #33ff33,
+                inset 0 0 20px rgba(51, 255, 51, 0.15);
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .system-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .copyright {
+            font-size: 14px;
+        }
+
+        .divider {
+            margin: 20px 0;
+            border-top: 1px solid #33ff33;
+        }
+
+        .menu-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .menu-item {
+            display: grid;
+            grid-template-columns: 50px 220px 1fr;
+            gap: 10px;
+            padding: 10px;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .menu-item:hover,
+        .menu-item.selected {
+            background: #33ff33;
+            color: #000;
+        }
+
+        .menu-number {
+            font-weight: bold;
+        }
+
+        .menu-name {
+            font-weight: bold;
+        }
+
+        .menu-description {
+            opacity: 0.9;
+        }
+
+        .system-status {
+            margin-top: 35px;
+        }
+
+        .status-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .status-line {
+            display: flex;
+            gap: 10px;
+        }
+
+        .status-label {
+            width: 180px;
+        }
+
+        .status-online {
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 14px;
+        }
+
+        .prompt {
+            margin-top: 20px;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            background: #33ff33;
+            vertical-align: middle;
+            animation: blink 1s steps(1) infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            51%,
+            100% {
+                opacity: 0;
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .terminal {
+                width: 95vw;
+                min-height: auto;
+                padding: 20px;
+            }
+
+            .menu-item {
+                grid-template-columns: 40px 1fr;
+            }
+
+            .menu-description {
+                grid-column: 2;
+            }
+
+            .status-line {
+                flex-direction: column;
+                gap: 2px;
+            }
+
+            .status-label {
+                width: auto;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="terminal">
+
+    <div class="header">
+
+        <div class="system-title">
+            ROBCO INDUSTRIES UNIFIED OPERATING SYSTEM
+        </div>
+
+        <div class="copyright">
+            COPYRIGHT 2075-2077 ROBCO INDUSTRIES
+        </div>
+
+    </div>
+
+
+    <div class="divider"></div>
+
+
+    <div class="menu-title">
+        FALLOUT MTG COLLECTION DATABASE
+    </div>
+
+
+    <div class="menu">
+
+        <div
+            class="menu-item selected"
+            data-page="statistics.html"
+            data-key="1"
+        >
+
+            <div class="menu-number">
+                [1]
+            </div>
+
+            <div class="menu-name">
+                STATISTICS
+            </div>
+
+            <div class="menu-description">
+                View collection statistics and totals
+            </div>
+
+        </div>
+
+
+        <div
+            class="menu-item"
+            data-page="cards.html"
+            data-key="2"
+        >
+
+            <div class="menu-number">
+                [2]
+            </div>
+
+            <div class="menu-name">
+                CARDS
+            </div>
+
+            <div class="menu-description">
+                Browse and manage your Fallout MTG card collection
+            </div>
+
+        </div>
+
+
+        <div
+            class="menu-item"
+            data-page="packs.html"
+            data-key="3"
+        >
+
+            <div class="menu-number">
+                [3]
+            </div>
+
+            <div class="menu-name">
+                PACKS
+            </div>
+
+            <div class="menu-description">
+                View Fallout MTG booster packs and sealed products
+            </div>
+
+        </div>
+
+
+        <div
+            class="menu-item"
+            data-page="price-search.html"
+            data-key="4"
+        >
+
+            <div class="menu-number">
+                [4]
+            </div>
+
+            <div class="menu-name">
+                PRICE SEARCH
+            </div>
+
+            <div class="menu-description">
+                Search current card prices
+            </div>
+
+        </div>
+
+
+        <div
+            class="menu-item"
+            data-page="deal-hunter.html"
+            data-key="5"
+        >
+
+            <div class="menu-number">
+                [5]
+            </div>
+
+            <div class="menu-name">
+                DEAL HUNTER
+            </div>
+
+            <div class="menu-description">
+                Find potentially underpriced Fallout MTG cards
+            </div>
+
+        </div>
+
+
+        <div
+            class="menu-item"
+            data-page="lot-search.html"
+            data-key="6"
+        >
+
+            <div class="menu-number">
+                [6]
+            </div>
+
+            <div class="menu-name">
+                CARD LOT SEARCH
+            </div>
+
+            <div class="menu-description">
+                Search card lots for collection opportunities
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="divider"></div>
+
+
+    <div class="system-status">
+
+        <div class="status-title">
+            SYSTEM STATUS
+        </div>
+
+        <div class="status-line">
+
+            <div class="status-label">
+                DATABASE:
+            </div>
+
+            <div class="status-online">
+                ONLINE
+            </div>
+
+        </div>
+
+
+        <div class="status-line">
+
+            <div class="status-label">
+                CARD DATABASE:
+            </div>
+
+            <div class="status-online">
+                ONLINE
+            </div>
+
+        </div>
+
+
+        <div class="status-line">
+
+            <div class="status-label">
+                PRICE DATABASE:
+            </div>
+
+            <div class="status-online">
+                ONLINE
+            </div>
+
+        </div>
+
+
+        <div class="status-line">
+
+            <div class="status-label">
+                LAST PRICE UPDATE:
+            </div>
+
+            <div>
+                AVAILABLE
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+
+        [1-6] SELECT
+        &nbsp;&nbsp;
+        [ARROW UP/DOWN] MOVE
+        &nbsp;&nbsp;
+        [ENTER] OPEN
+
+        <div class="prompt">
+
+            ENTER SELECTION:
+            <span class="cursor"></span>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const menuItems =
+        Array.from(
+            document.querySelectorAll(".menu-item")
+        );
+
+    let selectedIndex = 0;
+
+
+    function updateSelection() {
+
+        menuItems.forEach(
+            (item, index) => {
+
+                item.classList.toggle(
+                    "selected",
+                    index === selectedIndex
+                );
+
+            }
+        );
+
+    }
+
+
+    function openSelected() {
+
+        const page =
+            menuItems[selectedIndex]
+                .dataset.page;
+
+        if (page) {
+            window.location.href = page;
+        }
+
+    }
+
+
+    function openItem(item) {
+
+        const page =
+            item.dataset.page;
+
+        if (page) {
+            window.location.href = page;
+        }
+
+    }
+
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key >= "1" &&
+                event.key <= "6"
+            ) {
+
+                const index =
+                    Number(event.key) - 1;
+
+                if (menuItems[index]) {
+
+                    selectedIndex = index;
+
+                    updateSelection();
+
+                    openSelected();
+
+                }
+
+                return;
+            }
+
+
+            if (event.key === "ArrowUp") {
+
+                event.preventDefault();
+
+                selectedIndex =
+                    (
+                        selectedIndex -
+                        1 +
+                        menuItems.length
+                    ) %
+                    menuItems.length;
+
+                updateSelection();
+
+                return;
+            }
+
+
+            if (event.key === "ArrowDown") {
+
+                event.preventDefault();
+
+                selectedIndex =
+                    (
+                        selectedIndex +
+                        1
+                    ) %
+                    menuItems.length;
+
+                updateSelection();
+
+                return;
+            }
+
+
+            if (event.key === "Enter") {
+
+                event.preventDefault();
+
+                openSelected();
+
+            }
+
+        }
+    );
+
+
+    menuItems.forEach(
+        (item, index) => {
+
+            item.addEventListener(
+                "mouseenter",
+                () => {
+
+                    selectedIndex = index;
+
+                    updateSelection();
+
+                }
+            );
+
+
+            item.addEventListener(
+                "click",
+                () => {
+
+                    selectedIndex = index;
+
+                    openItem(item);
+
+                }
+            );
+
+        }
+    );
+
+</script>
+
+</body>
+
+</html>
