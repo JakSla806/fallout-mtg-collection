@@ -98,11 +98,13 @@ body {
 }
 
 .product-name {
+    display: inline-block;
+    width: 350px;
     font-weight: bold;
 }
 
 .product-status {
-    margin-left: 15px;
+    display: inline-block;
     color: #7cff7c;
 }
 
@@ -185,15 +187,19 @@ body {
     }
 
     .product-type {
+    display: block;
+    width: auto;
+    margin-bottom: 3px;
+    }
+    
+    .product-name {
         display: block;
         width: auto;
-        margin-left: 45px;
         margin-bottom: 3px;
     }
-
+    
     .product-status {
         display: block;
-        margin-left: 45px;
     }
 
 }
@@ -547,10 +553,6 @@ function createProductButton(
 
 
     button.innerHTML = `
-
-        <span class="product-number">
-            [${String(index + 1).padStart(2, "0")}]
-        </span>
 
         <span class="product-type">
             ${escapeHtml(product.variant)}
