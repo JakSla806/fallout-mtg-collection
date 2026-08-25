@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Deal Hunter</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        select,
+        button {
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        #scanner {
+            margin: 20px 0;
+            min-height: 60px;
+        }
+
+        #result {
+            display: none;
+            border: 1px solid #ccc;
+            padding: 20px;
+            max-width: 500px;
+        }
+
+        #cardImage {
+            max-width: 300px;
+            display: block;
+            margin: 0 auto 20px;
+        }
+
+        .card-name {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card-info {
+            line-height: 1.8;
+        }
+
+        .links {
+            margin-top: 20px;
+        }
+
+        .links a {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        #status {
+            margin-bottom: 20px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<h1>Deal Hunter</h1>
+
+<p id="status">
+    Loading card database...
+</p>
+
+<div class="controls">
+
+    <select id="ownership">
+
+        <option value="any">
+            Any Card
+        </option>
+
+        <option value="unowned">
+            Unowned Only
+        </option>
+
+        <option value="owned">
+            Owned Only
+        </option>
+
+    </select>
+
+
+    <select id="set">
+
+        <option value="ANY">
+            Any Set
+        </option>
+
+        <option value="PIP">
+            PIP
+        </option>
+
+        <option value="SLD">
+            SLD
+        </option>
+
+        <option value="TPIP">
+            TPIP
+        </option>
+
+    </select>
+
+
+    <select id="finish">
+
+        <option value="ANY">
+            Any Finish
+        </option>
+
+        <option value="No Foil">
+            No Foil
+        </option>
+
+        <option value="Standard Foil">
+            Standard Foil
+        </option>
+
+        <option value="Surge Foil">
+            Surge Foil
+        </option>
+
+        <option value="Rainbow Foil">
+            Rainbow Foil
+        </option>
+
+    </select>
+
+
+    <button id="huntButton">
+        Find Random Card
+    </button>
+
+</div>
+
+
+<div id="scanner">
+    Ready for target acquisition.
+</div>
+
+
+<div id="result">
+
+    <img
+        id="cardImage"
+        src=""
+        alt="Card image"
+    >
+
+
+    <div
+        id="cardName"
+        class="card-name">
+    </div>
+
+
+    <div
+        id="cardNumber"
+        class="card-info">
+    </div>
+
+
+    <div
+        id="cardFinish"
+        class="card-info">
+    </div>
+
+
+    <div
+        id="cardVariant"
+        class="card-info">
+    </div>
+
+
+    <div
+        id="cardOwnership"
+        class="card-info">
+    </div>
+
+
+    <div
+        id="cardValue"
+        class="card-info">
+    </div>
+
+
+    <div class="links">
+
+        <a
+            id="ebayLink"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            Search eBay
+        </a>
+
+
+        <a
+            id="tcgLink"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            Open TCGplayer
+        </a>
+
+    </div>
+
+</div>
+
+
+<br>
+
+
+<button
+    onclick="window.location.href='index.html'"
+>
+    Exit to Main Menu
+</button>
+
+
+<script>
+
+let cards = [];
+
+
+/*
+ * Load card database
+ */
+
+fetch("../data/cards.json")
+
+    .then(response => {
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Could not load cards.json. HTTP " +
+                response.status
+            );
+
+        }
+
+        return response.json();
+
+    })
+
+    .then(data => {
+
+        cards = data;
+
+        document.getElementById("status").textContent =
+            "Database loaded. " +
+            cards.length +
+            " cards available.";
+
+    })
+
+    .catch(error => {
+
+        document.getElementById("status").textContent =
+            "ERROR: " +
+            error.message;
+
+        console.error(error);
+
+    });
+
+
+/*
+ * Get finish data from a card.
+ */
+
+function getFinishData(card) {
+
+    return [
+
+        {
+            finish: "No Foil",
+            ownership: card.noFoil,
+            value: card.noFoilValue
+        },
+
+        {
+            finish: "Standard Foil",
+            ownership: card.standardFoil,
+            value: card.standardFoilValue
+        },
+
+        {
+            finish: "Surge Foil",
+            ownership: card.surgeFoil,
+            value: card.surgeFoilValue
+        },
+
+        {
+            finish: "Rainbow Foil",
+            ownership: card.rainbowFoil,
+            value: card.rainbowFoilValue
+        }
+
+    ];
+
+}
+
+
+/*
+ * Start Deal Hunter.
+ */
+
+function startHunt() {
+
+    if (cards.length === 0) {
+
+        alert(
+            "The card database has not finished loading."
+        );
+
+        return;
+
+    }
+
+
+    const ownership =
+        document.getElementById("ownership").value;
+
+
+    const selectedSet =
+        document.getElementById("set").value;
+
+
+    const selectedFinish =
+        document.getElementById("finish").value;
+
+
+    const available = [];
+
+
+    /*
+     * Build list of possible targets.
+     */
+
+    cards.forEach(card => {
+
+        if (
+            selectedSet !== "ANY" &&
+            card.set !== selectedSet
+        ) {
+
+            return;
+
+        }
+
+
+        getFinishData(card).forEach(finish => {
+
+            /*
+             * Not Possible finishes cannot
+             * be selected.
+             */
+
+            if (
+                finish.ownership === "Not Possible"
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                ownership !== "any" &&
+                finish.ownership.toLowerCase() !== ownership
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                selectedFinish !== "ANY" &&
+                finish.finish !== selectedFinish
+            ) {
+
+                return;
+
+            }
+
+
+            available.push({
+
+                card: card,
+
+                finish: finish.finish,
+
+                ownership: finish.ownership,
+
+                value: finish.value
+
+            });
+
+        });
+
+    });
+
+
+    if (available.length === 0) {
+
+        document.getElementById("scanner").textContent =
+            "No valid targets found.";
+
+        document.getElementById("result").style.display =
+            "none";
+
+        return;
+
+    }
+
+
+    /*
+     * Pick random target.
+     */
+
+    const target =
+        available[
+            Math.floor(
+                Math.random() * available.length
+            )
+        ];
+
+
+    /*
+     * Scanning animation.
+     */
+
+    const scanner =
+        document.getElementById("scanner");
+
+
+    document.getElementById("result").style.display =
+        "none";
+
+
+    const messages = [
+
+        "Initializing target acquisition...",
+
+        "Searching collection database...",
+
+        "Scanning card registry...",
+
+        "Cross-referencing collection records...",
+
+        "Analyzing ownership status...",
+
+        "Searching for acquisition opportunities...",
+
+        "Comparing card records...",
+
+        "Verifying target parameters...",
+
+        "Establishing target lock..."
+
+    ];
+
+
+    let messageIndex = 0;
+
+
+    const scanInterval =
+        setInterval(() => {
+
+            scanner.textContent =
+                "> " +
+                messages[messageIndex];
+
+
+            messageIndex++;
+
+
+            if (
+                messageIndex >= messages.length
+            ) {
+
+                clearInterval(scanInterval);
+
+
+                setTimeout(() => {
+
+                    revealTarget(target);
+
+                }, 500);
+
+            }
+
+        }, 250);
+
+}
+
+
+/*
+ * Reveal target.
+ */
+
+function revealTarget(target) {
+
+    const card =
+        target.card;
+
+
+    const scanner =
+        document.getElementById("scanner");
+
+
+    scanner.textContent =
+        "> TARGET ACQUIRED";
+
+
+    /*
+     * Display card information.
+     */
+
+    document.getElementById("cardName").textContent =
+        card.name;
+
+
+    document.getElementById("cardNumber").textContent =
+        "Set: " +
+        card.set +
+        " " +
+        card.number;
+
+
+    document.getElementById("cardFinish").textContent =
+        "Finish: " +
+        target.finish;
+
+
+    document.getElementById("cardVariant").textContent =
+        "Variant: " +
+        card.variant;
+
+
+    document.getElementById("cardOwnership").textContent =
+        "Ownership: " +
+        target.ownership;
+
+
+    const value =
+        parseFloat(target.value);
+
+
+    document.getElementById("cardValue").textContent =
+        !isNaN(value)
+            ? "Value: $" + value.toFixed(2)
+            : "Value: No Value";
+
+
+    /*
+     * Build TCGplayer image URL.
+     */
+
+    let imageUrl = "";
+
+
+    if (card.nameLink) {
+
+        const productMatch =
+            card.nameLink.match(
+                /product%3D(\d+)/i
+            ) ||
+            card.nameLink.match(
+                /product%2F(\d+)/i
+            ) ||
+            card.nameLink.match(
+                /product\/(\d+)/i
+            );
+
+
+        if (productMatch) {
+
+            imageUrl =
+                "https://tcgplayer-cdn.tcgplayer.com/product/" +
+                productMatch[1] +
+                "_in_1000x1000.jpg";
+
+        }
+
+    }
+
+
+    /*
+     * Display image if available.
+     */
+
+    const image =
+        document.getElementById("cardImage");
+
+
+    if (imageUrl) {
+
+        image.src =
+            imageUrl;
+
+        image.alt =
+            card.name;
+
+        image.style.display =
+            "block";
+
+    }
+
+    else {
+
+        image.style.display =
+            "none";
+
+    }
+
+
+    /*
+     * Build eBay search.
+     */
+
+    let foilSearchTerm = "";
+
+
+    if (
+        target.finish !== "No Foil"
+    ) {
+
+        foilSearchTerm =
+            " Foil";
+
+    }
+
+
+    const searchTerms =
+        card.name +
+        " " +
+        card.set +
+        " " +
+        card.number +
+        foilSearchTerm;
+
+
+    const ebayUrl =
+        "https://www.ebay.com/sch/i.html" +
+        "?_nkw=" +
+        encodeURIComponent(searchTerms) +
+        "&_sop=15" +
+        "&_blrs=recall_filtering";
+
+
+    document.getElementById("ebayLink").href =
+        ebayUrl;
+
+
+    /*
+     * TCGplayer link.
+     */
+
+    const tcgLink =
+        document.getElementById("tcgLink");
+
+
+    if (card.nameLink) {
+
+        tcgLink.href =
+            card.nameLink;
+
+        tcgLink.style.display =
+            "inline-block";
+
+    }
+
+    else {
+
+        tcgLink.removeAttribute("href");
+
+        tcgLink.style.display =
+            "none";
+
+    }
+
+
+    /*
+     * Show result.
+     */
+
+    document.getElementById("result").style.display =
+        "block";
+
+}
+
+
+document
+    .getElementById("huntButton")
+    .addEventListener(
+        "click",
+        startHunt
+    );
+
+</script>
+
+</body>
+
+</html>
