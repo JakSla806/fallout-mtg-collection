@@ -172,13 +172,6 @@ h1 {
 
 <div class="controls">
 
-<button
-    type="button"
-    id="refreshPricesButton"
->
-    Refresh All Prices
-</button>
-
 <input
     type="text"
     id="searchInput"
@@ -264,10 +257,6 @@ h1 {
 
 let cards = [];
 
-
-const refreshPricesButton =
-    document.getElementById("refreshPricesButton");
-
 const searchInput =
     document.getElementById("searchInput");
 
@@ -297,10 +286,6 @@ const status =
 
 const lastPriceUpdate =
     document.getElementById("lastPriceUpdate");
-
-const PRICE_UPDATER_URL =
-    "https://fallout-price-updater.jaksla-806.workers.dev";
-
 
 fetch("../data/cards.json")
 
@@ -947,14 +932,6 @@ async function loadLastPriceUpdate() {
 
     }
 
-}
-    
-refreshPricesButton.addEventListener(
-    "click",
-    refreshAllPrices
-);
-
-
 searchInput.addEventListener(
     "input",
     renderCards
@@ -989,79 +966,6 @@ sortFilter.addEventListener(
     "change",
     renderCards
 );
-
-
-async function refreshAllPrices() {
-
-    refreshPricesButton.disabled = true;
-
-    refreshPricesButton.textContent =
-        "Updating Prices...";
-
-    status.textContent =
-        "Price update started. This may take several minutes.";
-
-
-    try {
-
-        const response =
-            await fetch(
-                PRICE_UPDATER_URL,
-                {
-                    method: "POST"
-                }
-            );
-
-
-        if (response.status === 409) {
-
-            status.textContent =
-                "A price update is already running.";
-
-            await monitorPriceUpdate();
-
-            return;
-
-        }
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Could not start price update. HTTP " +
-                response.status
-            );
-
-        }
-
-
-        status.textContent =
-            "Price update is running. " +
-            "The button will unlock when it finishes.";
-
-        await monitorPriceUpdate();
-
-    }
-    catch (error) {
-
-        console.error(
-            "Price update error:",
-            error
-        );
-
-        status.textContent =
-            "ERROR: " +
-            error.message;
-
-        refreshPricesButton.disabled =
-            false;
-
-        refreshPricesButton.textContent =
-            "Refresh All Prices";
-
-    }
-
-}
 
 async function monitorPriceUpdate() {
 
