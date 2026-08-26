@@ -287,7 +287,8 @@ const status =
 const lastPriceUpdate =
     document.getElementById("lastPriceUpdate");
 
-fetch("../data/cards.json")
+
+fetch("../data/cards.json?" + Date.now())
 
     .then(response => {
 
@@ -323,8 +324,10 @@ fetch("../data/cards.json")
 
     });
 
+
 loadLastPriceUpdate();
-    
+
+
 function populateFilters() {
 
     const sets =
@@ -773,7 +776,6 @@ function sortResults(results) {
 
     }
 
-
     else if (sort === "priceLow") {
 
         results.sort((a, b) =>
@@ -783,7 +785,6 @@ function sortResults(results) {
 
     }
 
-
     else if (sort === "priceHigh") {
 
         results.sort((a, b) =>
@@ -792,7 +793,6 @@ function sortResults(results) {
         );
 
     }
-
 
     else {
 
@@ -880,6 +880,7 @@ function escapeHtml(value) {
 
 }
 
+
 async function loadLastPriceUpdate() {
 
     try {
@@ -891,10 +892,13 @@ async function loadLastPriceUpdate() {
             );
 
         if (!response.ok) {
+
             throw new Error(
                 "Could not load price update timestamp."
             );
+
         }
+
 
         const data =
             await response.json();
@@ -921,6 +925,7 @@ async function loadLastPriceUpdate() {
             date.toLocaleString();
 
     }
+
     catch (error) {
 
         console.error(
@@ -931,6 +936,9 @@ async function loadLastPriceUpdate() {
             "Last price update: Unknown";
 
     }
+
+}
+
 
 searchInput.addEventListener(
     "input",
@@ -967,119 +975,6 @@ sortFilter.addEventListener(
     renderCards
 );
 
-async function monitorPriceUpdate() {
-
-    const checkStatus =
-        async () => {
-
-            try {
-
-                const response =
-                    await fetch(
-                        PRICE_UPDATER_URL +
-                        "/status?" +
-                        Date.now()
-                    );
-
-
-                if (!response.ok) {
-                    throw new Error(
-                        "Could not check price update status."
-                    );
-                }
-
-
-                const data =
-                    await response.json();
-
-
-                if (data.running) {
-
-                    refreshPricesButton.disabled =
-                        true;
-
-                    refreshPricesButton.textContent =
-                        "Updating Prices...";
-
-                    status.textContent =
-                        "Price update is running. " +
-                        "Please wait.";
-
-                    return false;
-
-                }
-
-
-                return true;
-
-            }
-            catch (error) {
-
-                console.error(
-                    "Status check error:",
-                    error
-                );
-
-                status.textContent =
-                    "Unable to check update status. " +
-                    "The price update may still be running.";
-
-                return false;
-
-            }
-
-        };
-
-
-    let finished = false;
-
-
-    while (!finished) {
-
-        finished =
-            await checkStatus();
-
-
-        if (!finished) {
-
-            await new Promise(
-                resolve =>
-                    setTimeout(
-                        resolve,
-                        10000
-                    )
-            );
-
-        }
-
-    }
-
-
-    refreshPricesButton.disabled =
-        false;
-
-    refreshPricesButton.textContent =
-        "Refresh All Prices";
-
-
-    status.textContent =
-        "Price update finished. " +
-        "Reloading prices...";
-
-
-    await new Promise(
-        resolve =>
-            setTimeout(
-                resolve,
-                5000
-            )
-    );
-
-
-    window.location.reload();
-
-}
-    
 </script>
 
 </body>
