@@ -30,12 +30,34 @@ jobs:
       - name: Save updated prices
         run: |
 
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+
+          timestamp = datetime.now(timezone.utc).isoformat()
+
+          with open(
+              "data/price_update.json",
+              "w",
+              encoding="utf-8"
+          ) as file:
+
+              json.dump(
+                  {
+                      "lastUpdated": timestamp
+                  },
+                  file,
+                  indent=2
+              )
+
+              file.write("\n")
+          PY
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add data/cards.json
+          git add data/cards.json data/price_update.json
 
           git diff --cached --quiet || git commit -m "Update card prices"
 
           git push
-
