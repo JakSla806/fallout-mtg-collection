@@ -166,6 +166,10 @@ h1 {
     Loading card database...
 </p>
 
+<p id="lastPriceUpdate">
+    Checking last price update...
+</p>
+
 <div class="controls">
 
 <button
@@ -291,6 +295,12 @@ const cardGrid =
 const status =
     document.getElementById("status");
 
+const lastPriceUpdate =
+    document.getElementById("lastPriceUpdate");
+
+const PRICE_UPDATER_URL =
+    "https://fallout-price-updater.jaksla-806.workers.dev";
+
 
 fetch("../data/cards.json")
 
@@ -328,7 +338,8 @@ fetch("../data/cards.json")
 
     });
 
-
+loadLastPriceUpdate();
+    
 function populateFilters() {
 
     const sets =
@@ -884,7 +895,60 @@ function escapeHtml(value) {
 
 }
 
+async function loadLastPriceUpdate() {
 
+    try {
+
+        const response =
+            await fetch(
+                "../data/price_update.json?" +
+                Date.now()
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                "Could not load price update timestamp."
+            );
+        }
+
+        const data =
+            await response.json();
+
+
+        if (!data.lastUpdated) {
+
+            lastPriceUpdate.textContent =
+                "Last price update: Unknown";
+
+            return;
+
+        }
+
+
+        const date =
+            new Date(
+                data.lastUpdated
+            );
+
+
+        lastPriceUpdate.textContent =
+            "Last price update: " +
+            date.toLocaleString();
+
+    }
+    catch (error) {
+
+        console.error(
+            error
+        );
+
+        lastPriceUpdate.textContent =
+            "Last price update: Unknown";
+
+    }
+
+}
+    
 refreshPricesButton.addEventListener(
     "click",
     refreshAllPrices
@@ -931,39 +995,51 @@ async function refreshAllPrices() {
 
     refreshPricesButton.disabled = true;
 
-    const originalText =
-        refreshPricesButton.textContent;
-
     refreshPricesButton.textContent =
-        "Starting price update...";
+        "Updating Prices...";
+
+    status.textContent =
+        "Price update started. This may take several minutes.";
+
 
     try {
 
-        const response = await fetch(
-            "https://fallout-price-updater.jaksla-806.workers.dev/",
-            {
-                method: "POST"
-            }
-        );
+        const response =
+            await fetch(
+                PRICE_UPDATER_URL,
+                {
+                    method: "POST"
+                }
+            );
+
+
+        if (response.status === 409) {
+
+            status.textContent =
+                "A price update is already running.";
+
+            await monitorPriceUpdate();
+
+            return;
+
+        }
+
 
         if (!response.ok) {
 
             throw new Error(
-                "Price update request failed. HTTP " +
+                "Could not start price update. HTTP " +
                 response.status
             );
 
         }
 
-        const data =
-            await response.json();
 
         status.textContent =
-            data.message ||
-            "Price update started.";
+            "Price update is running. " +
+            "The button will unlock when it finishes.";
 
-        refreshPricesButton.textContent =
-            "Price Update Started";
+        await monitorPriceUpdate();
 
     }
     catch (error) {
@@ -974,25 +1050,132 @@ async function refreshAllPrices() {
         );
 
         status.textContent =
-            "ERROR: " + error.message;
-
-        refreshPricesButton.textContent =
-            "Refresh Failed";
-
-    }
-
-    setTimeout(() => {
+            "ERROR: " +
+            error.message;
 
         refreshPricesButton.disabled =
             false;
 
         refreshPricesButton.textContent =
-            originalText;
+            "Refresh All Prices";
 
-    }, 5000);
+    }
 
 }
 
+async function monitorPriceUpdate() {
+
+    const checkStatus =
+        async () => {
+
+            try {
+
+                const response =
+                    await fetch(
+                        PRICE_UPDATER_URL +
+                        "/status?" +
+                        Date.now()
+                    );
+
+
+                if (!response.ok) {
+                    throw new Error(
+                        "Could not check price update status."
+                    );
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (data.running) {
+
+                    refreshPricesButton.disabled =
+                        true;
+
+                    refreshPricesButton.textContent =
+                        "Updating Prices...";
+
+                    status.textContent =
+                        "Price update is running. " +
+                        "Please wait.";
+
+                    return false;
+
+                }
+
+
+                return true;
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Status check error:",
+                    error
+                );
+
+                status.textContent =
+                    "Unable to check update status. " +
+                    "The price update may still be running.";
+
+                return false;
+
+            }
+
+        };
+
+
+    let finished = false;
+
+
+    while (!finished) {
+
+        finished =
+            await checkStatus();
+
+
+        if (!finished) {
+
+            await new Promise(
+                resolve =>
+                    setTimeout(
+                        resolve,
+                        10000
+                    )
+            );
+
+        }
+
+    }
+
+
+    refreshPricesButton.disabled =
+        false;
+
+    refreshPricesButton.textContent =
+        "Refresh All Prices";
+
+
+    status.textContent =
+        "Price update finished. " +
+        "Reloading prices...";
+
+
+    await new Promise(
+        resolve =>
+            setTimeout(
+                resolve,
+                5000
+            )
+    );
+
+
+    window.location.reload();
+
+}
+    
 </script>
 
 </body>
