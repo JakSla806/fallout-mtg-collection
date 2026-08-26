@@ -61,3 +61,12 @@ jobs:
           git diff --cached --quiet || git commit -m "Update card prices"
 
           git push
+          
+      - name: Tell Cloudflare update is complete
+              if: always()
+              run: |
+      
+                curl -X POST \
+                  -H "Authorization: Bearer ${{ secrets.COMPLETE_TOKEN }}" \
+                  -H "User-Agent: Fallout-MTG-Collection" \
+                  "https://fallout-price-updater.jaksla-806.workers.dev/complete"
