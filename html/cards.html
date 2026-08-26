@@ -168,12 +168,18 @@ h1 {
 
 <div class="controls">
 
+<button
+    type="button"
+    id="refreshPricesButton"
+>
+    Refresh All Prices
+</button>
+
 <input
     type="text"
     id="searchInput"
     placeholder="Search card name..."
 >
-
 <select id="setFilter">
     <option value="">All Sets</option>
 </select>
@@ -254,6 +260,9 @@ h1 {
 
 let cards = [];
 
+
+const refreshPricesButton =
+    document.getElementById("refreshPricesButton");
 
 const searchInput =
     document.getElementById("searchInput");
@@ -876,6 +885,12 @@ function escapeHtml(value) {
 }
 
 
+refreshPricesButton.addEventListener(
+    "click",
+    refreshAllPrices
+);
+
+
 searchInput.addEventListener(
     "input",
     renderCards
@@ -910,6 +925,73 @@ sortFilter.addEventListener(
     "change",
     renderCards
 );
+
+
+async function refreshAllPrices() {
+
+    refreshPricesButton.disabled = true;
+
+    const originalText =
+        refreshPricesButton.textContent;
+
+    refreshPricesButton.textContent =
+        "Starting price update...";
+
+    try {
+
+        const response = await fetch(
+            "https://fallout-price-updater.jaksla-806.workers.dev/",
+            {
+                method: "POST"
+            }
+        );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Price update request failed. HTTP " +
+                response.status
+            );
+
+        }
+
+        const data =
+            await response.json();
+
+        status.textContent =
+            data.message ||
+            "Price update started.";
+
+        refreshPricesButton.textContent =
+            "Price Update Started";
+
+    }
+    catch (error) {
+
+        console.error(
+            "Price update error:",
+            error
+        );
+
+        status.textContent =
+            "ERROR: " + error.message;
+
+        refreshPricesButton.textContent =
+            "Refresh Failed";
+
+    }
+
+    setTimeout(() => {
+
+        refreshPricesButton.disabled =
+            false;
+
+        refreshPricesButton.textContent =
+            originalText;
+
+    }, 5000);
+
+}
 
 </script>
 
