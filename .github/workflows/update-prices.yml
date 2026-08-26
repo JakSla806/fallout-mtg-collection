@@ -38,3 +38,4 @@ jobs:
           git diff --cached --quiet || git commit -m "Update card prices"
 
           git push
+
