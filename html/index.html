@@ -1,892 +1,406 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fallout MTG Collection</title>
 
-    <meta charset="UTF-8">
+<style>
+*{box-sizing:border-box}
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+:root{
+    --terminal-green:hsl(120,100%,70%);
+    --terminal-green-dark:hsl(120,100%,10%);
+    --terminal-green-glow:hsla(120,100%,70%,0.35)
+}
 
-    <title>Fallout MTG Collection</title>
+html,body{
+    width:100%;
+    height:100%;
+    margin:0;
+    padding:0
+}
 
-    <style>
+body{
+    background:#020502;
+    color:var(--terminal-green);
+    font-family:"Courier New",monospace;
+    overflow:hidden;
+    text-shadow:0 0 3px var(--terminal-green),0 0 7px var(--terminal-green-glow)
+}
 
-    * {
-        box-sizing: border-box;
+/* TERMINAL */
+
+.terminal{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    padding:40px;
+    overflow:hidden;
+    background:radial-gradient(ellipse at center,#102510 0%,#071107 45%,#020402 100%);
+}
+
+.terminal::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:100;
+    background:repeating-linear-gradient(
+        to bottom,
+        rgba(120,255,106,.045) 0px,
+        rgba(120,255,106,.045) 1px,
+        transparent 1px,
+        transparent 4px
+    )
+}
+
+.terminal::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:101;
+    background:radial-gradient(
+        ellipse at center,
+        transparent 45%,
+        rgba(0,0,0,.65) 100%
+    )
+}
+
+.terminal>*{
+    position:relative;
+    z-index:10
+}
+
+/* HEADER */
+
+.header{
+    margin-bottom:30px
+}
+
+.terminal-title{
+    font-size:24px;
+    font-weight:bold;
+    letter-spacing:2px;
+    line-height:1.5;
+    margin-bottom:2px
+}
+
+.system-title{
+    font-size:14px;
+    line-height:1.5;
+    margin-bottom:8px
+}
+
+.robco-version,
+.copyright{
+    font-size:14px;
+    line-height:1.5
+}
+
+/* DIVIDERS */
+
+.divider{
+    width:540px;
+    max-width:100%;
+    margin:20px 0;
+    font-size:15px;
+    line-height:1;
+    white-space:nowrap;
+    overflow:hidden
+}
+
+/* MENU */
+
+.menu-title{
+    font-size:20px;
+    margin-bottom:20px
+}
+
+.menu{
+    display:flex;
+    flex-direction:column;
+    gap:3px
+}
+
+.menu-item{
+    display:grid;
+    grid-template-columns:50px 220px 1fr;
+    gap:10px;
+    width:fit-content;
+    min-width:525px;
+    padding:4px 10px;
+    cursor:pointer;
+    font-size:17px;
+    line-height:1.35;
+    border:none
+}
+
+.menu-item:hover,
+.menu-item.selected{
+    background:var(--terminal-green);
+    color:#020502;
+    text-shadow:none
+}
+
+.menu-number,
+.menu-name{
+    font-weight:bold
+}
+
+/* SYSTEM STATUS */
+
+.system-status{
+    margin-top:35px
+}
+
+.status-title{
+    font-weight:bold;
+    margin-bottom:10px
+}
+
+.status-line{
+    display:flex;
+    gap:10px;
+    font-size:17px;
+    line-height:1.6
+}
+
+.status-label{
+    width:200px
+}
+
+.status-online{
+    font-weight:bold
+}
+
+/* FOOTER */
+
+.footer{
+    margin-top:30px;
+    font-size:14px
+}
+
+.prompt{
+    margin-top:20px
+}
+
+.cursor{
+    display:inline-block;
+    width:10px;
+    height:18px;
+    margin-left:2px;
+    vertical-align:middle;
+    background:var(--terminal-green);
+    animation:blink .8s steps(1) infinite
+}
+
+@keyframes blink{
+    0%,50%{opacity:1}
+    51%,100%{opacity:0}
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+    .terminal{
+        width:100vw;
+        height:100vh;
+        padding:20px
     }
 
-    :root {
-        --terminal-green: hsl(120, 100%, 70%);
-        --terminal-green-dark: hsl(120, 100%, 10%);
-        --terminal-green-glow: hsla(120, 100%, 70%, 0.35);
+    .system-title{
+        font-size:18px
     }
 
-
-    html,
-    body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
+    .menu-item{
+        grid-template-columns:40px 1fr;
+        min-width:0;
+        width:100%
     }
 
-
-    body {
-        background: #020502;
-        color: var(--terminal-green);
-        font-family: "Courier New", monospace;
-        overflow: hidden;
-
-        text-shadow:
-            0 0 3px var(--terminal-green),
-            0 0 7px var(--terminal-green-glow);
+    .status-line{
+        flex-direction:column;
+        gap:2px
     }
 
-    /* =========================================================
-       TERMINAL
-       ========================================================= */
-
-    .terminal {
-
-        position: relative;
-
-        width: 100vw;
-        height: 100vh;
-
-        padding: 40px;
-
-        overflow: hidden;
-
-        background:
-            radial-gradient(
-                ellipse at center,
-                #102510 0%,
-                #071107 45%,
-                #020402 100%
-            );
-
+    .status-label{
+        width:auto
     }
-
-
-    /* =========================================================
-       CRT SCANLINES
-       ========================================================= */
-
-    .terminal::before {
-
-        content: "";
-
-        position: absolute;
-
-        inset: 0;
-
-        pointer-events: none;
-
-        z-index: 100;
-
-        background:
-            repeating-linear-gradient(
-                to bottom,
-                rgba(120, 255, 106, 0.045) 0px,
-                rgba(120, 255, 106, 0.045) 1px,
-                transparent 1px,
-                transparent 4px
-            );
-
-    }
-
-
-    /* =========================================================
-       CRT VIGNETTE
-       ========================================================= */
-
-    .terminal::after {
-
-        content: "";
-
-        position: absolute;
-
-        inset: 0;
-
-        pointer-events: none;
-
-        z-index: 101;
-
-        background:
-            radial-gradient(
-                ellipse at center,
-                transparent 45%,
-                rgba(0, 0, 0, 0.65) 100%
-            );
-
-    }
-
-
-    .terminal > * {
-
-        position: relative;
-
-        z-index: 10;
-
-    }
-
-
-    /* =========================================================
-       HEADER
-       ========================================================= */
-
-    .header {
-
-        margin-bottom: 30px;
-
-    }
-
-
-    .terminal-title {
-
-        font-size: 24px;
-    
-        font-weight: bold;
-    
-        letter-spacing: 2px;
-    
-        line-height: 1.5;
-    
-        margin-bottom: 2px;
-    
-    }
-    
-    
-    .system-title {
-    
-        font-size: 14px;
-    
-        line-height: 1.5;
-    
-        margin-bottom: 8px;
-    
-    }
-    
-    
-    .robco-version {
-    
-        font-size: 14px;
-    
-        line-height: 1.5;
-    
-    }
-    
-    
-    .copyright {
-    
-        font-size: 14px;
-    
-        line-height: 1.5;
-    
-    }
-
-    .terminal-subtitle {
-
-        font-size: 14px;
-    
-        line-height: 1.5;
-    
-    }
-    
-    
-    .system-info {
-    
-        margin-top: 25px;
-    
-        font-size: 14px;
-    
-        line-height: 1.5;
-    
-    }
-            
-
-    /* =========================================================
-       DIVIDERS
-       ========================================================= */
-
-    .divider {
-
-        width: 540px;
-    
-        max-width: 100%;
-    
-        margin: 20px 0;
-    
-        font-size: 15px;
-    
-        line-height: 1;
-    
-        white-space: nowrap;
-    
-        overflow: hidden;
-    
-    }
-
-
-    /* =========================================================
-       MENU
-       ========================================================= */
-
-    .menu-title {
-
-        font-size: 20px;
-
-        margin-bottom: 20px;
-
-    }
-
-
-    .menu {
-
-        display: flex;
-
-        flex-direction: column;
-
-        gap: 3px;
-
-    }
-
-
-    .menu-item {
-
-        display: grid;
-
-        grid-template-columns:
-            50px
-            220px
-            1fr;
-
-        gap: 10px;
-
-        width: fit-content;
-
-        min-width: 525px;
-
-        padding: 4px 10px;
-
-        cursor: pointer;
-
-        font-size: 17px;
-
-        line-height: 1.35;
-
-        border: none;
-
-    }
-
-
-    .menu-item:hover,
-    .menu-item.selected {
-
-        background: var(--terminal-green);
-
-        color: #020502;
-
-        text-shadow: none;
-
-    }
-
-
-    .menu-number {
-
-        font-weight: bold;
-
-    }
-
-
-    .menu-name {
-
-        font-weight: bold;
-
-    }
-
-
-    .menu-description {
-
-        opacity: 0.9;
-
-    }
-
-
-    /* =========================================================
-       SYSTEM STATUS
-       ========================================================= */
-
-    .system-status {
-
-        margin-top: 35px;
-
-    }
-
-
-    .status-title {
-
-        font-weight: bold;
-
-        margin-bottom: 10px;
-
-    }
-
-
-    .status-line {
-
-        display: flex;
-
-        gap: 10px;
-
-        font-size: 17px;
-
-        line-height: 1.6;
-
-    }
-
-
-    .status-label {
-
-        width: 200px;
-
-    }
-
-
-    .status-online {
-
-        font-weight: bold;
-
-    }
-
-
-    /* =========================================================
-       FOOTER
-       ========================================================= */
-
-    .footer {
-
-        margin-top: 30px;
-
-        font-size: 14px;
-
-    }
-
-
-    .prompt {
-
-        margin-top: 20px;
-
-    }
-
-
-    .cursor {
-
-        display: inline-block;
-
-        width: 10px;
-
-        height: 18px;
-
-        margin-left: 2px;
-
-        vertical-align: middle;
-
-        background: var(--terminal-green);
-
-        animation:
-            blink 0.8s steps(1) infinite;
-
-    }
-
-
-    @keyframes blink {
-
-        0%,
-        50% {
-            opacity: 1;
-        }
-
-        51%,
-        100% {
-            opacity: 0;
-        }
-
-    }
-
-
-    /* =========================================================
-       MOBILE
-       ========================================================= */
-
-    @media (max-width: 700px) {
-
-        .terminal {
-
-            width: 100vw;
-
-            height: 100vh;
-
-            padding: 20px;
-
-        }
-
-
-        .system-title {
-
-            font-size: 18px;
-
-        }
-
-
-        .menu-item {
-
-            grid-template-columns:
-                40px
-                1fr;
-
-            min-width: 0;
-
-            width: 100%;
-
-        }
-
-
-        .menu-description {
-
-            grid-column: 2;
-
-        }
-
-
-        .status-line {
-
-            flex-direction: column;
-
-            gap: 2px;
-
-        }
-
-
-        .status-label {
-
-            width: auto;
-
-        }
-
-    }
-
+}
 </style>
-
 </head>
-
 
 <body>
 
 <div class="terminal">
-    
+
     <div class="header">
-    
-        <div class="terminal-title">
-            COLLECTION MANAGEMENT TERMINAL
-        </div>
-    
-        <div class="system-title">
-            ROBCO INDUSTRIES UNIFIED OPERATING SYSTEM
-        </div>
-    
-        <div class="robco-version">
-            RobCoOS v.85
-        </div>
-    
-        <div class="copyright">
-            COPYRIGHT 2075-2077 ROBCO INDUSTRIES
-        </div>
-    
+        <div class="terminal-title">COLLECTION MANAGEMENT TERMINAL</div>
+        <div class="system-title">ROBCO INDUSTRIES UNIFIED OPERATING SYSTEM</div>
+        <div class="robco-version">RobCoOS v.85</div>
+        <div class="copyright">COPYRIGHT 2075-2077 ROBCO INDUSTRIES</div>
     </div>
 
+    <div class="divider">============================================================</div>
 
-<div class="divider">
-    ============================================================
-</div>
-    
-    <div class="menu-title">
-        >> AVAILABLE PROGRAMS
-    </div>
-
+    <div class="menu-title">>> AVAILABLE PROGRAMS</div>
 
     <div class="menu">
 
-        <div
-            class="menu-item selected"
-            data-page="statistics.html"
-            data-key="1"
-        >
-    
-            <div class="menu-number">
-                >
-            </div>
-    
-            <div class="menu-name">
-                STATISTICS.EXE
-            </div>
-    
+        <div class="menu-item selected" data-page="statistics.html" data-key="1">
+            <div class="menu-number">></div>
+            <div class="menu-name">STATISTICS.EXE</div>
         </div>
-    
-    
-        <div
-            class="menu-item"
-            data-page="cards.html"
-            data-key="2"
-        >
-    
-            <div class="menu-number">
-                >
-            </div>
-    
-            <div class="menu-name">
-                CARD_DATABASE.EXE
-            </div>
-    
-        </div>
-    
-    
-        <div
-            class="menu-item"
-            data-page="packs.html"
-            data-key="3"
-        >
-    
-            <div class="menu-number">
-                >
-            </div>
-    
-            <div class="menu-name">
-                SEALED_PRODUCTS.EXE
-            </div>
-    
-        </div>
-    
-    
-        <div
-            class="menu-item"
-            data-page="price-search.html"
-            data-key="4"
-        >
-    
-            <div class="menu-number">
-                >
-            </div>
-    
-            <div class="menu-name">
-                PRICE_ANALYSIS.EXE
-            </div>
-    
-        </div>
-    
-    
-        <div
-            class="menu-item"
-            data-page="deal-hunter.html"
-            data-key="5"
-        >
-    
-            <div class="menu-number">
-                >
-            </div>
-    
-            <div class="menu-name">
-                DEAL_HUNTER.EXE
-            </div>
-    
-        </div>
-    
-    
-        <div
-            class="menu-item"
-            data-page="card-lot-search.html"
-            data-key="6"
-        >
-    
-            <div class="menu-number">
-                >
-            </div>
-    
-            <div class="menu-name">
-                BULK_LOT_RESEARCH.EXE
-            </div>
-    
-        </div>
-    
-</div>
 
-    <div class="divider">
-        ============================================================
+        <div class="menu-item" data-page="cards.html" data-key="2">
+            <div class="menu-number">></div>
+            <div class="menu-name">CARD_DATABASE.EXE</div>
+        </div>
+
+        <div class="menu-item" data-page="packs.html" data-key="3">
+            <div class="menu-number">></div>
+            <div class="menu-name">SEALED_PRODUCTS.EXE</div>
+        </div>
+
+        <div class="menu-item" data-page="price-search.html" data-key="4">
+            <div class="menu-number">></div>
+            <div class="menu-name">PRICE_ANALYSIS.EXE</div>
+        </div>
+
+        <div class="menu-item" data-page="deal-hunter.html" data-key="5">
+            <div class="menu-number">></div>
+            <div class="menu-name">DEAL_HUNTER.EXE</div>
+        </div>
+
+        <div class="menu-item" data-page="card-lot-search.html" data-key="6">
+            <div class="menu-number">></div>
+            <div class="menu-name">BULK_LOT_RESEARCH.EXE</div>
+        </div>
+
     </div>
 
+    <div class="divider">============================================================</div>
 
     <div class="system-status">
 
-    <div class="status-title">
-        SYSTEM STATUS
-    </div>
+        <div class="status-title">SYSTEM STATUS</div>
 
-    <div class="status-line">
-
-        <div class="status-label">
-            CARD DATABASE:
+        <div class="status-line">
+            <div class="status-label">CARD DATABASE:</div>
+            <div class="status-online">ONLINE</div>
         </div>
 
-        <div class="status-online">
-            ONLINE
+        <div class="status-line">
+            <div class="status-label">NETWORK LINK:</div>
+            <div class="status-online">ONLINE</div>
         </div>
 
-    </div>
-
-
-    <div class="status-line">
-
-        <div class="status-label">
-            NETWORK LINK:
+        <div class="status-line">
+            <div class="status-label">MARKET CONNECTION:</div>
+            <div class="status-online">ONLINE</div>
         </div>
 
-        <div class="status-online">
-            ONLINE
+        <div class="status-line">
+            <div class="status-label">CLOUD STORAGE:</div>
+            <div>OFFLINE</div>
         </div>
 
-    </div>
-
-
-    <div class="status-line">
-
-        <div class="status-label">
-            MARKET CONNECTION:
-        </div>
-
-        <div class="status-online">
-            ONLINE
+        <div class="status-line">
+            <div class="status-label">REMOTE ACCESS:</div>
+            <div>OFFLINE</div>
         </div>
 
     </div>
-
-
-    <div class="status-line">
-
-        <div class="status-label">
-            CLOUD STORAGE:
-        </div>
-
-        <div>
-            OFFLINE
-        </div>
-
-    </div>
-
-
-    <div class="status-line">
-
-        <div class="status-label">
-            REMOTE ACCESS:
-        </div>
-
-        <div>
-            OFFLINE
-        </div>
-
-    </div>
-
-</div>
-
 
     <div class="footer">
-
         <div class="prompt">
-    
             ENTER SELECTION:
-            <span id="selectionName">STATISTICS</span>
+            <span id="selectionName">STATISTICS.EXE</span>
             <span class="cursor"></span>
-    
         </div>
-    
     </div>
 
 </div>
 
-
 <script>
+const menuItems=Array.from(document.querySelectorAll(".menu-item"));
+let selectedIndex=0;
 
-    const menuItems =
-        Array.from(
-            document.querySelectorAll(".menu-item")
-        );
+function updateSelection(){
+    menuItems.forEach((item,index)=>{
+        item.classList.toggle("selected",index===selectedIndex);
+    });
 
-    let selectedIndex = 0;
+    const selectionName=document.getElementById("selectionName");
 
+    if(selectionName){
+        selectionName.textContent=menuItems[selectedIndex]
+            .querySelector(".menu-name")
+            .textContent
+            .trim();
+    }
+}
 
-    function updateSelection() {
+function openSelected(){
+    const page=menuItems[selectedIndex].dataset.page;
+    if(page) window.location.href=page;
+}
 
-        menuItems.forEach(
-            (item, index) => {
-    
-                item.classList.toggle(
-                    "selected",
-                    index === selectedIndex
-                );
-    
-            }
-        );
-    
-    
-        const selectionName =
-            document.getElementById(
-                "selectionName"
-            );
-    
-    
-        if (selectionName) {
-    
-            selectionName.textContent =
-                menuItems[selectedIndex]
-                    .querySelector(".menu-name")
-                    .textContent
-                    .trim();
-    
+function openItem(item){
+    const page=item.dataset.page;
+    if(page) window.location.href=page;
+}
+
+document.addEventListener("keydown",event=>{
+
+    if(event.key>="1"&&event.key<="6"){
+        const index=Number(event.key)-1;
+
+        if(menuItems[index]){
+            selectedIndex=index;
+            updateSelection();
+            openSelected();
         }
-    
+
+        return;
     }
 
-    function openSelected() {
-
-        const page =
-            menuItems[selectedIndex]
-                .dataset.page;
-
-        if (page) {
-            window.location.href = page;
-        }
-
+    if(event.key==="ArrowUp"){
+        event.preventDefault();
+        selectedIndex=(selectedIndex-1+menuItems.length)%menuItems.length;
+        updateSelection();
+        return;
     }
 
-
-    function openItem(item) {
-
-        const page =
-            item.dataset.page;
-
-        if (page) {
-            window.location.href = page;
-        }
-
+    if(event.key==="ArrowDown"){
+        event.preventDefault();
+        selectedIndex=(selectedIndex+1)%menuItems.length;
+        updateSelection();
+        return;
     }
 
+    if(event.key==="Enter"){
+        event.preventDefault();
+        openSelected();
+    }
+});
 
-    document.addEventListener(
-        "keydown",
-        event => {
+menuItems.forEach((item,index)=>{
 
-            if (
-                event.key >= "1" &&
-                event.key <= "6"
-            ) {
+    item.addEventListener("mouseenter",()=>{
+        selectedIndex=index;
+        updateSelection();
+    });
 
-                const index =
-                    Number(event.key) - 1;
+    item.addEventListener("click",()=>{
+        selectedIndex=index;
+        openItem(item);
+    });
 
-                if (menuItems[index]) {
-
-                    selectedIndex = index;
-
-                    updateSelection();
-
-                    openSelected();
-
-                }
-
-                return;
-            }
-
-
-            if (event.key === "ArrowUp") {
-
-                event.preventDefault();
-
-                selectedIndex =
-                    (
-                        selectedIndex -
-                        1 +
-                        menuItems.length
-                    ) %
-                    menuItems.length;
-
-                updateSelection();
-
-                return;
-            }
-
-
-            if (event.key === "ArrowDown") {
-
-                event.preventDefault();
-
-                selectedIndex =
-                    (
-                        selectedIndex +
-                        1
-                    ) %
-                    menuItems.length;
-
-                updateSelection();
-
-                return;
-            }
-
-
-            if (event.key === "Enter") {
-
-                event.preventDefault();
-
-                openSelected();
-
-            }
-
-        }
-    );
-
-
-    menuItems.forEach(
-        (item, index) => {
-
-            item.addEventListener(
-                "mouseenter",
-                () => {
-
-                    selectedIndex = index;
-
-                    updateSelection();
-
-                }
-            );
-
-
-            item.addEventListener(
-                "click",
-                () => {
-
-                    selectedIndex = index;
-
-                    openItem(item);
-
-                }
-            );
-
-        }
-    );
-
+});
 </script>
 
 </body>
-
 </html>
