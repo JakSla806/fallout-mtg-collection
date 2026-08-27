@@ -165,11 +165,33 @@ body{
     margin:20px 0 10px 0;
 }
 
-.controls{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-    margin-bottom:20px;
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.top-menu-button {
+    margin-left: auto;
+    padding: 8px 16px;
+    border: 1px solid var(--terminal-green);
+    color: var(--terminal-green);
+    background: transparent;
+    font-family: "Courier New", monospace;
+    font-size: 15px;
+    text-decoration: none;
+    text-shadow: 0 0 4px var(--terminal-green);
+    box-shadow: 0 0 5px rgba(120,255,106,.3);
+    cursor: pointer;
+}
+
+.top-menu-button:hover {
+    background: var(--terminal-green);
+    color: #020502;
+    text-shadow: none;
+    box-shadow: 0 0 12px rgba(120,255,106,.8);
 }
 
 .controls input,
@@ -791,23 +813,30 @@ body{
             <option value="number">
                 Sort: Number
             </option>
-
+        
             <option value="name">
                 Sort: Name
             </option>
-
+        
             <option value="priceLow">
                 Sort: Price Low to High
             </option>
-
+        
             <option value="priceHigh">
                 Sort: Price High to Low
             </option>
-
+        
         </select>
-
-
-    </div>
+        
+        <button
+            type="button"
+            class="top-menu-button"
+            onclick="window.location.href='index.html'"
+        >
+            &gt; MAIN MENU
+        </button>
+        
+        </div>
 
 
     <div class="divider">
