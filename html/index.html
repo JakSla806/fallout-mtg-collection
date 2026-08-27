@@ -21,7 +21,7 @@
 
     :root {
         --terminal-green: hsl(120, 100%, 70%);
-        --terminal-green-dark: hsl(120, 100%, 8%);
+        --terminal-green-dark: hsl(120, 100%, 10%);
         --terminal-green-glow: hsla(120, 100%, 70%, 0.35);
     }
 
@@ -45,52 +45,6 @@
             0 0 3px var(--terminal-green),
             0 0 7px var(--terminal-green-glow);
     }
-
-
-    /* =========================================================
-       COLOR CONTROL
-       ========================================================= */
-
-    .color-control {
-
-        position: fixed;
-
-        top: 15px;
-        right: 20px;
-
-        z-index: 200;
-
-        display: flex;
-        align-items: center;
-
-        gap: 10px;
-
-        padding: 8px 12px;
-
-        border: 1px solid var(--terminal-green);
-
-        background: rgba(0, 10, 0, 0.85);
-
-        color: var(--terminal-green);
-
-        font-size: 12px;
-
-        box-shadow:
-            0 0 8px var(--terminal-green-glow);
-
-    }
-
-
-    .color-control label {
-        white-space: nowrap;
-    }
-
-
-    .color-control input {
-        width: 140px;
-        accent-color: var(--terminal-green);
-    }
-
 
     /* =========================================================
        TERMINAL
@@ -488,22 +442,6 @@
 
 <body>
 
-<div class="color-control">
-
-    <label for="greenSlider">
-        TERMINAL COLOR
-    </label>
-
-    <input
-        type="range"
-        id="greenSlider"
-        min="35"
-        max="70"
-        value="70"
-    >
-
-</div>
-
 <div class="terminal">
 
     <div class="header">
@@ -741,37 +679,6 @@
 
 
 <script>
-
-    const greenSlider =
-        document.getElementById("greenSlider");
-
-    greenSlider.addEventListener(
-        "input",
-        () => {
-
-            const lightness =
-                greenSlider.value;
-
-            document.documentElement.style
-                .setProperty(
-                    "--terminal-green",
-                    `hsl(120, 100%, ${lightness}%)`
-                );
-
-            document.documentElement.style
-                .setProperty(
-                    "--terminal-green-dark",
-                    `hsl(120, 100%, ${lightness * 0.15}%)`
-                );
-
-            document.documentElement.style
-                .setProperty(
-                    "--terminal-green-glow",
-                    `hsla(120, 100%, ${lightness}%, 0.35)`
-                );
-
-        }
-    );
 
     const menuItems =
         Array.from(
