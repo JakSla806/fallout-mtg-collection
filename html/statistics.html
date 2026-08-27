@@ -13,314 +13,208 @@
 <title>Statistics | Fallout MTG Collection</title>
 
 <style>
+*{box-sizing:border-box}
 
-* {
-    box-sizing: border-box;
+:root{
+    --terminal-green:hsl(120,100%,70%);
+    --terminal-green-glow:hsla(120,100%,70%,0.35)
 }
 
-body {
-
-    margin: 0;
-
-    background:
-        radial-gradient(
-            circle at center,
-            #071207 0%,
-            #020602 70%,
-            #000000 100%
-        );
-
-    color: #39ff14;
-
-    font-family:
-        "Courier New",
-        Courier,
-        monospace;
-
-    min-height: 100vh;
-
-    padding: 30px;
-
-    text-shadow:
-        0 0 4px #39ff14,
-        0 0 10px rgba(57, 255, 20, 0.35);
+html,body{
+    width:100%;
+    height:100%;
+    margin:0;
+    padding:0
 }
 
+body{
+    background:#020502;
+    color:var(--terminal-green);
+    font-family:"Courier New",monospace;
+    overflow:hidden;
+    text-shadow:0 0 3px var(--terminal-green),0 0 7px var(--terminal-green-glow)
+}
 
 /* TERMINAL */
 
-.terminal {
-
-    width: 100%;
-
-    max-width: 1100px;
-
-    margin: 0 auto;
-
-    border: 2px solid #39ff14;
-
-    box-shadow:
-        0 0 10px rgba(57, 255, 20, 0.5),
-        inset 0 0 25px rgba(57, 255, 20, 0.05);
-
-    background:
-        rgba(0, 10, 0, 0.94);
-
-    min-height: calc(100vh - 60px);
-
-    padding: 25px;
+.terminal{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    padding:40px;
+    overflow:hidden;
+    background:radial-gradient(ellipse at center,#102510 0%,#071107 45%,#020402 100%);
 }
 
-
-/* TOP BAR */
-
-.terminal-path {
-
-    border-bottom: 1px solid #39ff14;
-
-    padding-bottom: 12px;
-
-    margin-bottom: 20px;
-
-    font-size: 16px;
-
-    overflow-wrap: anywhere;
+.terminal::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:100;
+    background:repeating-linear-gradient(
+        to bottom,
+        rgba(120,255,106,.045) 0px,
+        rgba(120,255,106,.045) 1px,
+        transparent 1px,
+        transparent 4px
+    )
 }
 
-
-.terminal-title {
-
-    font-size: 22px;
-
-    font-weight: bold;
-
-    margin-bottom: 5px;
+.terminal::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:101;
+    background:radial-gradient(
+        ellipse at center,
+        transparent 45%,
+        rgba(0,0,0,.65) 100%
+    )
 }
 
-
-.terminal-subtitle {
-
-    color: #2dcc10;
-
-    font-size: 14px;
-
-    margin-bottom: 25px;
+.terminal>*{
+    position:relative;
+    z-index:10
 }
 
+/* HEADER */
+
+.header{
+    margin-bottom:30px
+}
+
+.terminal-title{
+    font-size:24px;
+    font-weight:bold;
+    letter-spacing:2px;
+    line-height:1.5;
+    margin-bottom:2px
+}
+
+.system-title{
+    font-size:14px;
+    line-height:1.5;
+    margin-bottom:8px
+}
+
+.robco-version,
+.copyright{
+    font-size:14px;
+    line-height:1.5
+}
+
+/* DIVIDERS */
+
+.page-title{
+    font-size:20px;
+    margin-bottom:20px
+}
+    
+.divider{
+    width:540px;
+    max-width:100%;
+    margin:20px 0;
+    font-size:15px;
+    line-height:1;
+    white-space:nowrap;
+    overflow:hidden
+}
 
 /* STATISTICS */
 
-.statistics {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 8px;
-
-    font-size: 17px;
-
-    line-height: 1.5;
+.statistics{
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+    font-size:17px;
+    line-height:1.35
 }
 
-
-.stat-line {
-
-    display: grid;
-
-    grid-template-columns: 340px 1fr;
-
-    column-gap: 15px;
-
-    padding: 3px 0;
-
-    white-space: normal;
+.stat-line{
+    display:grid;
+    grid-template-columns:340px 1fr;
+    gap:10px;
+    width:fit-content;
+    min-width:525px;
+    padding:4px 10px
 }
 
-
-.stat-label {
-
-    font-weight: bold;
+.stat-label{
+    font-weight:bold
 }
 
-
-.stat-label::before {
-
-    content: "> ";
-
+.stat-label::before{
+    content:"> "
 }
 
-
-.stat-value {
-
-    text-align: left;
+.stat-value{
+    text-align:left
 }
-
 
 /* SECTION BREAK */
 
-.separator {
-
-    margin: 18px 0;
-
-    color: #2dcc10;
-
-    overflow: hidden;
-
-    white-space: nowrap;
+.separator{
+    width:540px;
+    max-width:100%;
+    margin:14px 0;
+    font-size:15px;
+    line-height:1;
+    white-space:nowrap;
+    overflow:hidden
 }
 
-/* EXIT BUTTON */
-
-.exit-button {
-
-    display: inline-block;
-
-    margin-top: 25px;
-
-    padding: 8px 16px;
-
-    border: 1px solid #39ff14;
-
-    color: #39ff14;
-
-    background: transparent;
-
-    font-family:
-        "Courier New",
-        Courier,
-        monospace;
-
-    font-size: 15px;
-
-    text-decoration: none;
-
-    text-shadow:
-        0 0 4px #39ff14;
-
-    box-shadow:
-        0 0 5px rgba(57, 255, 20, 0.3);
-
-    cursor: pointer;
-}
-
-
-.exit-button:hover {
-
-    background: #39ff14;
-
-    color: #000;
-
-    text-shadow: none;
-
-    box-shadow:
-        0 0 12px rgba(57, 255, 20, 0.8);
-
-}
-    
 /* FOOTER */
 
-.terminal-footer {
-
-    margin-top: 30px;
-
-    padding-top: 15px;
-
-    border-top: 1px solid #39ff14;
-
-    font-size: 14px;
-
-    color: #2dcc10;
+.terminal-footer{
+    margin-top:30px;
+    font-size:14px
 }
 
-
-.cursor {
-
-    display: inline-block;
-
-    width: 10px;
-
-    height: 18px;
-
-    background: #39ff14;
-
-    margin-left: 5px;
-
-    vertical-align: middle;
-
-    box-shadow:
-        0 0 6px #39ff14;
-
-    animation: blink 1s steps(1) infinite;
+.cursor{
+    display:inline-block;
+    width:10px;
+    height:18px;
+    margin-left:2px;
+    vertical-align:middle;
+    background:var(--terminal-green);
+    animation:blink .8s steps(1) infinite
 }
 
-
-@keyframes blink {
-
-    0%,
-    49% {
-        opacity: 1;
-    }
-
-    50%,
-    100% {
-        opacity: 0;
-    }
-
+@keyframes blink{
+    0%,50%{opacity:1}
+    51%,100%{opacity:0}
 }
-
 
 /* MOBILE */
 
-@media (max-width: 700px) {
-
-    body {
-
-        padding: 10px;
-
+@media(max-width:700px){
+    .terminal{
+        width:100vw;
+        height:100vh;
+        padding:20px
     }
 
-
-    .terminal {
-
-        min-height: calc(100vh - 20px);
-
-        padding: 15px;
-
+    .system-title{
+        font-size:18px
     }
 
-
-    .stat-line {
-
-        grid-template-columns: 1fr;
-
-        gap: 0;
-
+    .stat-line{
+        grid-template-columns:1fr;
+        min-width:0;
+        width:100%;
+        gap:0
     }
 
-
-    .stat-value {
-
-        padding-left: 20px;
-
+    .stat-value{
+        padding-left:20px
     }
 
-
-    .terminal-title {
-
-        font-size: 18px;
-
+    .statistics{
+        font-size:15px
     }
-
-
-    .statistics {
-
-        font-size: 15px;
-
-    }
-
 }
-
 </style>
 
 </head>
@@ -332,24 +226,34 @@ body {
 <div class="terminal">
 
 
-    <div class="terminal-path">
+    <div class="header">
 
-        C:\FALLOUT\MTG\COLLECTION\STATISTICS.EXE
-
+        <div class="terminal-title">
+            COLLECTION MANAGEMENT TERMINAL
+        </div>
+    
+        <div class="system-title">
+            ROBCO INDUSTRIES UNIFIED OPERATING SYSTEM
+        </div>
+    
+        <div class="robco-version">
+            RobCoOS v 1.61
+        </div>
+    
+        <div class="copyright">
+            COPYRIGHT 2075-2077 ROBCO INDUSTRIES
+        </div>
+    
     </div>
-
-
-    <div class="terminal-title">
-
-        FALLOUT MTG COLLECTION DATABASE
-
+    
+    
+    <div class="divider">
+        ============================================================
     </div>
-
-
-    <div class="terminal-subtitle">
-
-        STATISTICAL ANALYSIS TERMINAL
-
+    
+    
+    <div class="page-title">
+        >> STATISTICS.EXE
     </div>
 
 
@@ -677,20 +581,15 @@ body {
 
     <div class="terminal-footer">
 
-    &gt; STATISTICS ANALYSIS COMPLETE
-
-    <span class="cursor"></span>
-
-    <br>
-
-    <a
-        href="index.html"
-        class="exit-button"
-    >
-        &gt; EXIT TO MAIN MENU
-    </a>
-
-</div>
+        &gt; STATISTICS ANALYSIS COMPLETE
+    
+        <span class="cursor"></span>
+    
+        <br><br>
+    
+        &gt; <a href="index.html">RETURN TO MAIN MENU</a>
+    
+    </div>
 
 
 </div>
