@@ -31,7 +31,7 @@ body{
     background:#020502;
     color:var(--terminal-green);
     font-family:"Courier New",monospace;
-    overflow:hidden;
+    overflow:auto;
     text-shadow:0 0 3px var(--terminal-green),0 0 7px var(--terminal-green-glow)
 }
 
@@ -40,7 +40,7 @@ body{
 .terminal{
     position:relative;
     width:100vw;
-    height:100vh;
+    min-height:100vh;
     padding:40px;
     overflow:hidden;
     background:radial-gradient(ellipse at center,#102510 0%,#071107 45%,#020402 100%);
@@ -172,6 +172,25 @@ body{
     font-size:14px
 }
 
+.return-button{
+    display:inline-block;
+    padding:4px 10px;
+    border:none;
+    background:transparent;
+    color:var(--terminal-green);
+    font-family:"Courier New",monospace;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    text-shadow:0 0 3px var(--terminal-green),0 0 7px var(--terminal-green-glow)
+}
+
+.return-button:hover{
+    background:var(--terminal-green);
+    color:#020502;
+    text-shadow:none
+}
+    
 .cursor{
     display:inline-block;
     width:10px;
@@ -587,10 +606,14 @@ body{
     
         <br><br>
     
-        &gt; <a href="index.html">RETURN TO MAIN MENU</a>
+        <button
+            class="return-button"
+            onclick="window.location.href='index.html'"
+        >
+            &gt; RETURN TO MAIN MENU
+        </button>
     
     </div>
-
 
 </div>
 
