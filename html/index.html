@@ -18,27 +18,126 @@
             box-sizing: border-box;
         }
 
+       :root {
+            --terminal-green: hsl(120, 100%, 60%);
+            --terminal-green-dark: hsl(120, 100%, 8%);
+            --terminal-green-glow: hsla(120, 100%, 60%, 0.35);
+        }
+        
         body {
             margin: 0;
             min-height: 100vh;
-            background: #000;
-            color: #33ff33;
+            background:
+                radial-gradient(
+                    ellipse at center,
+                    #071507 0%,
+                    #020602 65%,
+                    #000 100%
+                );
+            color: var(--terminal-green);
             font-family: "Courier New", monospace;
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
+            position: relative;
         }
 
+        .color-control {
+            position: fixed;
+            top: 15px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border: 1px solid var(--terminal-green);
+            background: rgba(0, 10, 0, 0.85);
+            color: var(--terminal-green);
+            font-size: 12px;
+            box-shadow:
+                0 0 8px var(--terminal-green-glow);
+        }
+        
+        .color-control label {
+            white-space: nowrap;
+        }
+        
+        .color-control input {
+            width: 140px;
+            accent-color: var(--terminal-green);
+        }
+        
         .terminal {
             width: min(900px, 90vw);
             min-height: 600px;
-            border: 2px solid #33ff33;
+            position: relative;
+            overflow: hidden;
+        
+            border: 2px solid var(--terminal-green);
+            border-radius: 4% / 3%;
+        
             padding: 30px;
+        
+            background:
+                radial-gradient(
+                    ellipse at center,
+                    rgba(20, 80, 20, 0.18) 0%,
+                    rgba(0, 15, 0, 0.08) 55%,
+                    rgba(0, 0, 0, 0.35) 100%
+                );
+        
             box-shadow:
-                0 0 10px #33ff33,
-                inset 0 0 20px rgba(51, 255, 51, 0.15);
+                0 0 10px var(--terminal-green-glow),
+                0 0 30px rgba(0, 255, 0, 0.08),
+                inset 0 0 30px rgba(51, 255, 51, 0.12),
+                inset 0 0 80px rgba(0, 0, 0, 0.45);
+        
+            transform: perspective(1200px) scale(1.01);
         }
 
+        .terminal::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50;
+        
+            background:
+                repeating-linear-gradient(
+                    to bottom,
+                    rgba(0, 0, 0, 0.00) 0px,
+                    rgba(0, 0, 0, 0.00) 2px,
+                    rgba(0, 0, 0, 0.16) 3px
+                );
+        
+            opacity: 0.65;
+        }
+
+        .terminal::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 60;
+        
+            background:
+                radial-gradient(
+                    ellipse at center,
+                    transparent 55%,
+                    rgba(0, 0, 0, 0.08) 72%,
+                    rgba(0, 0, 0, 0.28) 100%
+                );
+        
+            border-radius: inherit;
+        }
+
+        .terminal > * {
+            position: relative;
+            z-index: 10;
+        }
+                
         .header {
             margin-bottom: 30px;
         }
@@ -55,7 +154,8 @@
 
         .divider {
             margin: 20px 0;
-            border-top: 1px solid #33ff33;
+            border-top: 1px solid var(--terminal-green);
+            box-shadow: 0 0 4px var(--terminal-green-glow);
         }
 
         .menu-title {
@@ -80,8 +180,9 @@
 
         .menu-item:hover,
         .menu-item.selected {
-            background: #33ff33;
+            background: var(--terminal-green);
             color: #000;
+            box-shadow: 0 0 8px var(--terminal-green-glow);
         }
 
         .menu-number {
@@ -127,11 +228,12 @@
             margin-top: 20px;
         }
 
-        .cursor {
+       .cursor {
             display: inline-block;
             width: 10px;
             height: 18px;
-            background: #33ff33;
+            background: var(--terminal-green);
+            box-shadow: 0 0 8px var(--terminal-green-glow);
             vertical-align: middle;
             animation: blink 1s steps(1) infinite;
         }
@@ -183,6 +285,22 @@
 
 
 <body>
+
+<div class="color-control">
+
+    <label for="greenSlider">
+        TERMINAL COLOR
+    </label>
+
+    <input
+        type="range"
+        id="greenSlider"
+        min="35"
+        max="70"
+        value="60"
+    >
+
+</div>
 
 <div class="terminal">
 
@@ -421,6 +539,37 @@
 
 
 <script>
+
+    const greenSlider =
+        document.getElementById("greenSlider");
+
+    greenSlider.addEventListener(
+        "input",
+        () => {
+
+            const lightness =
+                greenSlider.value;
+
+            document.documentElement.style
+                .setProperty(
+                    "--terminal-green",
+                    `hsl(120, 100%, ${lightness}%)`
+                );
+
+            document.documentElement.style
+                .setProperty(
+                    "--terminal-green-dark",
+                    `hsl(120, 100%, ${lightness * 0.15}%)`
+                );
+
+            document.documentElement.style
+                .setProperty(
+                    "--terminal-green-glow",
+                    `hsla(120, 100%, ${lightness}%, 0.35)`
+                );
+
+        }
+    );
 
     const menuItems =
         Array.from(
