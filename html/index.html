@@ -177,13 +177,19 @@
     .divider {
 
         width: 525px;
-
+    
         max-width: 100%;
-
+    
         margin: 20px 0;
-
-        border-top: 1px solid var(--terminal-green);
-
+    
+        font-size: 15px;
+    
+        line-height: 1;
+    
+        white-space: nowrap;
+    
+        overflow: hidden;
+    
     }
 
 
@@ -458,6 +464,8 @@
 
 
     <div class="divider"></div>
+        ================================================
+    </div>
 
 
     <div class="menu-title">
@@ -474,7 +482,7 @@
         >
 
             <div class="menu-number">
-                [1]
+                >
             </div>
 
             <div class="menu-name">
@@ -596,6 +604,8 @@
 
 
     <div class="divider"></div>
+        ================================================
+    </div>
 
 
     <div class="system-status">
@@ -660,19 +670,14 @@
 
     <div class="footer">
 
-        [1-6] SELECT
-        &nbsp;&nbsp;
-        [ARROW UP/DOWN] MOVE
-        &nbsp;&nbsp;
-        [ENTER] OPEN
-
         <div class="prompt">
-
+    
             ENTER SELECTION:
+            <span id="selectionName">STATISTICS</span>
             <span class="cursor"></span>
-
+    
         </div>
-
+    
     </div>
 
 </div>
@@ -692,17 +697,33 @@
 
         menuItems.forEach(
             (item, index) => {
-
+    
                 item.classList.toggle(
                     "selected",
                     index === selectedIndex
                 );
-
+    
             }
         );
-
+    
+    
+        const selectionName =
+            document.getElementById(
+                "selectionName"
+            );
+    
+    
+        if (selectionName) {
+    
+            selectionName.textContent =
+                menuItems[selectedIndex]
+                    .querySelector(".menu-name")
+                    .textContent
+                    .trim();
+    
+        }
+    
     }
-
 
     function openSelected() {
 
