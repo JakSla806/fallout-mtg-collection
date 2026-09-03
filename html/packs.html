@@ -12,200 +12,176 @@
 
 <title>Fallout MTG Collection - Packs</title>
 
+<link rel="stylesheet" href="../css/terminal.css">
+
 <style>
 
-* {
-    box-sizing: border-box;
+body{
+    overflow-x:hidden;
+    overflow-y:auto;
 }
 
-body {
-    margin: 0;
-    padding: 30px;
-    background: #050805;
-    color: #35ff35;
-    font-family: "Courier New", monospace;
+
+/* PACK DATABASE */
+
+.path{
+    font-size:14px;
+    margin-bottom:25px;
 }
 
-.terminal {
-    width: 100%;
-    min-height: calc(100vh - 60px);
-    border: 2px solid #35ff35;
-    padding: 25px;
-    box-shadow:
-        0 0 10px rgba(53, 255, 53, 0.35),
-        inset 0 0 20px rgba(53, 255, 53, 0.05);
+.title{
+    font-size:24px;
+    font-weight:bold;
+    margin-bottom:8px;
 }
 
-.path {
-    color: #7cff7c;
-    margin-bottom: 25px;
+.subtitle{
+    font-size:14px;
+    margin-bottom:25px;
 }
 
-.title {
-    font-size: 26px;
-    font-weight: bold;
-    margin-bottom: 8px;
+.section-title{
+    margin-top:25px;
+    margin-bottom:10px;
+    font-weight:bold;
 }
 
-.subtitle {
-    margin-bottom: 25px;
+
+/* PRODUCT LIST */
+
+.product-list{
+    display:flex;
+    flex-direction:column;
+    gap:3px;
 }
 
-.section-title {
-    margin-top: 25px;
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-
-.product-list {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.product {
-    display: block;
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid transparent;
-    background: transparent;
-    color: #35ff35;
-    font-family: "Courier New", monospace;
-    font-size: 15px;
-    text-align: left;
-    cursor: pointer;
+.product{
+    display:block;
+    width:100%;
+    padding:7px 10px;
+    border:1px solid transparent;
+    background:transparent;
+    color:var(--terminal-green);
+    font-family:"Courier New",monospace;
+    font-size:15px;
+    text-align:left;
+    cursor:pointer;
+    text-shadow:0 0 3px var(--terminal-green);
 }
 
 .product:hover,
-.product.selected {
-    border-color: #35ff35;
-    background: rgba(53, 255, 53, 0.12);
+.product.selected{
+    border-color:var(--terminal-green);
+    background:rgba(120,255,106,.12);
 }
 
-.product:focus {
-    outline: 1px solid #35ff35;
-    outline-offset: 1px;
+.product:focus{
+    outline:1px solid var(--terminal-green);
+    outline-offset:1px;
 }
 
-.product-number {
-    display: inline-block;
-    width: 45px;
+.product-type{
+    display:inline-block;
+    width:190px;
 }
 
-.product-type {
-    display: inline-block;
-    width: 190px;
+.product-name{
+    display:inline-block;
+    width:350px;
+    font-weight:bold;
 }
 
-.product-name {
-    display: inline-block;
-    width: 350px;
-    font-weight: bold;
+.product-status{
+    display:inline-block;
 }
 
-.product-status {
-    display: inline-block;
-    color: #7cff7c;
+
+/* DETAIL PANEL */
+
+.detail-panel{
+    display:none;
+    margin-top:25px;
+    padding-top:20px;
+    border-top:1px solid var(--terminal-green);
 }
 
-.detail-panel {
-    display: none;
-    margin-top: 25px;
-    padding-top: 20px;
-    border-top: 1px solid #35ff35;
+.detail-panel.visible{
+    display:block;
 }
 
-.detail-panel.visible {
-    display: block;
+.detail-title{
+    font-size:21px;
+    font-weight:bold;
+    margin-bottom:15px;
 }
 
-.detail-title {
-    font-size: 21px;
-    font-weight: bold;
-    margin-bottom: 15px;
+.detail-row{
+    margin:6px 0;
 }
 
-.detail-row {
-    margin: 6px 0;
+.detail-label{
+    display:inline-block;
+    width:150px;
+    font-weight:bold;
 }
 
-.detail-label {
-    display: inline-block;
-    width: 150px;
-    color: #7cff7c;
+.detail-label::before{
+    content:"> ";
 }
 
-.terminal-footer {
-    margin-top: 35px;
-    padding-top: 20px;
-    border-top: 1px solid #35ff35;
+
+/* FOOTER */
+
+.terminal-footer{
+    margin-top:35px;
+    padding-top:20px;
+    border-top:1px solid var(--terminal-green);
 }
 
-.exit-button {
-    display: inline-block;
-    margin-top: 15px;
-    padding: 9px 12px;
-    color: #35ff35;
-    text-decoration: none;
-    border: 1px solid transparent;
+.exit-button{
+    display:inline-block;
+    margin-top:15px;
+    padding:7px 12px;
+    color:var(--terminal-green);
+    text-decoration:none;
+    border:1px solid var(--terminal-green);
+    font-family:"Courier New",monospace;
+    font-size:14px;
+    text-shadow:0 0 3px var(--terminal-green);
 }
 
 .exit-button:hover,
-.exit-button:focus {
-    border-color: #35ff35;
-    background: rgba(53, 255, 53, 0.12);
-    outline: none;
+.exit-button:focus{
+    background:var(--terminal-green);
+    color:#020502;
+    text-shadow:none;
+    outline:none;
 }
 
-.cursor {
-    display: inline-block;
-    width: 9px;
-    height: 17px;
-    margin-left: 5px;
-    vertical-align: middle;
-    background: #35ff35;
-    animation: blink 1s steps(1) infinite;
-}
 
-@keyframes blink {
+/* MOBILE */
 
-    50% {
-        opacity: 0;
+@media(max-width:800px){
+
+    .product-type{
+        display:block;
+        width:auto;
+        margin-bottom:3px;
     }
 
-}
-
-@media (max-width: 800px) {
-
-    body {
-        padding: 15px;
+    .product-name{
+        display:block;
+        width:auto;
+        margin-bottom:3px;
     }
 
-    .terminal {
-        min-height: calc(100vh - 30px);
-        padding: 18px;
-    }
-
-    .product-type {
-    display: block;
-    width: auto;
-    margin-bottom: 3px;
-    }
-    
-    .product-name {
-        display: block;
-        width: auto;
-        margin-bottom: 3px;
-    }
-    
-    .product-status {
-        display: block;
+    .product-status{
+        display:block;
     }
 
 }
 
 </style>
-
 </head>
 
 
