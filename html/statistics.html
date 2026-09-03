@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
+<link rel="stylesheet" href="../css/terminal.css">
 <meta charset="UTF-8">
 
 <meta
@@ -13,117 +12,22 @@
 <title>Statistics | Fallout MTG Collection</title>
 
 <style>
-*{box-sizing:border-box}
-
-:root{
-    --terminal-green:hsl(120,100%,70%);
-    --terminal-green-glow:hsla(120,100%,70%,0.35)
-}
-
-html,body{
-    width:100%;
-    height:100%;
-    margin:0;
-    padding:0
-}
-
 body{
-    background:#020502;
-    color:var(--terminal-green);
-    font-family:"Courier New",monospace;
     overflow-x:hidden;
-    overflow-y:auto;
-    text-shadow:0 0 3px var(--terminal-green),0 0 7px var(--terminal-green-glow)
+    overflow-y:auto
 }
-
-/* TERMINAL */
 
 .terminal{
-    position:relative;
-    width:100vw;
     min-height:100vh;
-    padding:40px;
-    overflow:hidden;
-    background:radial-gradient(ellipse at center,#102510 0%,#071107 45%,#020402 100%);
+    overflow:hidden
 }
 
-.terminal::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    z-index:100;
-    background:repeating-linear-gradient(
-        to bottom,
-        rgba(120,255,106,.045) 0px,
-        rgba(120,255,106,.045) 1px,
-        transparent 1px,
-        transparent 4px
-    )
-}
-
-.terminal::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    z-index:101;
-    background:radial-gradient(
-        ellipse at center,
-        transparent 45%,
-        rgba(0,0,0,.65) 100%
-    )
-}
-
-.terminal>*{
-    position:relative;
-    z-index:10
-}
-
-/* HEADER */
-
-.header{
-    margin-bottom:30px
-}
-
-.terminal-title{
-    font-size:24px;
-    font-weight:bold;
-    letter-spacing:2px;
-    line-height:1.5;
-    margin-bottom:2px
-}
-
-.system-title{
-    font-size:14px;
-    line-height:1.5;
-    margin-bottom:8px
-}
-
-.robco-version,
-.copyright{
-    font-size:14px;
-    line-height:1.5
-}
-
-/* DIVIDERS */
+/* STATISTICS */
 
 .page-title{
     font-size:20px;
     margin-bottom:20px
 }
-    
-.divider{
-    width:540px;
-    max-width:100%;
-    margin:20px 0;
-    font-size:15px;
-    line-height:1;
-    white-space:nowrap;
-    overflow:hidden
-}
-
-/* STATISTICS */
 
 .statistics{
     display:flex;
@@ -191,35 +95,10 @@ body{
     color:#020502;
     text-shadow:none
 }
-    
-.cursor{
-    display:inline-block;
-    width:10px;
-    height:18px;
-    margin-left:2px;
-    vertical-align:middle;
-    background:var(--terminal-green);
-    animation:blink .8s steps(1) infinite
-}
-
-@keyframes blink{
-    0%,50%{opacity:1}
-    51%,100%{opacity:0}
-}
 
 /* MOBILE */
 
 @media(max-width:700px){
-    .terminal{
-        width:100vw;
-        height:100vh;
-        padding:20px
-    }
-
-    .system-title{
-        font-size:18px
-    }
-
     .stat-line{
         grid-template-columns:1fr;
         min-width:0;
