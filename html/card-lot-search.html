@@ -5,195 +5,209 @@
 <meta charset="UTF-8">
 
 <title>Card Lot Search</title>
-
+<link rel="stylesheet" href="../css/terminal.css">
 <style>
 
-body {
-    margin: 0;
-    padding: 20px;
-
-    background: #07140a;
-    color: #78ff6a;
-
-    font-family: "Courier New", monospace;
-
-    text-shadow:
-        0 0 2px rgba(124,255,114,0.55),
-        0 0 4px rgba(60,255,50,0.18);
+body{
+    overflow-x:hidden;
+    overflow-y:auto
 }
 
-.terminal {
-    max-width: 1200px;
-    margin: auto;
+/* CARD LOT SEARCH */
+
+.terminal{
+    min-height:100vh;
+    overflow:hidden
 }
 
-.header {
-    border: 2px solid #78ff6a;
-    padding: 15px;
-    margin-bottom: 20px;
-
-    box-shadow:
-        0 0 12px #3cff32;
+.header{
+    margin-bottom:30px
 }
 
-.title {
-    font-size: 24px;
-    font-weight: bold;
-    letter-spacing: 2px;
+.title{
+    font-size:24px;
+    font-weight:bold;
+    letter-spacing:2px;
+    line-height:1.5;
+    margin-bottom:2px
 }
 
-.path {
-    margin-top: 8px;
-    font-size: 13px;
+.path{
+    font-size:14px;
+    line-height:1.5
 }
 
-.section {
-    border: 1px solid #3d9f39;
-    padding: 15px;
-    margin-bottom: 20px;
+.section{
+    border:1px solid var(--terminal-green);
+    padding:15px;
+    margin-bottom:20px;
+    overflow-x:auto
 }
 
-.section-title {
-    font-weight: bold;
-    margin-bottom: 15px;
+.section-title{
+    font-weight:bold;
+    margin-bottom:15px
 }
 
-.input-grid {
-    display: grid;
+/* INPUTS */
+
+.input-grid{
+    display:grid;
     grid-template-columns:
         1fr
         1fr
         1fr
         auto;
-
-    gap: 12px;
-    align-items: end;
+    gap:12px;
+    align-items:end
 }
 
-label {
-    display: block;
-    font-size: 12px;
-    margin-bottom: 5px;
+label{
+    display:block;
+    font-size:12px;
+    margin-bottom:5px
 }
 
 input,
-select {
-    width: 100%;
-    box-sizing: border-box;
-
-    background: #0b1d0e;
-    color: #78ff6a;
-
-    border: 1px solid #78ff6a;
-
-    padding: 9px;
-
-    font-family: "Courier New", monospace;
-    font-weight: bold;
+select{
+    width:100%;
+    box-sizing:border-box;
+    background:#020502;
+    color:var(--terminal-green);
+    border:1px solid var(--terminal-green);
+    padding:9px;
+    font-family:"Courier New",monospace;
+    font-weight:bold;
+    text-shadow:0 0 3px var(--terminal-green),0 0 7px var(--terminal-green-glow)
 }
 
-button {
-    background: #102b12;
-    color: #78ff6a;
-
-    border: 2px solid #78ff6a;
-
-    padding: 10px 18px;
-
-    font-family: "Courier New", monospace;
-    font-weight: bold;
-
-    cursor: pointer;
+input:focus,
+select:focus{
+    outline:none;
+    box-shadow:0 0 8px var(--terminal-green-glow)
 }
 
-button:hover {
-    background: #1d471f;
-
-    box-shadow:
-        0 0 12px #3cff32;
+button{
+    background:transparent;
+    color:var(--terminal-green);
+    border:1px solid var(--terminal-green);
+    padding:9px 15px;
+    font-family:"Courier New",monospace;
+    font-weight:bold;
+    cursor:pointer;
+    text-shadow:0 0 3px var(--terminal-green),0 0 7px var(--terminal-green-glow)
 }
 
-button:disabled {
-    opacity: 0.4;
-    cursor: default;
+button:hover{
+    background:var(--terminal-green);
+    color:#020502;
+    text-shadow:none;
+    box-shadow:0 0 12px var(--terminal-green-glow)
 }
 
-.status {
-    min-height: 20px;
-    margin-top: 15px;
-    font-size: 13px;
+button:disabled{
+    opacity:.4;
+    cursor:default
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
+/* STATUS */
+
+.status{
+    min-height:20px;
+    margin-top:15px;
+    font-size:13px
+}
+
+/* TABLE */
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:1000px
 }
 
 th,
-td {
-    border-bottom: 1px solid #3d9f39;
-
-    padding: 9px;
-
-    text-align: left;
-
-    font-size: 12px;
+td{
+    border-bottom:1px solid rgba(120,255,106,.35);
+    padding:9px;
+    text-align:left;
+    font-size:12px;
+    white-space:nowrap
 }
 
-th {
-    color: #a5ff9d;
-    border-bottom: 2px solid #78ff6a;
+th{
+    color:var(--terminal-green);
+    border-bottom:2px solid var(--terminal-green);
+    background:rgba(120,255,106,.05)
 }
 
-.remove-button {
-    background: transparent;
-
-    border: 1px solid #78ff6a;
-
-    padding: 5px 9px;
-
-    margin: 0;
-
-    width: auto;
+td{
+    color:var(--terminal-green)
 }
 
-.total {
-    margin-top: 15px;
-
-    border-top: 1px solid #3d9f39;
-
-    padding-top: 12px;
-
-    font-weight: bold;
+tr:hover td{
+    background:rgba(120,255,106,.08)
 }
 
-.exit-button {
-    display: inline-block;
+/* REMOVE BUTTON */
 
-    margin-top: 15px;
-
-    padding: 10px 15px;
-
-    border: 2px solid #78ff6a;
-
-    color: #78ff6a;
-
-    text-decoration: none;
-
-    font-weight: bold;
+.remove-button{
+    background:transparent;
+    border:1px solid var(--terminal-green);
+    padding:5px 9px;
+    margin:0;
+    width:auto
 }
 
-.exit-button:hover {
-    background: #1d471f;
-
-    box-shadow:
-        0 0 12px #3cff32;
+.remove-button:hover{
+    background:var(--terminal-green);
+    color:#020502
 }
 
-@media (max-width: 800px) {
+/* TOTAL */
 
-    .input-grid {
-        grid-template-columns: 1fr;
+.total{
+    margin-top:15px;
+    border-top:1px solid var(--terminal-green);
+    padding-top:12px;
+    font-weight:bold
+}
+
+/* FOOTER */
+
+.exit-button{
+    display:inline-block;
+    margin-top:15px;
+    padding:8px 12px;
+    border:1px solid var(--terminal-green);
+    color:var(--terminal-green);
+    text-decoration:none;
+    font-family:"Courier New",monospace;
+    font-weight:bold;
+    text-shadow:0 0 3px var(--terminal-green),0 0 7px var(--terminal-green-glow)
+}
+
+.exit-button:hover{
+    background:var(--terminal-green);
+    color:#020502;
+    text-shadow:none;
+    box-shadow:0 0 12px var(--terminal-green-glow)
+}
+
+/* MOBILE */
+
+@media(max-width:800px){
+
+    .input-grid{
+        grid-template-columns:1fr
+    }
+
+    .section{
+        padding:12px
+    }
+
+    table{
+        min-width:1000px
     }
 
 }
