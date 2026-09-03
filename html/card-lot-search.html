@@ -13,12 +13,12 @@ body{
     overflow-y:auto
 }
 
-/* CARD LOT SEARCH */
-
 .terminal{
     min-height:100vh;
-    overflow:hidden
+    overflow:visible
 }
+
+/* CARD LOT SEARCH */
 
 .header{
     margin-bottom:30px
@@ -34,19 +34,21 @@ body{
 
 .path{
     font-size:14px;
-    line-height:1.5
+    line-height:1.5;
 }
+
+/* SECTIONS */
 
 .section{
     border:1px solid var(--terminal-green);
     padding:15px;
     margin-bottom:20px;
-    overflow-x:auto
+    overflow-x:auto;
 }
 
 .section-title{
     font-weight:bold;
-    margin-bottom:15px
+    margin-bottom:15px;
 }
 
 /* INPUTS */
@@ -59,60 +61,69 @@ body{
         1fr
         auto;
     gap:12px;
-    align-items:end
+    align-items:end;
 }
 
 label{
     display:block;
     font-size:12px;
-    margin-bottom:5px
+    margin-bottom:5px;
 }
 
 input,
 select{
     width:100%;
     box-sizing:border-box;
-    background:#020402;
-    color:#6cff6c;
-    border:1px solid #6cff6c;
+    appearance:none;
+    background:#020502;
+    color:var(--terminal-green);
+    border:1px solid var(--terminal-green);
     padding:9px;
     font-family:"Courier New",monospace;
     font-size:14px;
     font-weight:normal;
     outline:none;
+    text-shadow:0 0 3px var(--terminal-green);
+    box-shadow:0 0 5px var(--terminal-green-glow);
 }
 
 input::placeholder{
-    color:#6cff6c;
-    opacity:0.55;
+    color:var(--terminal-green);
+    opacity:.55;
+    text-shadow:none;
 }
 
 input:focus,
 select:focus{
-    box-shadow:0 0 8px rgba(108,255,108,0.5);
+    box-shadow:0 0 8px var(--terminal-green-glow);
 }
+
+/* BUTTONS */
 
 button{
-    background:transparent;
+    background:#020502;
     color:var(--terminal-green);
     border:1px solid var(--terminal-green);
-    padding:9px 15px;
+    padding:10px 18px;
     font-family:"Courier New",monospace;
-    font-weight:bold;
+    font-size:14px;
+    font-weight:normal;
     cursor:pointer;
-    text-shadow:0 0 3px var(--terminal-green),0 0 7px var(--terminal-green-glow)
+    text-shadow:0 0 3px var(--terminal-green);
 }
 
-button:hover{
+button:hover,
+button:focus{
     background:var(--terminal-green);
     color:#020502;
+    outline:none;
+    box-shadow:0 0 8px var(--terminal-green-glow);
     text-shadow:none;
-    box-shadow:0 0 12px var(--terminal-green-glow)
 }
 
 button:disabled{
     opacity:.4;
-    cursor:default
+    cursor:default;
 }
 
 /* STATUS */
@@ -120,7 +131,7 @@ button:disabled{
 .status{
     min-height:20px;
     margin-top:15px;
-    font-size:13px
+    font-size:13px;
 }
 
 /* TABLE */
@@ -128,7 +139,7 @@ button:disabled{
 table{
     width:100%;
     border-collapse:collapse;
-    min-width:1000px
+    min-width:1000px;
 }
 
 th,
@@ -137,21 +148,21 @@ td{
     padding:9px;
     text-align:left;
     font-size:12px;
-    white-space:nowrap
+    white-space:nowrap;
 }
 
 th{
     color:var(--terminal-green);
     border-bottom:2px solid var(--terminal-green);
-    background:rgba(120,255,106,.05)
+    background:rgba(120,255,106,.05);
 }
 
 td{
-    color:var(--terminal-green)
+    color:var(--terminal-green);
 }
 
 tr:hover td{
-    background:rgba(120,255,106,.08)
+    background:rgba(120,255,106,.08);
 }
 
 /* REMOVE BUTTON */
@@ -161,12 +172,13 @@ tr:hover td{
     border:1px solid var(--terminal-green);
     padding:5px 9px;
     margin:0;
-    width:auto
+    width:auto;
+    font-size:14px;
 }
 
 .remove-button:hover{
     background:var(--terminal-green);
-    color:#020502
+    color:#020502;
 }
 
 /* TOTAL */
@@ -175,7 +187,7 @@ tr:hover td{
     margin-top:15px;
     border-top:1px solid var(--terminal-green);
     padding-top:12px;
-    font-weight:bold
+    font-weight:bold;
 }
 
 /* FOOTER */
@@ -183,20 +195,22 @@ tr:hover td{
 .exit-button{
     display:inline-block;
     margin-top:15px;
-    padding:8px 12px;
+    padding:9px 15px;
     border:1px solid var(--terminal-green);
     color:var(--terminal-green);
+    background:#020502;
     text-decoration:none;
     font-family:"Courier New",monospace;
-    font-weight:bold;
-    text-shadow:0 0 3px var(--terminal-green),0 0 7px var(--terminal-green-glow)
+    font-size:14px;
+    font-weight:normal;
+    text-shadow:0 0 3px var(--terminal-green);
 }
 
 .exit-button:hover{
     background:var(--terminal-green);
     color:#020502;
     text-shadow:none;
-    box-shadow:0 0 12px var(--terminal-green-glow)
+    box-shadow:0 0 8px var(--terminal-green-glow);
 }
 
 /* MOBILE */
@@ -204,15 +218,15 @@ tr:hover td{
 @media(max-width:800px){
 
     .input-grid{
-        grid-template-columns:1fr
+        grid-template-columns:1fr;
     }
 
     .section{
-        padding:12px
+        padding:12px;
     }
 
     table{
-        min-width:1000px
+        min-width:1000px;
     }
 
 }
