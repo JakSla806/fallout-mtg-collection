@@ -61,9 +61,3 @@ jobs:
           git diff --cached --quiet || git commit -m "Update card prices"
 
           git push
-          
-      - name: Tell Cloudflare update is complete
-        run: |
-          curl -f -X POST \
-            "https://fallout-price-updater.jaksla-806.workers.dev/complete" \
-            -H "Authorization: Bearer ${{ secrets.COMPLETE_TOKEN }}"
