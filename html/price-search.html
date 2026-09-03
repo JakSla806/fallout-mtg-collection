@@ -10,397 +10,291 @@
     content="width=device-width, initial-scale=1.0"
 >
 
-<title>Fallout MTG Collection | Price Search</title>
+<title>Fallout MTG Collection | Price Analysis</title>
+
+<link rel="stylesheet" href="../css/terminal.css">
 
 <style>
 
-* {
-    box-sizing: border-box;
+body{
+    overflow-x:hidden;
+    overflow-y:auto;
 }
 
-body {
-
-    margin: 0;
-
-    background: #050805;
-
-    color: #6cff6c;
-
-    font-family:
-        "Courier New",
-        Courier,
-        monospace;
-
-    min-height: 100vh;
-
-    padding: 30px;
+.terminal{
+    height:auto;
+    min-height:100vh;
+    overflow:visible;
 }
 
-.terminal {
 
-    width: 100%;
+/* PRICE SEARCH */
 
-    max-width: 1500px;
-
-    margin: 0 auto;
-
-    border: 2px solid #6cff6c;
-
-    padding: 25px;
-
-    box-shadow:
-        0 0 8px rgba(108, 255, 108, 0.5),
-        inset 0 0 20px rgba(108, 255, 108, 0.05);
+.path{
+    color:var(--terminal-green);
+    margin-bottom:25px;
+    font-size:14px;
 }
 
-.path {
-
-    color: #4dcc4d;
-
-    margin-bottom: 25px;
-
-    font-size: 14px;
+h1{
+    font-size:24px;
+    margin:0 0 5px 0;
+    font-weight:bold;
 }
 
-h1 {
-
-    font-size: 28px;
-
-    margin: 0 0 5px 0;
-
-    font-weight: normal;
+.subtitle{
+    margin:0 0 25px 0;
 }
 
-.subtitle {
 
-    margin: 0 0 25px 0;
+/* CONTROLS */
 
-    color: #4dcc4d;
+.controls{
+    border-top:1px solid var(--terminal-green);
+    border-bottom:1px solid var(--terminal-green);
+    padding:20px 0;
+    display:flex;
+    flex-wrap:wrap;
+    gap:15px 25px;
+    align-items:end;
 }
 
-.controls {
-
-    border-top: 1px solid #347a34;
-
-    border-bottom: 1px solid #347a34;
-
-    padding: 20px 0;
-
-    display: flex;
-
-    flex-wrap: wrap;
-
-    gap: 15px 25px;
-
-    align-items: end;
+.control{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
 }
 
-.control {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 6px;
-}
-
-.control label {
-
-    font-size: 13px;
-
-    color: #4dcc4d;
+.control label{
+    font-size:13px;
+    color:var(--terminal-green);
 }
 
 .control input,
-.control select {
-
-    background: #020402;
-
-    color: #6cff6c;
-
-    border: 1px solid #6cff6c;
-
-    padding: 9px;
-
-    font-family:
-        "Courier New",
-        Courier,
-        monospace;
-
-    font-size: 14px;
-
-    outline: none;
+.control select{
+    appearance:none;
+    background:#020502;
+    color:var(--terminal-green);
+    border:1px solid var(--terminal-green);
+    padding:9px;
+    font-family:"Courier New",monospace;
+    font-size:14px;
+    outline:none;
+    text-shadow:0 0 3px var(--terminal-green);
+    box-shadow:0 0 5px var(--terminal-green-glow);
 }
 
-.control input {
-
-    width: 150px;
+.control input{
+    width:150px;
 }
 
-.control select {
-
-    min-width: 150px;
+.control select{
+    min-width:150px;
+    cursor:pointer;
 }
 
 .control input:focus,
-.control select:focus {
-
-    box-shadow:
-        0 0 8px rgba(108, 255, 108, 0.5);
+.control select:focus{
+    box-shadow:0 0 8px var(--terminal-green-glow);
 }
 
-.button-row {
-
-    display: flex;
-
-    gap: 10px;
+.button-row{
+    display:flex;
+    gap:10px;
 }
 
-button {
-
-    background: #071007;
-
-    color: #6cff6c;
-
-    border: 1px solid #6cff6c;
-
-    padding: 10px 18px;
-
-    font-family:
-        "Courier New",
-        Courier,
-        monospace;
-
-    font-size: 14px;
-
-    cursor: pointer;
+button{
+    background:#020502;
+    color:var(--terminal-green);
+    border:1px solid var(--terminal-green);
+    padding:10px 18px;
+    font-family:"Courier New",monospace;
+    font-size:14px;
+    cursor:pointer;
+    text-shadow:0 0 3px var(--terminal-green);
 }
 
 button:hover,
-button:focus {
-
-    background: #123312;
-
-    outline: none;
-
-    box-shadow:
-        0 0 8px rgba(108, 255, 108, 0.5);
+button:focus{
+    background:var(--terminal-green);
+    color:#020502;
+    outline:none;
+    box-shadow:0 0 8px var(--terminal-green-glow);
+    text-shadow:none;
 }
 
-#searchStatus {
 
-    margin: 20px 0;
+/* SEARCH STATUS */
 
-    color: #6cff6c;
-
-    min-height: 20px;
+#searchStatus{
+    margin:20px 0;
+    color:var(--terminal-green);
+    min-height:20px;
 }
 
-.chart-container {
 
-    border: 1px solid #347a34;
+/* CHART */
 
-    padding: 20px;
-
-    margin-bottom: 25px;
-
-    display: none;
+.chart-container{
+    border:1px solid var(--terminal-green);
+    padding:20px;
+    margin-bottom:25px;
+    display:none;
+    box-shadow:0 0 5px var(--terminal-green-glow);
 }
 
-.chart-title {
-
-    margin-bottom: 15px;
-
-    color: #6cff6c;
+.chart-title{
+    margin-bottom:15px;
+    color:var(--terminal-green);
+    font-weight:bold;
 }
 
-.chart-wrapper {
-
-    width: 100%;
-
-    height: 400px;
-
-    position: relative;
+.chart-wrapper{
+    width:100%;
+    height:400px;
+    position:relative;
 }
 
-#priceChart {
-
-    width: 100% !important;
-
-    height: 100% !important;
+#priceChart{
+    width:100% !important;
+    height:100% !important;
 }
 
-.results-container {
 
-    border-top: 1px solid #347a34;
+/* RESULTS */
 
-    padding-top: 20px;
+.results-container{
+    border-top:1px solid var(--terminal-green);
+    padding-top:20px;
 }
 
-.results-header {
-
-    margin-bottom: 15px;
-
-    color: #6cff6c;
+.results-header{
+    margin-bottom:15px;
+    color:var(--terminal-green);
+    font-weight:bold;
 }
 
-.results-table-wrapper {
-
-    overflow-x: auto;
+.results-table-wrapper{
+    overflow-x:auto;
 }
 
-table {
-
-    width: 100%;
-
-    border-collapse: collapse;
-
-    background: #020402;
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:#020502;
 }
 
 th,
-td {
-
-    border: 1px solid #347a34;
-
-    padding: 9px;
-
-    text-align: left;
-
-    white-space: nowrap;
+td{
+    border:1px solid var(--terminal-green);
+    padding:9px;
+    text-align:left;
+    white-space:nowrap;
 }
 
-th {
-
-    color: #6cff6c;
-
-    background: #071007;
-
-    font-weight: normal;
+th{
+    color:var(--terminal-green);
+    background:#071007;
+    font-weight:bold;
 }
 
-td {
-
-    color: #4dcc4d;
+td{
+    color:var(--terminal-green);
 }
 
-tr:hover td {
-
-    background: #0b180b;
-
-    color: #8aff8a;
+tr:hover td{
+    background:rgba(120,255,106,.12);
+    color:var(--terminal-green);
 }
 
-.price {
-
-    text-align: right;
+.price{
+    text-align:right;
 }
 
-.owned {
-
-    font-weight: bold;
-
-    color: #8aff8a;
+.owned{
+    font-weight:bold;
 }
 
-.unowned {
-
-    color: #4dcc4d;
+.unowned{
+    color:var(--terminal-green);
 }
 
-.links a {
 
-    color: #6cff6c;
+/* LINKS */
 
-    margin-right: 12px;
+.links a{
+    color:var(--terminal-green);
+    margin-right:12px;
 }
 
-.links a:hover {
-
-    color: #b0ffb0;
+.links a:hover{
+    color:#020502;
+    background:var(--terminal-green);
+    text-decoration:none;
 }
 
-.no-results {
 
-    padding: 25px;
+/* NO RESULTS */
 
-    border: 1px solid #347a34;
-
-    color: #4dcc4d;
+.no-results{
+    padding:25px;
+    border:1px solid var(--terminal-green);
+    color:var(--terminal-green);
 }
 
-.footer {
 
-    margin-top: 30px;
+/* FOOTER */
 
-    padding-top: 15px;
-
-    border-top: 1px solid #347a34;
-
-    color: #4dcc4d;
+.footer{
+    margin-top:30px;
+    padding-top:15px;
+    border-top:1px solid var(--terminal-green);
 }
 
-.exit-button {
-
-    display: inline-block;
-
-    margin-top: 12px;
-
-    color: #6cff6c;
-
-    text-decoration: none;
-
-    border: 1px solid #6cff6c;
-
-    padding: 9px 15px;
+.exit-button{
+    display:inline-block;
+    margin-top:12px;
+    color:var(--terminal-green);
+    text-decoration:none;
+    border:1px solid var(--terminal-green);
+    padding:9px 15px;
 }
 
-.exit-button:hover {
-
-    background: #123312;
+.exit-button:hover{
+    background:var(--terminal-green);
+    color:#020502;
 }
 
-.cursor {
 
-    display: inline-block;
+/* MOBILE */
 
-    width: 9px;
+@media(max-width:800px){
 
-    height: 16px;
-
-    background: #6cff6c;
-
-    margin-left: 5px;
-
-    vertical-align: middle;
-
-    animation: blink 1s steps(1) infinite;
-}
-
-@keyframes blink {
-
-    50% {
-        opacity: 0;
-    }
-}
-
-@media (max-width: 800px) {
-
-    body {
-        padding: 15px;
+    .chart-wrapper{
+        height:300px;
     }
 
-    .terminal {
-        padding: 15px;
+    .controls{
+        flex-direction:column;
+        align-items:stretch;
     }
 
-    .chart-wrapper {
-        height: 300px;
+    .control input,
+    .control select{
+        width:100%;
     }
+
+    .button-row{
+        width:100%;
+    }
+
+    .button-row button{
+        flex:1;
+    }
+
 }
 
 </style>
-
 </head>
 
 
@@ -409,12 +303,12 @@ tr:hover td {
 <div class="terminal">
 
     <div class="path">
-        C:\FALLOUT\MTG\DATABASE\SEARCH\PRICE_SEARCH.EXE
+        C:\FALLOUT\MTG\DATABASE\SEARCH\PRICE_ANALYSIS.EXE
     </div>
 
 
     <h1>
-        &gt; PRICE SEARCH
+        &gt; PRICE ANALYSIS
     </h1>
 
     <p class="subtitle">
@@ -503,10 +397,10 @@ tr:hover td {
         <div class="button-row">
 
             <button
-                id="searchButton"
+                id="Button"
                 type="button"
             >
-                &gt; SEARCH
+                &gt; 
             </button>
 
             <button
@@ -521,7 +415,7 @@ tr:hover td {
     </div>
 
 
-    <div id="searchStatus">
+    <div id="Status">
         &gt; READY
     </div>
 
@@ -550,7 +444,7 @@ tr:hover td {
             id="resultsHeader"
             class="results-header"
         >
-            &gt; SEARCH RESULTS
+            &gt;  RESULTS
         </div>
 
 
@@ -560,7 +454,7 @@ tr:hover td {
         >
 
             <div class="no-results">
-                &gt; NO SEARCH PERFORMED
+                &gt; NO  PERFORMED
             </div>
 
         </div>
@@ -570,7 +464,7 @@ tr:hover td {
 
     <div class="footer">
 
-        &gt; PRICE SEARCH ANALYSIS COMPLETE
+        &gt; PRICE ANALYSIS COMPLETE
 
         <span class="cursor"></span>
 
