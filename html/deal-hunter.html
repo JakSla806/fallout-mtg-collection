@@ -6,75 +6,216 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Deal Hunter</title>
-
+    <link rel="stylesheet" href="../css/terminal.css">
     <style>
 
-        body {
-            font-family: Arial, sans-serif;
-            margin: 30px;
-        }
+body{
+    overflow-x:hidden;
+    overflow-y:auto;
+}
 
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+.terminal{
+    height:auto;
+    min-height:100vh;
+    overflow:visible;
+}
 
-        select,
-        button {
-            padding: 8px;
-            font-size: 14px;
-        }
 
-        #scanner {
-            margin: 20px 0;
-            min-height: 60px;
-        }
+/* DEAL HUNTER */
 
-        #result {
-            display: none;
-            border: 1px solid #ccc;
-            padding: 20px;
-            max-width: 500px;
-        }
+.page-title{
+    font-size:20px;
+    margin-bottom:20px;
+}
 
-        #cardImage {
-            max-width: 300px;
-            display: block;
-            margin: 0 auto 20px;
-        }
+.status-line{
+    font-size:15px;
+    line-height:1.5;
+    margin-bottom:8px;
+}
 
-        .card-name {
-            font-size: 22px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
 
-        .card-info {
-            line-height: 1.8;
-        }
+/* CONTROLS */
 
-        .links {
-            margin-top: 20px;
-        }
+.controls{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin:20px 0;
+    align-items:center;
+}
 
-        .links a {
-            display: inline-block;
-            margin-right: 10px;
-        }
+.controls select,
+.controls button{
+    appearance:none;
+    background:#020502;
+    color:var(--terminal-green);
+    border:1px solid var(--terminal-green);
+    padding:8px 12px;
+    font-family:"Courier New",monospace;
+    font-size:15px;
+    text-shadow:0 0 3px var(--terminal-green);
+    box-shadow:0 0 5px var(--terminal-green-glow);
+    cursor:pointer;
+}
 
-        #status {
-            margin-bottom: 20px;
-        }
+.controls select:hover,
+.controls button:hover,
+.controls select:focus,
+.controls button:focus{
+    background:var(--terminal-green);
+    color:#020502;
+    outline:none;
+    text-shadow:none;
+    box-shadow:0 0 10px var(--terminal-green-glow);
+}
 
-    </style>
+
+/* SCANNER */
+
+#scanner{
+    margin:20px 0;
+    min-height:60px;
+    padding:15px;
+    border-top:1px solid var(--terminal-green);
+    border-bottom:1px solid var(--terminal-green);
+}
+
+
+/* RESULT */
+
+#result{
+    display:none;
+    border:1px solid var(--terminal-green);
+    padding:20px;
+    max-width:600px;
+    background:rgba(0,10,0,.45);
+    box-shadow:0 0 5px var(--terminal-green-glow);
+}
+
+#cardImage{
+    max-width:300px;
+    display:block;
+    margin:0 auto 20px;
+}
+
+.card-name{
+    font-size:22px;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.card-info{
+    line-height:1.8;
+}
+
+.links{
+    margin-top:20px;
+}
+
+.links a{
+    display:inline-block;
+    margin-right:10px;
+    padding:5px 8px;
+    border:1px solid var(--terminal-green);
+    color:var(--terminal-green);
+    text-decoration:none;
+    text-shadow:0 0 3px var(--terminal-green);
+}
+
+.links a:hover{
+    background:var(--terminal-green);
+    color:#020502;
+    text-shadow:none;
+}
+
+
+/* FOOTER */
+
+.footer{
+    margin-top:30px;
+    padding-top:15px;
+    border-top:1px solid var(--terminal-green);
+}
+
+.exit-button{
+    display:inline-block;
+    margin-top:12px;
+    padding:7px 12px;
+    color:var(--terminal-green);
+    text-decoration:none;
+    border:1px solid var(--terminal-green);
+    font-family:"Courier New",monospace;
+    font-size:14px;
+    text-shadow:0 0 3px var(--terminal-green);
+}
+
+.exit-button:hover{
+    background:var(--terminal-green);
+    color:#020502;
+    text-shadow:none;
+}
+
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+    .terminal{
+        padding:20px;
+    }
+
+    .controls{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .controls select,
+    .controls button{
+        width:100%;
+    }
+
+    #result{
+        max-width:100%;
+    }
+
+    #cardImage{
+        max-width:100%;
+    }
+
+}
+
+</style>
 
 </head>
 
 <body>
 
-<h1>Deal Hunter</h1>
+<div class="terminal">
+
+    <div class="header">
+
+        <div class="terminal-title">
+            COLLECTION MANAGEMENT TERMINAL
+        </div>
+
+        <div class="system-title">
+            ROBCO INDUSTRIES UNIFIED OPERATING SYSTEM v 1.61
+        </div>
+
+        <div class="copyright">
+            COPYRIGHT 2075-2077 ROBCO INDUSTRIES
+        </div>
+
+    </div>
+
+    <div class="divider">
+        ============================================================
+    </div>
+
+    <div class="page-title">
+        &gt;&gt; DEAL HUNTER.EXE
+    </div>
 
 <p id="status">
     Loading card database...
@@ -231,11 +372,24 @@
 <br>
 
 
-<button
-    onclick="window.location.href='index.html'"
->
-    Exit to Main Menu
-</button>
+<div class="footer">
+
+    &gt; DEAL HUNTER ANALYSIS COMPLETE
+
+    <span class="cursor"></span>
+
+    <br>
+
+    <a
+        href="index.html"
+        class="exit-button"
+    >
+        &gt; RETURN TO MAIN MENU
+    </a>
+
+</div>
+
+</div>
 
 
 <script>
