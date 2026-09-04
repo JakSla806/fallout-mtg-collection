@@ -4,7 +4,7 @@
  * --------------------------------------------------------
  */
 
-#foilOverlay.standard-foil{
+#foiloverlay.standard-foil{
     position:absolute;
     inset:0;
     width:100%;
@@ -12,7 +12,7 @@
     display:block;
     pointer-events:none;
     overflow:hidden;
-    border-radius:10px;
+    border-radius:15px;
 
     /*
      * Broad, soft rainbow coloration.
@@ -77,7 +77,7 @@
  * --------------------------------------------------------
  */
 
-#foilOverlay.standard-foil::before{
+#foiloverlay.standard-foil::before{
     content:"";
 
     position:absolute;
@@ -127,7 +127,7 @@
  * --------------------------------------------------------
  */
 
-#foilOverlay.standard-foil::after{
+#foiloverlay.standard-foil::after{
     content:"";
 
     position:absolute;
