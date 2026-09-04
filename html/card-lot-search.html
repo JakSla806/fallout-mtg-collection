@@ -51,6 +51,19 @@ body{
     margin-bottom:15px;
 }
 
+.lot-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+}
+
+#clearListButton{
+    padding:5px 10px;
+    font-size:13px;
+    flex-shrink:0;
+}
+
 /* INPUTS */
 
 .input-grid{
@@ -358,8 +371,19 @@ tr:hover td{
 
     <div class="section">
 
-        <div class="section-title">
-            &gt; CURRENT CARD LOT
+        <div class="section-title lot-header">
+        
+            <span>
+                &gt; CURRENT CARD LOT
+            </span>
+        
+            <button
+                id="clearListButton"
+                type="button"
+            >
+                CLEAR LIST
+            </button>
+        
         </div>
 
 
@@ -425,7 +449,9 @@ tr:hover td{
 
 let cards = [];
 
-let lot = [];
+let lot = JSON.parse(
+    localStorage.getItem("falloutCardLot") || "[]"
+);
 
 
 /*
@@ -725,10 +751,8 @@ function addCardToLot() {
 
 
     lot.push(lotEntry);
-
-
+    saveLot();
     renderLot();
-
 
     document
         .getElementById("numberInput")
@@ -763,12 +787,27 @@ function removeCard(id) {
 
         });
 
+    saveLot();
 
     renderLot();
 
 }
 
+/*
+ * --------------------------------------------------------
+ * SAVE LOT
+ * --------------------------------------------------------
+ */
 
+function saveLot() {
+
+    localStorage.setItem(
+        "falloutCardLot",
+        JSON.stringify(lot)
+    );
+
+}
+    
 /*
  * --------------------------------------------------------
  * RENDER LOT
@@ -936,6 +975,42 @@ function escapeHtml(text) {
 
 /*
  * --------------------------------------------------------
+ * CLEAR LIST
+ * --------------------------------------------------------
+ */
+
+document
+    .getElementById("clearListButton")
+    .addEventListener(
+        "click",
+        function() {
+
+            if (lot.length === 0) {
+
+                setStatus(
+                    "> ERROR: CARD LOT IS ALREADY EMPTY"
+                );
+
+                return;
+
+            }
+
+            lot = [];
+
+            saveLot();
+
+            renderLot();
+
+            setStatus(
+                "> CARD LOT CLEARED"
+            );
+
+        }
+    );
+
+
+/*
+ * --------------------------------------------------------
  * ENTER KEY
  * --------------------------------------------------------
  */
@@ -974,7 +1049,7 @@ document
  */
 
 loadCards();
-
+renderLot();
 </script>
 
 </body>
