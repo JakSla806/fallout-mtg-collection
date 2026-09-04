@@ -4,7 +4,7 @@
  * --------------------------------------------------------
  */
 
-#foiloverlay.standard-foil{
+#foilOverlay.standard-foil{
     position:absolute;
     inset:0;
     width:100%;
@@ -77,7 +77,7 @@
  * --------------------------------------------------------
  */
 
-#foiloverlay.standard-foil::before{
+#foilOverlay.standard-foil::before{
     content:"";
 
     position:absolute;
@@ -127,7 +127,7 @@
  * --------------------------------------------------------
  */
 
-#foiloverlay.standard-foil::after{
+#foilOverlay.standard-foil::after{
     content:"";
 
     position:absolute;
