@@ -7,6 +7,7 @@
 
     <title>Deal Hunter</title>
     <link rel="stylesheet" href="../css/terminal.css">
+    <link rel="stylesheet" href=../css/standard-foil.css">
     <style>
 
 body{
@@ -93,11 +94,17 @@ body{
     box-shadow:0 0 5px var(--terminal-green-glow);
 }
 
-#cardImage{
-    max-width:300px;
-    display:block;
+.card-image-container{
+    position:relative;
+    width:300px;
+    max-width:100%;
     margin:0 auto 20px;
-    border-radius:15px;
+}
+
+#cardImage{
+    width:100%;
+    display:block;
+    border-radius:10px;
 }
 
 .card-name{
@@ -180,8 +187,12 @@ body{
         max-width:100%;
     }
 
+    .card-image-container{
+    width:100%;
+    }
+    
     #cardImage{
-        max-width:100%;
+        width:100%;
     }
 
 }
@@ -301,11 +312,17 @@ body{
 
 <div id="result">
 
-    <img
-        id="cardImage"
-        src=""
-        alt="Card image"
-    >
+    <div class="card-image-container">
+    
+        <img
+            id="cardImage"
+            src=""
+            alt="Card image"
+        >
+    
+        <div id="foilOverlay"></div>
+    
+    </div>
 
 
     <div
@@ -770,26 +787,62 @@ function revealTarget(target) {
 
     const image =
         document.getElementById("cardImage");
-
-
+    
+    const foilOverlay =
+        document.getElementById("foilOverlay");
+    
+    
     if (imageUrl) {
-
+    
         image.src =
             imageUrl;
-
+    
         image.alt =
             card.name;
-
+    
         image.style.display =
             "block";
-
+    
+    
+        /*
+         * ----------------------------------------------------
+         * FOIL EFFECT
+         * ----------------------------------------------------
+         */
+    
+        if (target.finish === "Standard Foil") {
+    
+            foilOverlay.className =
+                "standard-foil";
+    
+            foilOverlay.style.display =
+                "block";
+    
+        }
+    
+        else {
+    
+            foilOverlay.className =
+                "";
+    
+            foilOverlay.style.display =
+                "none";
+    
+        }
+    
     }
-
+    
     else {
-
+    
         image.style.display =
             "none";
-
+    
+        foilOverlay.className =
+            "";
+    
+        foilOverlay.style.display =
+            "none";
+    
     }
 
 
